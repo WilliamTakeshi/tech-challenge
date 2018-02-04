@@ -1,4 +1,8 @@
-# Tech Challenge 
+# Tech Challenge
+
+ - master: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=master)](https://travis-ci.org/ramondelemos/tech-challenge)
+
+ - dev: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=dev)](https://travis-ci.org/ramondelemos/tech-challenge)
 
 Bem vindo(a)! Esse é o Tech Challenge Elixir!
 
@@ -95,3 +99,6 @@ O desafio será avaliado através de cinco critérios.
 * [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
 * [O Guia de Estilo Elixir](https://github.com/gusaiani/elixir_style_guide/blob/master/README_ptBR.md)
 * [Boas Práticas na Stone](https://github.com/stone-payments/stoneco-best-practices/blob/master/README_pt.md)
+
+## Material de Referência Utilizado
+* [Auto-Merging with Travis-CI and Configuring Coveralls to Elixir](https://medium.com/@allanbrados/automerge-with-travis-ci-and-coveralls-to-elixir-248d1c6d2531)
