@@ -1,4 +1,8 @@
-# Tech Challenge 
+# Tech Challenge
+
+ - master: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=master)](https://travis-ci.org/ramondelemos/tech-challenge)
+
+ - dev: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=dev)](https://travis-ci.org/ramondelemos/tech-challenge)
 
 Bem vindo(a)! Esse é o Tech Challenge Elixir!
 
