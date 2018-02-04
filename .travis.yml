@@ -3,5 +3,7 @@ elixir:
   - '1.6.0'
 otp_release:
   - '20.2.2'
+script:
+  - mix test && MIX_ENV=test mix coveralls.travis
 after_success:
   - ./travis_merge_script.sh
