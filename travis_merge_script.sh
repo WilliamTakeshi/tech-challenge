@@ -1,3 +1,4 @@
+echo "Branch: $TRAVIS_BRANCH"
 if [ "$TRAVIS_BRANCH" != "dev" ]; then 
     exit 0;
 fi
