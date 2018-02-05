@@ -5,7 +5,7 @@ export GIT_COMMITTER_EMAIL="ramondelemos@gmail.com"
 export GIT_COMMITTER_NAME="Ramon de Lemos"
 rev=$(git rev-parse --short HEAD)
 git config user.name "ramondelemos@gmail.com"
-git config user.password ${GITHUB_TOKEN}
+git config user.password ${GITHUB_PWD}
 git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* || exit
 git fetch --all || exit
 git stash
