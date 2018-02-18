@@ -22,7 +22,8 @@ defmodule FinancialSystem.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:excoveralls, github: "parroty/excoveralls"}
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false}
     ]
   end
 end
