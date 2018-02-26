@@ -32,7 +32,7 @@ defmodule FinancialSystem.Mixfile do
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
       {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.18", only: [:dev, :docs], runtime: false},
-      {:ex_dinheiro, "~> 0.1.6"}
+      {:ex_dinheiro, "~> 0.1.7"}
     ]
   end
 
