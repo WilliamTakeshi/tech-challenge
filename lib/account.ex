@@ -11,7 +11,7 @@ defmodule Account do
       :balance as Dinheiro that represents balance of the account.
       :transactions as array that contains all account movemants.
   """
-  @type t :: %Account{
+  @type t :: %__MODULE__{
           user: String.t(),
           balance: Dinheiro.t(),
           transactions: list()

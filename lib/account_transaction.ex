@@ -10,8 +10,10 @@ defmodule AccountTransaction do
       :date as NaiveDateTime that represents the of the transaction.
       :value as Dinheiro that represents the value of the transaction.
   """
-  @type t :: %AccountTransaction{
+  @type t :: %__MODULE__{
           date: NaiveDateTime.t(),
           value: Dinheiro.t()
         }
+
+  
 end
