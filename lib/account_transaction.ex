@@ -26,11 +26,11 @@ defmodule AccountTransaction do
         iex> AccountTransaction.new(date_time, value)
         {:ok, %AccountTransaction{date_time: ~N[2018-03-23 08:40:07.005], value: %Dinheiro{amount: 1234500, currency: :BRL}}}
         iex> AccountTransaction.new("2018-03-23 08:40:07.005", value)
-        {:error, ":date_time must be a NaiveDateTime struct."}
+        {:error, ":date_time must be a NaiveDateTime struct"}
         iex> AccountTransaction.new(date_time, 50)
-        {:error, ":value must be a Dinheiro struct."}
+        {:error, ":value must be a Dinheiro struct"}
         iex> AccountTransaction.new(date_time, %Dinheiro{amount: 1234500, currency: :NONE})
-        {:error, "'NONE' does not represent an ISO 4217 code."}
+        {:error, "'NONE' does not represent an ISO 4217 code"}
 
   """
   def new(date_time, value) do
@@ -49,7 +49,7 @@ defmodule AccountTransaction do
         iex> AccountTransaction.new!(date_time, value)
         %AccountTransaction{date_time: ~N[2018-03-23 08:40:07.005], value: %Dinheiro{amount: 1234500, currency: :BRL}}
         iex> AccountTransaction.new!(date_time, %Dinheiro{amount: 1234500, currency: :NONE})
-        ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+        ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   """
   def new!(date_time, value) do
@@ -57,19 +57,19 @@ defmodule AccountTransaction do
       do:
         raise(
           ArgumentError,
-          message: ":date_time must be a NaiveDateTime struct."
+          message: ":date_time must be a NaiveDateTime struct"
         )
 
     unless Dinheiro.is_dinheiro?(value),
       do:
         raise(
           ArgumentError,
-          message: ":value must be a Dinheiro struct."
+          message: ":value must be a Dinheiro struct"
         )
 
     Moeda.get_atom!(value.currency)
 
-    %AccountTransaction{date_time: date_time, value: value}
+    %__MODULE__{date_time: date_time, value: value}
   end
 
   defp is_naive_date_time?(%NaiveDateTime{}), do: true

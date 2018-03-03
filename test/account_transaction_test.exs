@@ -10,17 +10,17 @@ defmodule AccountTransactionTest do
              {:ok, %AccountTransaction{date_time: date_time, value: value}}
 
     assert AccountTransaction.new("2018-03-23 08:40:07.005", value) ==
-             {:error, ":date_time must be a NaiveDateTime struct."}
+             {:error, ":date_time must be a NaiveDateTime struct"}
 
     assert AccountTransaction.new(date_time, %{
              amount: 600,
              currency: :BRL
-           }) == {:error, ":value must be a Dinheiro struct."}
+           }) == {:error, ":value must be a Dinheiro struct"}
 
     assert AccountTransaction.new(date_time, %Dinheiro{
              amount: 600,
              currency: :NONE
-           }) == {:error, "'NONE' does not represent an ISO 4217 code."}
+           }) == {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "new!/2" do
