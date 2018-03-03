@@ -7,8 +7,8 @@ defmodule AccountTransaction do
   defstruct [:date_time, :value]
 
   @typedoc """
-      Type that represents an `AccountTransaction` struct with:
-      :date_time as NaiveDateTime that represents the of the transaction.
+      Type that represents an AccountTransaction struct with:
+      :date_time as NaiveDateTime that represents the date and time of the transaction.
       :value as Dinheiro that represents the value of the transaction.
   """
   @type t :: %__MODULE__{
