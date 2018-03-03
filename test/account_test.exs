@@ -41,17 +41,19 @@ defmodule AccountTest do
              %Account{user: user, balance: value, transactions: transactions}
 
     assert_raise ArgumentError, fn ->
-      Account.new(5, value, date_time)
+      Account.new!(5, value, date_time)
     end
 
     assert_raise ArgumentError, fn ->
-      Account.new(user, value, "2018-03-23 08:40:07.005")
+      Account.new!(user, value, "2018-03-23 08:40:07.005")
     end
 
-    assert_raise ArgumentError, fn -> Account.new(user, 5, date_time) end
+    assert_raise ArgumentError, fn ->
+      Account.new!(user, 5, date_time)
+    end
 
     assert_raise ArgumentError, fn ->
-      Account.new(
+      Account.new!(
         user,
         %Dinheiro{
           amount: 600,
