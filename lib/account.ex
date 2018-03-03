@@ -17,6 +17,10 @@ defmodule Account do
           transactions: list()
         }
 
+  defmodule AccountError do
+    defexception [:message]
+  end
+
   @spec new(String.t(), Dinheiro.t(), NaiveDateTime.t()) ::
           {:ok, t()} | {:error, String.t()}
   @doc """
@@ -73,6 +77,59 @@ defmodule Account do
 
     transaction = AccountTransaction.new!(date_time, balance)
 
-    %Account{user: user, balance: balance, transactions: [transaction]}
+    %__MODULE__{user: user, balance: balance, transactions: [transaction]}
+  end
+
+  @spec execute(t(), AccountTransaction.t()) ::
+          {:ok, t()} | {:error, String.t()}
+  @doc """
+  Execute a transaction into a new `Account` struct.
+
+    ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
+        iex> {:ok, money} = Dinheiro.new(0, :BRL)
+        iex> {:ok, my_account} = Account.new(user_name, money, date_time)
+        iex> {:ok, one_value} = Dinheiro.new(1, :BRL)
+        iex> plus_one = AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)
+        iex> {:ok, my_new_balance} = Account.execute(my_account, plus_one)
+        iex> my_new_balance.balance
+        %Dinheiro{amount: 100, currency: :BRL}
+        iex> {:ok, different_currency} = Dinheiro.new(1, :USD)
+        iex> different_currency_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), different_currency)
+        iex> Account.execute(my_new_balance, different_currency_transaction)
+        {:error, "currency :USD must be the same as :BRL"}
+        iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new(-1.01, :BRL))
+        iex> Account.execute(my_new_balance, negative_transaction)
+        {:error, "not enough balance available on the account"}
+        iex> Account.execute({}, negative_transaction)
+        {:error, ":account must be Account struct"}
+        iex> Account.execute(my_new_balance, {})
+        {:error, ":transaction must be AccountTransaction struct"}
+
+  """
+  def execute(account, transaction) do
+  end
+
+  @spec execute!(t(), AccountTransaction.t()) :: t()
+  @doc """
+  Execute a transaction into a new `Account` struct.
+
+    ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
+        iex> {:ok, money} = Dinheiro.new(0, :BRL)
+        iex> {:ok, my_account} = Account.new(user_name, money, date_time)
+        iex> {:ok, one_value} = Dinheiro.new(1, :BRL)
+        iex> plus_one = AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)
+        iex> {:ok, my_new_balance} = Account.execute(my_account, plus_one)
+        iex> my_new_balance.balance
+        %Dinheiro{amount: 100, currency: :BRL}
+        iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new(-1.01, :BRL))
+        iex> Account.execute(my_new_balance, negative_transaction)
+        ** (AccountError) not enough balance available on the account
+
+  """
+  def execute!(account, transaction) do
   end
 end
