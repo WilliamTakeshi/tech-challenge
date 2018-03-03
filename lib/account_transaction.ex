@@ -29,4 +29,18 @@ defmodule AccountTransaction do
   """
   def new(date_time, value) do
   end
+
+  @spec new!(NaiveDateTime.t(), Dinheiro.t()) :: t()
+  @doc """
+  Create a new `AccountTransaction` struct.
+
+  ## Example:
+        iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[08:40:07.005])
+        iex> {:ok, value} = Dinheiro.new(12345, :BRL)
+        iex> AccountTransaction.new!(date_time, value)
+        %AccountTransaction{date_time: ~N[2018-03-23 08:40:07.005], value: %Dinheiro{amount: 1234500, currency: :BRL}}
+
+  """
+  def new!(date_time, value) do
+  end
 end
