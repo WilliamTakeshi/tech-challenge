@@ -9,6 +9,14 @@ defmodule AccountTransactionTest do
     assert AccountTransaction.new(date_time, value) ==
              {:ok, %AccountTransaction{date_time: date_time, value: value}}
 
+    assert AccountTransaction.new("2018-03-23 08:40:07.005", value) ==
+             {:error, ":date_time must be a NaiveDateTime struct."}
+
+    assert AccountTransaction.new(date_time, %{
+             amount: 600,
+             currency: :BRL
+           }) == {:error, ":value must be a Dinheiro struct."}
+
     assert AccountTransaction.new(date_time, %Dinheiro{
              amount: 600,
              currency: :NONE
@@ -21,6 +29,17 @@ defmodule AccountTransactionTest do
 
     assert AccountTransaction.new!(date_time, value) ==
              %AccountTransaction{date_time: date_time, value: value}
+
+    assert_raise ArgumentError, fn ->
+      AccountTransaction.new!("2018-03-23 08:40:07.005", value)
+    end
+
+    assert_raise ArgumentError, fn ->
+      AccountTransaction.new!(date_time, %{
+        amount: 600,
+        currency: :BRL
+      })
+    end
 
     assert_raise ArgumentError, fn ->
       AccountTransaction.new!(date_time, %Dinheiro{amount: 600, currency: :NONE})
