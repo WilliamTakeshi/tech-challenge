@@ -15,7 +15,8 @@ defmodule FinancialSystem.Mixfile do
       package: package(),
       deps: deps(),
       docs: docs(),
-      test_coverage: [tool: ExCoveralls]
+      test_coverage: [tool: ExCoveralls],
+      aliases: aliases()
     ]
   end
 
@@ -58,5 +59,26 @@ defmodule FinancialSystem.Mixfile do
       main: "FinancialSystem",
       extras: ["README.md"]
     ]
+  end
+
+  defp aliases do
+    [
+      build: [
+        "docs",
+        &set_env_to_test/1,
+        "format",
+        "credo --strict",
+        "coveralls",
+        "test"
+      ],
+      build_travis: [
+        "build",
+        "coveralls.travis"
+      ]
+    ]
+  end
+
+  defp set_env_to_test(_) do
+    Mix.env(:test)
   end
 end
