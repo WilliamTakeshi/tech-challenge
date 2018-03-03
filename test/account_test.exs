@@ -157,4 +157,18 @@ defmodule AccountTest do
       Account.execute!(result_two, {})
     end
   end
+
+  test "is_account?/1", context do
+    {date_time, user, value, empty_account} = context[:default_values]
+
+    assert Account.is_account?(empty_account) == true
+
+    assert Account.is_account?(%{
+             user: user,
+             balance: value,
+             transactions: [AccountTransaction.new(date_time, value)]
+           }) == false
+
+    assert Account.is_account?(200) == false
+  end
 end

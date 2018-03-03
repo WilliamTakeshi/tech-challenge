@@ -132,4 +132,42 @@ defmodule Account do
   """
   def execute!(account, transaction) do
   end
+
+  @spec is_account?(t()) :: boolean()
+  @doc """
+  Return true if value is a `Account` struct.
+
+  ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
+        iex> {:ok, money} = Dinheiro.new(0, :BRL)
+        iex> {:ok, my_account} = Account.new(user_name, money, date_time)
+        iex> Account.is_account?(my_account)
+        true
+        iex> Account.is_account?({})
+        false
+
+  """
+  def is_account?(%__MODULE__{user: u, balance: b, transactions: t})
+      when is_binary(u) and is_list(t) do
+    Dinheiro.is_dinheiro?(b) and is_list_of_account_transaction?(t)
+  end
+
+  def is_account?(_), do: false
+
+  defp one_if_account_transaction(value) do
+    case AccountTransaction.is_account_transaction?(value) do
+      true -> 1
+      false -> 0
+    end
+  end
+
+  defp count_account_transaction([]), do: 0
+
+  defp count_account_transaction([head | tail]),
+    do: one_if_account_transaction(head) + count_account_transaction(tail)
+
+  defp is_list_of_account_transaction?(list) do
+    Enum.count(list) == count_account_transaction(list)
+  end
 end
