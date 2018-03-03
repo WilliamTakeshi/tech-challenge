@@ -72,6 +72,27 @@ defmodule AccountTransaction do
     %__MODULE__{date_time: date_time, value: value}
   end
 
+  @spec is_account_transaction?(t()) :: boolean()
+  @doc """
+  Return true if value is a `AccountTransaction` struct.
+
+  ## Example:
+        iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[08:40:07.005])
+        iex> {:ok, value} = Dinheiro.new(12345, :BRL)
+        iex> {:ok, transaction} = AccountTransaction.new(date_time, value)
+        iex> AccountTransaction.is_account_transaction?(transaction)
+        true
+        iex> other_value = %{date_time: ~N[2018-03-23 08:40:07.005], value: %Dinheiro{amount: 1234500, currency: :BRL}}
+        iex> AccountTransaction.is_account_transaction?(other_value)
+        false
+
+  """
+  def is_account_transaction?(%__MODULE__{date_time: d, value: v}) do
+    is_naive_date_time?(d) and Dinheiro.is_dinheiro?(v)
+  end
+
+  def is_account_transaction?(_), do: false
+
   defp is_naive_date_time?(%NaiveDateTime{}), do: true
   defp is_naive_date_time?(_), do: false
 end

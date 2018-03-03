@@ -45,4 +45,19 @@ defmodule AccountTransactionTest do
       AccountTransaction.new!(date_time, %Dinheiro{amount: 600, currency: :NONE})
     end
   end
+
+  test "is_account_transaction?/1" do
+    date_time = NaiveDateTime.utc_now()
+    value = Dinheiro.new!(12345, :BRL)
+
+    transaction = %AccountTransaction{date_time: date_time, value: value}
+    assert AccountTransaction.is_account_transaction?(transaction) == true
+
+    assert AccountTransaction.is_account_transaction?(%{
+             date_time: date_time,
+             value: value
+           }) == false
+
+    assert AccountTransaction.is_account_transaction?(200) == false
+  end
 end
