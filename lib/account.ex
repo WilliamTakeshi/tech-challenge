@@ -17,10 +17,6 @@ defmodule Account do
           transactions: list()
         }
 
-  defmodule AccountError do
-    defexception [:message]
-  end
-
   @spec new(String.t(), Dinheiro.t(), NaiveDateTime.t()) ::
           {:ok, t()} | {:error, String.t()}
   @doc """
@@ -77,7 +73,11 @@ defmodule Account do
 
     transaction = AccountTransaction.new!(date_time, balance)
 
-    %__MODULE__{user: user, balance: balance, transactions: [transaction]}
+    do_new(user, balance, [transaction])
+  end
+
+  defp do_new(user, balance, transactions) do
+    %__MODULE__{user: user, balance: balance, transactions: transactions}
   end
 
   @spec execute(t(), AccountTransaction.t()) ::
@@ -99,7 +99,7 @@ defmodule Account do
         iex> different_currency_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), different_currency)
         iex> Account.execute(my_new_balance, different_currency_transaction)
         {:error, "currency :USD must be the same as :BRL"}
-        iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new(-1.01, :BRL))
+        iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new!(-1.01, :BRL))
         iex> Account.execute(my_new_balance, negative_transaction)
         {:error, "not enough balance available on the account"}
         iex> Account.execute({}, negative_transaction)
@@ -109,6 +109,9 @@ defmodule Account do
 
   """
   def execute(account, transaction) do
+    {:ok, execute!(account, transaction)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec execute!(t(), AccountTransaction.t()) :: t()
@@ -122,16 +125,59 @@ defmodule Account do
         iex> {:ok, my_account} = Account.new(user_name, money, date_time)
         iex> {:ok, one_value} = Dinheiro.new(1, :BRL)
         iex> plus_one = AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)
-        iex> {:ok, my_new_balance} = Account.execute(my_account, plus_one)
+        iex> my_new_balance = Account.execute!(my_account, plus_one)
         iex> my_new_balance.balance
         %Dinheiro{amount: 100, currency: :BRL}
-        iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new(-1.01, :BRL))
-        iex> Account.execute(my_new_balance, negative_transaction)
+        iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new!(-1.01, :BRL))
+        iex> Account.execute!(my_new_balance, negative_transaction)
         ** (AccountError) not enough balance available on the account
 
   """
   def execute!(account, transaction) do
+    unless is_account?(account),
+      do:
+        raise(
+          ArgumentError,
+          message: ":account must be Account struct"
+        )
+
+    unless AccountTransaction.is_account_transaction?(transaction),
+      do:
+        raise(
+          ArgumentError,
+          message: ":transaction must be AccountTransaction struct"
+        )
+
+    do_execute(account, transaction)
   end
+
+  defp do_execute(account, transaction) do
+    calc_balance = sum_values(account.transactions)
+
+    unless Dinheiro.equals?(account.balance, calc_balance),
+      do:
+        raise(
+          AccountError,
+          message: "balance must to be equals of the sum of transactions values"
+        )
+
+    new_transactions = [transaction | account.transactions]
+    new_balance = Dinheiro.sum!(calc_balance, transaction.value)
+
+    unless new_balance.amount >= 0,
+      do:
+        raise(
+          AccountError,
+          message: "not enough balance available on the account"
+        )
+
+    do_new(account.user, new_balance, new_transactions)
+  end
+
+  defp sum_values([]), do: 0
+
+  defp sum_values([head | tail]),
+    do: Dinheiro.sum!(head.value, sum_values(tail))
 
   @spec is_account?(t()) :: boolean()
   @doc """
