@@ -98,7 +98,7 @@ defmodule Account do
         iex> {:ok, different_currency} = Dinheiro.new(1, :USD)
         iex> different_currency_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), different_currency)
         iex> Account.execute(my_new_balance, different_currency_transaction)
-        {:error, "currency :USD must be the same as :BRL"}
+        {:error, "currency :USD different of :BRL"}
         iex> negative_transaction = AccountTransaction.new!(NaiveDateTime.utc_now(), Dinheiro.new!(-1.01, :BRL))
         iex> Account.execute(my_new_balance, negative_transaction)
         {:error, "not enough balance available on the account"}
@@ -152,7 +152,10 @@ defmodule Account do
   end
 
   defp do_execute(account, transaction) do
-    calc_balance = sum_values(account.transactions)
+    calc_balance =
+      account.transactions
+      |> Enum.map(fn x -> x.value end)
+      |> Dinheiro.sum!()
 
     unless Dinheiro.equals?(account.balance, calc_balance),
       do:
@@ -173,11 +176,6 @@ defmodule Account do
 
     do_new(account.user, new_balance, new_transactions)
   end
-
-  defp sum_values([]), do: 0
-
-  defp sum_values([head | tail]),
-    do: Dinheiro.sum!(head.value, sum_values(tail))
 
   @spec is_account?(t()) :: boolean()
   @doc """

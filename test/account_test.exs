@@ -71,7 +71,7 @@ defmodule AccountTest do
   end
 
   test "execute/2", context do
-    {date_time, user, value, empty_account} = context[:default_values]
+    {_date_time, _user, _value, empty_account} = context[:default_values]
 
     one_value = Dinheiro.new!(0.01, :BRL)
     two_value = Dinheiro.new!(0.02, :BRL)
@@ -103,7 +103,7 @@ defmodule AccountTest do
       AccountTransaction.new!(NaiveDateTime.utc_now(), different_currency_value)
 
     assert Account.execute(result_two, different_currency_transaction) ==
-             {:error, "currency :USD must be the same as :BRL"}
+             {:error, "currency :USD different of :BRL"}
 
     assert Account.execute({}, plus_one_transaction) ==
              {:error, ":account must be Account struct"}
@@ -113,7 +113,7 @@ defmodule AccountTest do
   end
 
   test "execute!/2", context do
-    {date_time, user, value, empty_account} = context[:default_values]
+    {_date_time, _user, _value, empty_account} = context[:default_values]
 
     one_value = Dinheiro.new!(0.01, :BRL)
     two_value = Dinheiro.new!(0.02, :BRL)
