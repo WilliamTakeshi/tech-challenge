@@ -148,7 +148,11 @@ defmodule Account do
           message: ":transaction must be AccountTransaction struct"
         )
 
-    do_execute(account, transaction)
+    if transaction.value.amount == 0 do
+      account
+    else
+      do_execute(account, transaction)
+    end
   end
 
   defp do_execute(account, transaction) do
