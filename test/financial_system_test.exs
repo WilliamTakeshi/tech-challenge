@@ -72,14 +72,18 @@ defmodule FinancialSystemTest do
 
     accounts =
       Enum.map(1..10_000, fn i ->
-        Account.new!(
-          "User #{i}",
-          Dinheiro.new!(0, :BRL),
-          NaiveDateTime.utc_now()
-        )
+        %{
+          account:
+            Account.new!(
+              "User #{i}",
+              Dinheiro.new!(0, :BRL),
+              NaiveDateTime.utc_now()
+            ),
+          ratio: 1
+        }
       end)
 
-    money = Dinheiro.new!(1, :BRL)
+    money = Dinheiro.new!(10_000, :BRL)
 
     {:ok, debited_user_account, credited_accounts} =
       FinancialSystem.transfer(
