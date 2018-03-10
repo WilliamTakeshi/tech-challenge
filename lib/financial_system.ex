@@ -27,5 +27,7 @@ defmodule FinancialSystem do
   Exchange one currency value to another.
   """
   def exchange!(from, to, exchange_rate) do
+    value = Dinheiro.to_float!(from)
+    Dinheiro.new!(value / exchange_rate, to)
   end
 end
