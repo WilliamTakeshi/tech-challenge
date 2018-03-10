@@ -9,12 +9,12 @@ defmodule Account do
       Type that represents an `Account` struct with:
       :user as String that represents the name of the owner of the account.
       :balance as Dinheiro that represents balance of the account.
-      :transactions as array that contains all account movemants.
+      :transactions as array that contains all account transactions.
   """
   @type t :: %__MODULE__{
           user: String.t(),
           balance: Dinheiro.t(),
-          transactions: list()
+          transactions: [AccountTransaction.t()]
         }
 
   @spec new(String.t(), Dinheiro.t(), NaiveDateTime.t()) ::
