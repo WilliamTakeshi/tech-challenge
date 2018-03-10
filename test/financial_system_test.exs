@@ -146,9 +146,9 @@ defmodule FinancialSystemTest do
   end
 
   test "exchange/3" do
-    bitcoin = Dinheiro.new!(1, :USD)
+    dollar = Dinheiro.new!(1, :USD)
 
-    assert FinancialSystem.exchange(bitcoin, :NONE, 1) ==
+    assert FinancialSystem.exchange(dollar, :NONE, 1) ==
              {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
