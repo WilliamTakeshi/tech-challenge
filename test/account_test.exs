@@ -110,13 +110,32 @@ defmodule AccountTest do
 
     assert Account.execute(result_two, {}) ==
              {:error, ":transaction must be AccountTransaction struct"}
+
+    invalid_account = %Account{
+      user: "",
+      balance: two_value,
+      transactions: [plus_one_transaction]
+    }
+
+    assert Account.execute(invalid_account, plus_one_transaction) ==
+             {:error,
+              "balance must to be equals of the sum of transactions values"}
   end
 
   test "execute!/2", context do
     {_date_time, _user, _value, empty_account} = context[:default_values]
 
+    zero_value = Dinheiro.new!(0.0, :BRL)
     one_value = Dinheiro.new!(0.01, :BRL)
     two_value = Dinheiro.new!(0.02, :BRL)
+
+    plus_zero_transaction =
+      AccountTransaction.new!(NaiveDateTime.utc_now(), zero_value)
+
+    result_zero = Account.execute!(empty_account, plus_zero_transaction)
+
+    assert Dinheiro.equals?(result_zero.balance, zero_value)
+    assert Enum.count(result_zero.transactions) == 1
 
     plus_one_transaction =
       AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)

@@ -144,4 +144,47 @@ defmodule FinancialSystemTest do
     assert Moeda.find(:NONE) ==
              {:error, "'NONE' does not represent an ISO 4217 code"}
   end
+
+  test "exchange/3" do
+    bitcoin = Dinheiro.new!(1, :USD)
+
+    assert FinancialSystem.exchange(bitcoin, :NONE, 1) ==
+             {:error, "'NONE' does not represent an ISO 4217 code"}
+  end
+
+  test "transfer!/3", context do
+    user_account = context[:user_account]
+    another_account = context[:another_account]
+
+    one_value = Dinheiro.new!(1, :BRL)
+    two_value = Dinheiro.new!(2, :BRL)
+
+    one_transaction =
+      AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)
+
+    invalid_account = %Account{
+      user: "",
+      balance: two_value,
+      transactions: [one_transaction]
+    }
+
+    accounts = [
+      %{
+        account: another_account,
+        ratio: 1
+      },
+      %{
+        account: invalid_account,
+        ratio: 1
+      }
+    ]
+
+    assert_raise AccountError, fn ->
+      FinancialSystem.transfer!(
+        user_account,
+        accounts,
+        Dinheiro.new!(1, :BRL)
+      )
+    end
+  end
 end
