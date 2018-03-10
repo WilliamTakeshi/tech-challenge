@@ -9,6 +9,18 @@ defmodule FinancialSystem do
   Transfers a value from one account to one or more accounts.
   """
   def transfer(from, to, value) do
+    {f, t} = transfer!(from, to, value)
+    {:ok, f, t}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec transfer!(Account.t(), Account.t() | list(), Dinheiro.t()) ::
+          {Account.t(), Account.t() | list()}
+  @doc """
+  Transfers a value from one account to one or more accounts.
+  """
+  def transfer!(from, to, value) do
   end
 
   @spec exchange(Dinheiro.t(), atom(), float()) ::
