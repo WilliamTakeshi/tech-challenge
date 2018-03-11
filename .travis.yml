@@ -12,4 +12,3 @@ script:
   - mix build_travis
 after_success:
   - ./travis_merge_script.sh
-  - ./publish.sh
