@@ -7,6 +7,24 @@ defmodule FinancialSystem do
           {:ok, Account.t(), Account.t() | list()} | {:error, String.t()}
   @doc """
   Transfers a value from one account to one or more accounts.
+
+  ## Example:
+
+      iex> now = NaiveDateTime.utc_now()
+      iex> account_a = Account.new!("User A", Dinheiro.new!(50, :BRL), now)
+      iex> account_a.balance
+      %Dinheiro{amount: 5000, currency: :BRL}
+      iex> account_b = Account.new!("User B", Dinheiro.new!(50, :BRL), now)
+      iex> account_b.balance
+      %Dinheiro{amount: 5000, currency: :BRL}
+      iex> {:ok, transf_a, transf_b} = FinancialSystem.transfer(account_a, account_b, Dinheiro.new!(25, :BRL))
+      iex> transf_a.balance
+      %Dinheiro{amount: 2500, currency: :BRL}
+      iex> transf_b.balance
+      %Dinheiro{amount: 7500, currency: :BRL}
+      iex> invalid_money = %Dinheiro{amount: 1, currency: :NONE}
+      iex> FinancialSystem.transfer(account_a, account_b, invalid_money)
+      {:error, "'NONE' does not represent an ISO 4217 code"}
   """
   def transfer(from, to, value) do
     {f, t} = transfer!(from, to, value)
@@ -19,6 +37,24 @@ defmodule FinancialSystem do
           {Account.t(), Account.t() | list()}
   @doc """
   Transfers a value from one account to one or more accounts.
+
+  ## Example:
+
+      iex> now = NaiveDateTime.utc_now()
+      iex> account_a = Account.new!("User A", Dinheiro.new!(50, :BRL), now)
+      iex> account_a.balance
+      %Dinheiro{amount: 5000, currency: :BRL}
+      iex> account_b = Account.new!("User B", Dinheiro.new!(50, :BRL), now)
+      iex> account_b.balance
+      %Dinheiro{amount: 5000, currency: :BRL}
+      iex> {transf_a, transf_b} = FinancialSystem.transfer!(account_a, account_b, Dinheiro.new!(25, :BRL))
+      iex> transf_a.balance
+      %Dinheiro{amount: 2500, currency: :BRL}
+      iex> transf_b.balance
+      %Dinheiro{amount: 7500, currency: :BRL}
+      iex> invalid_money = %Dinheiro{amount: 1, currency: :NONE}
+      iex> FinancialSystem.transfer!(account_a, account_b, invalid_money)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
   """
   def transfer!(from, to, value) do
     do_transfer!(from, to, value)
@@ -30,20 +66,38 @@ defmodule FinancialSystem do
   end
 
   defp do_transfer!(from, to, value) when is_list(to) do
-    debit =
-      NaiveDateTime.utc_now()
-      |> AccountTransaction.new!(Dinheiro.multiply!(value, -1))
+    unless Dinheiro.is_dinheiro?(value),
+      do:
+        raise(
+          ArgumentError,
+          message: ":value must be a Dinheiro struct"
+        )
 
-    debit_account = Account.execute!(from, debit)
+    unless value.amount > 0,
+      do:
+        raise(
+          ArgumentError,
+          message: ":value must be greater than zero"
+        )
 
     ratios =
       to
       |> Enum.map(fn t -> t.ratio end)
 
+    credits = Dinheiro.divide!(value, ratios)
+
+    debits =
+      credits
+      |> Enum.map(fn debit -> get_debit_transaction_async(debit) end)
+      |> Enum.map(&Task.await/1)
+      |> get_async_returns!()
+
+    debit_account = Account.execute!(from, debits)
+
     credit_accounts =
       to
       |> Enum.map(fn t -> t.account end)
-      |> get_credits(Dinheiro.divide!(value, ratios))
+      |> get_credits(credits)
       |> Enum.map(fn {account, value} -> execute_async(account, value) end)
       |> Enum.map(&Task.await/1)
       |> get_async_returns!()
@@ -80,10 +134,34 @@ defmodule FinancialSystem do
     end
   end
 
+  defp get_debit_transaction_async(value) do
+    Task.async(fn -> get_debit_transaction(value) end)
+  end
+
+  defp get_debit_transaction(value) do
+    {:ok,
+     AccountTransaction.new!(
+       NaiveDateTime.utc_now(),
+       Dinheiro.multiply!(value, -1)
+     )}
+  rescue
+    e -> {:error, e}
+  end
+
   @spec exchange(Dinheiro.t(), atom(), float()) ::
           {:ok, Dinheiro.t()} | {:error, String.t()}
   @doc """
   Exchange one currency value to another.
+
+  ## Example:
+
+      iex> exchange_rate = 0.306956
+      iex> {:ok, dollar} = Dinheiro.new(1, :USD)
+      iex> {:ok, real} = FinancialSystem.exchange(dollar, :BRL, exchange_rate)
+      iex> Dinheiro.to_string!(dollar) <> " = " <> Dinheiro.to_string!(real)
+      "1,00 USD = 3,26 BRL"
+      iex> FinancialSystem.exchange(dollar, :NONE, exchange_rate)
+      {:error, "'NONE' does not represent an ISO 4217 code"}
   """
   def exchange(from, to, exchange_rate) do
     {:ok, exchange!(from, to, exchange_rate)}
@@ -94,6 +172,16 @@ defmodule FinancialSystem do
   @spec exchange!(Dinheiro.t(), atom(), float()) :: Dinheiro.t()
   @doc """
   Exchange one currency value to another.
+
+  ## Example:
+
+      iex> exchange_rate = 0.249414
+      iex> euro = Dinheiro.new!(1, :EUR)
+      iex> real = FinancialSystem.exchange!(euro, :BRL, exchange_rate)
+      iex> Dinheiro.to_string!(euro) <> " = " <> Dinheiro.to_string!(real)
+      "1,00 EUR = 4,01 BRL"
+      iex> FinancialSystem.exchange!(euro, :NONE, exchange_rate)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
   """
   def exchange!(from, to, exchange_rate) do
     value = Dinheiro.to_float!(from)
