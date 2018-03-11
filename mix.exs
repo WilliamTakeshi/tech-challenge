@@ -64,13 +64,11 @@ defmodule FinancialSystem.Mixfile do
   defp aliases do
     [
       build: [
-        "clean",
         "docs",
         &set_env_to_test/1,
-        "format",
-        "credo --strict",
         "coveralls",
-        "test"
+        "format",
+        "credo --strict"
       ],
       build_travis: [
         "build",
