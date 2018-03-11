@@ -35,12 +35,11 @@ Sobre as operações financeiras que serão realizadas no sistema, é correto af
 `iex -S mix` Para rodar em modo interativo.
 
 `mix build` Task para execução conjunta dos comandos:
- - `mix clean`
  - `mix docs`
+ - `mix test`
+ - `mix coveralls`
  - `mix format`
  - `mix credo --strict`
- - `mix coveralls`
- - `mix test`
 
 ## A Solução
 
