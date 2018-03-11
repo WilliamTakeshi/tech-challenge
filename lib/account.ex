@@ -6,7 +6,7 @@ defmodule Account do
   defstruct [:user, :balance, :transactions]
 
   @typedoc """
-      Type that represents an `Account` struct with:
+      Type that represents an Account struct with:
       :user as String that represents the name of the owner of the account.
       :balance as Dinheiro that represents balance of the account.
       :transactions as array that contains all account transactions.
@@ -17,12 +17,30 @@ defmodule Account do
           transactions: [AccountTransaction.t()]
         }
 
+  @spec new(String.t(), Dinheiro.t()) :: {:ok, t()} | {:error, String.t()}
+  @doc """
+  Create a new `Account` struct.
+
+  ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> {:ok, money} = Dinheiro.new(12345, :BRL)
+        iex> {:ok, account} = Account.new(user_name, money)
+        iex> Account.is_account?(account)
+        true
+  """
+  def new(user, balance) do
+    {:ok, new!(user, balance)}
+  rescue
+    e -> {:error, e.message}
+  end
+
   @spec new(String.t(), Dinheiro.t(), NaiveDateTime.t()) ::
           {:ok, t()} | {:error, String.t()}
   @doc """
   Create a new `Account` struct.
 
   ## Example:
+
         iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
         iex> {:ok, money} = Dinheiro.new(12345, :BRL)
         iex> Account.new("Ramon de Lemos", money, date_time)
@@ -35,16 +53,31 @@ defmodule Account do
     e -> {:error, e.message}
   end
 
-  @spec new!(String.t(), Dinheiro.t(), NaiveDateTime.t()) :: t()
+  @spec new!(String.t(), Dinheiro.t()) :: t()
   @doc """
   Create a new `Account` struct.
 
   ## Example:
         iex> user_name = "Ramon de Lemos"
+        iex> {:ok, money} = Dinheiro.new(12345, :BRL)
+        iex> account = Account.new!(user_name, money)
+        iex> Account.is_account?(account)
+        true
+  """
+  def new!(user, balance) do
+    new!(user, balance, NaiveDateTime.utc_now())
+  end
+
+  @spec new!(String.t(), Dinheiro.t(), NaiveDateTime.t()) :: t()
+  @doc """
+  Create a new `Account` struct.
+
+  ## Example:
+
+        iex> user_name = "Ramon de Lemos"
         iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
         iex> {:ok, money} = Dinheiro.new(12345, :BRL)
-        iex> Account.new(user_name, money, date_time) == {:ok,
-        ...>  %Account{
+        iex> Account.new!(user_name, money, date_time) == %Account{
         ...>    balance: money,
         ...>    transactions: [
         ...>      %AccountTransaction{
@@ -53,7 +86,7 @@ defmodule Account do
         ...>      }
         ...>    ],
         ...>    user: user_name
-        ...>  }}
+        ...>  }
         true
   """
   def new!(user, balance, date_time) do
@@ -80,12 +113,13 @@ defmodule Account do
     %__MODULE__{user: user, balance: balance, transactions: transactions}
   end
 
-  @spec execute(t(), AccountTransaction.t()) ::
+  @spec execute(t(), AccountTransaction.t() | [AccountTransaction.t()]) ::
           {:ok, t()} | {:error, String.t()}
   @doc """
   Execute a transaction into a new `Account` struct.
 
     ## Example:
+
         iex> user_name = "Ramon de Lemos"
         iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
         iex> {:ok, money} = Dinheiro.new(0, :BRL)
@@ -107,6 +141,19 @@ defmodule Account do
         iex> Account.execute(my_new_balance, {})
         {:error, ":transaction must be AccountTransaction struct"}
 
+  Execute a list of transactions into a new `Account` struct.
+
+    ## Example:
+
+        iex> user_name = "Ramon de Lemos"
+        iex> {:ok, money} = Dinheiro.new(0, :BRL)
+        iex> {:ok, my_account} = Account.new(user_name, money)
+        iex> {:ok, one_value} = Dinheiro.new(1, :BRL)
+        iex> plus_one = AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)
+        iex> {:ok, my_new_balance} = Account.execute(my_account, [plus_one, plus_one])
+        iex> my_new_balance.balance
+        %Dinheiro{amount: 200, currency: :BRL}
+
   """
   def execute(account, transaction) do
     {:ok, execute!(account, transaction)}
@@ -114,11 +161,12 @@ defmodule Account do
     e -> {:error, e.message}
   end
 
-  @spec execute!(t(), AccountTransaction.t()) :: t()
+  @spec execute!(t(), AccountTransaction.t() | [AccountTransaction.t()]) :: t()
   @doc """
   Execute a transaction into a new `Account` struct.
 
     ## Example:
+
         iex> user_name = "Ramon de Lemos"
         iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
         iex> {:ok, money} = Dinheiro.new(0, :BRL)
@@ -132,15 +180,21 @@ defmodule Account do
         iex> Account.execute!(my_new_balance, negative_transaction)
         ** (AccountError) not enough balance available on the account
 
-  """
-  def execute!(account, transaction) do
-    unless is_account?(account),
-      do:
-        raise(
-          ArgumentError,
-          message: ":account must be Account struct"
-        )
+  Execute a list of transactions into a new `Account` struct.
 
+    ## Example:
+
+        iex> user_name = "Ramon de Lemos"
+        iex> {:ok, money} = Dinheiro.new(0, :BRL)
+        iex> {:ok, my_account} = Account.new(user_name, money)
+        iex> {:ok, one_value} = Dinheiro.new(1, :BRL)
+        iex> plus_one = AccountTransaction.new!(NaiveDateTime.utc_now(), one_value)
+        iex> my_new_balance = Account.execute!(my_account, [plus_one, plus_one])
+        iex> my_new_balance.balance
+        %Dinheiro{amount: 200, currency: :BRL}
+
+  """
+  def execute!(account, transaction) when is_list(transaction) == false do
     unless AccountTransaction.is_account_transaction?(transaction),
       do:
         raise(
@@ -148,18 +202,49 @@ defmodule Account do
           message: ":transaction must be AccountTransaction struct"
         )
 
-    if transaction.value.amount == 0 do
+    execute!(account, [transaction])
+  end
+
+  def execute!(account, transactions) do
+    unless is_account?(account),
+      do:
+        raise(
+          ArgumentError,
+          message: ":account must be Account struct"
+        )
+
+    unless is_list_of_account_transaction?(transactions),
+      do:
+        raise(
+          ArgumentError,
+          message: ":transactions must be List of AccountTransaction struct"
+        )
+
+    new_transactions =
+      transactions
+      |> remove_zero_transactions()
+
+    if Enum.empty?(new_transactions) do
       account
     else
-      do_execute(account, transaction)
+      do_execute(account, new_transactions)
     end
   end
 
-  defp do_execute(account, transaction) do
+  defp remove_zero_transactions([]), do: []
+
+  defp remove_zero_transactions([head | tail]) do
+    if head.value.amount == 0 do
+      remove_zero_transactions(tail)
+    else
+      [head | remove_zero_transactions(tail)]
+    end
+  end
+
+  defp do_execute(account, transactions) do
     calc_balance =
       account.transactions
-      |> Enum.map(fn x -> x.value end)
-      |> Dinheiro.sum!()
+      |> get_transactions_sum!()
 
     unless Dinheiro.equals?(account.balance, calc_balance),
       do:
@@ -168,8 +253,11 @@ defmodule Account do
           message: "balance must to be equals of the sum of transactions values"
         )
 
-    new_transactions = [transaction | account.transactions]
-    new_balance = Dinheiro.sum!(calc_balance, transaction.value)
+    new_transactions = List.flatten([account.transactions, transactions])
+
+    new_balance =
+      new_transactions
+      |> get_transactions_sum!()
 
     unless new_balance.amount >= 0,
       do:
@@ -181,11 +269,18 @@ defmodule Account do
     do_new(account.user, new_balance, new_transactions)
   end
 
+  defp get_transactions_sum!(transactions) do
+    transactions
+    |> Enum.map(fn x -> x.value end)
+    |> Dinheiro.sum!()
+  end
+
   @spec is_account?(t()) :: boolean()
   @doc """
   Return true if value is a `Account` struct.
 
   ## Example:
+
         iex> user_name = "Ramon de Lemos"
         iex> {:ok, date_time} = NaiveDateTime.new(~D[2018-03-23], ~T[13:59:07.005])
         iex> {:ok, money} = Dinheiro.new(0, :BRL)
@@ -215,7 +310,9 @@ defmodule Account do
   defp count_account_transaction([head | tail]),
     do: one_if_account_transaction(head) + count_account_transaction(tail)
 
-  defp is_list_of_account_transaction?(list) do
+  defp is_list_of_account_transaction?(list) when is_list(list) do
     Enum.count(list) == count_account_transaction(list)
   end
+
+  defp is_list_of_account_transaction?(_), do: false
 end
