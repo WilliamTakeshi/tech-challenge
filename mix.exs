@@ -63,16 +63,23 @@ defmodule FinancialSystem.Mixfile do
 
   defp aliases do
     [
-      build: [
+      pre_build: [
         "docs",
-        &set_env_to_test/1,
-        "coveralls",
+        &set_env_to_test/1
+      ],
+      post_build: [
         "format",
         "credo --strict"
       ],
+      build: [
+        "pre_build",
+        "coveralls",
+        "post_build"
+      ],
       build_travis: [
-        "build",
-        "coveralls.travis"
+        "pre_build",
+        "coveralls.travis",
+        "post_build"
       ]
     ]
   end
