@@ -175,6 +175,10 @@ defmodule AccountTest do
     assert_raise ArgumentError, fn ->
       Account.execute!(result_two, {})
     end
+
+    assert_raise ArgumentError, fn ->
+      Account.execute!(result_two, [2, 1])
+    end
   end
 
   test "is_account?/1", context do

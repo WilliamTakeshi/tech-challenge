@@ -27,6 +27,8 @@ defmodule Account do
         iex> {:ok, account} = Account.new(user_name, money)
         iex> Account.is_account?(account)
         true
+        iex> Account.new(user_name, %Dinheiro{amount: 1, currency: :NONE})
+        {:error, "'NONE' does not represent an ISO 4217 code"}
   """
   def new(user, balance) do
     {:ok, new!(user, balance)}
@@ -63,6 +65,8 @@ defmodule Account do
         iex> account = Account.new!(user_name, money)
         iex> Account.is_account?(account)
         true
+        iex> Account.new!(user_name, %Dinheiro{amount: 1, currency: :NONE})
+        ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
   """
   def new!(user, balance) do
     new!(user, balance, NaiveDateTime.utc_now())

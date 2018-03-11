@@ -186,5 +186,29 @@ defmodule FinancialSystemTest do
         Dinheiro.new!(1, :BRL)
       )
     end
+
+    assert_raise ArgumentError, fn ->
+      FinancialSystem.transfer!(
+        user_account,
+        accounts,
+        Dinheiro.new!(1, :NONE)
+      )
+    end
+
+    assert_raise ArgumentError, fn ->
+      FinancialSystem.transfer!(
+        user_account,
+        accounts,
+        Dinheiro.new!(0, :BRL)
+      )
+    end
+
+    assert_raise ArgumentError, fn ->
+      FinancialSystem.transfer!(
+        user_account,
+        accounts,
+        1
+      )
+    end
   end
 end

@@ -144,8 +144,6 @@ defmodule FinancialSystem do
        NaiveDateTime.utc_now(),
        Dinheiro.multiply!(value, -1)
      )}
-  rescue
-    e -> {:error, e}
   end
 
   @spec exchange(Dinheiro.t(), atom(), float()) ::
