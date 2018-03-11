@@ -28,3 +28,17 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+bitcoin = %{
+  XBT: %{
+    name: "Bitcoin",
+    symbol: '฿',
+    alpha_code: "XBT",
+    num_code: 0,
+    exponent: 8
+  }
+}
+
+config :ex_dinheiro, :unofficial_currencies, bitcoin
+config :ex_dinheiro, :display_currency_symbol, false
+config :ex_dinheiro, :display_currency_code, true

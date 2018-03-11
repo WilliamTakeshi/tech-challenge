@@ -1,30 +1,18 @@
 # Tech Challenge
 
- - master: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=master)](https://travis-ci.org/ramondelemos/tech-challenge)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/tech-challenge/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/tech-challenge)
+ - master: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=master)](https://travis-ci.org/ramondelemos/tech-challenge)
+ [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/tech-challenge/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/tech-challenge)
 
- - dev: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=dev)](https://travis-ci.org/ramondelemos/tech-challenge)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/tech-challenge/badge.svg?branch=dev)](https://coveralls.io/github/ramondelemos/tech-challenge)
+ - dev: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=dev)](https://travis-ci.org/ramondelemos/tech-challenge)
+ [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/tech-challenge/badge.svg?branch=dev)](https://coveralls.io/github/ramondelemos/tech-challenge)
 
-Bem vindo(a)! Esse é o Tech Challenge Elixir!
-
-Aqui você terá todas as informações para o sucesso do seu desafio. Ele consiste em aplicar a linguagem funcional Elixir. Não se preocupe! Não cobramos experiência prévia com essa linguagem. Junto com o desafio disponibilizamos um material para estudo.
-
-Precisamos de pessoas com energia, integridade e inteligência, que aprendam rápido e que gostem de conhecer e aplicar novas tecnologias.
-
-O tempo sugerido para conclusão do desafio é de um mês, mas não é uma regra! Não temos prazo para entrega, queremos que você se dedique e demonstre a qualidade de seu código. Estamos mais interessados em observar a qualidade da solução do que o tempo que você vai demorar.
-
-Quando sua solução estiver pronta, envie um e-mail para tech.challenge@stone.com.br com o link do seu repositório no Github. Você receberá um e-mail com a confirmação de recebimento.
-
-Em seguida, enviaremos o feedback e as instruções dos próximos passos!
-
-Caso tenha alguma dúvida, nós estamos disponíveis no twitter @StonePagamentos através da #StoneTechChallenge
-
-Bom desafio!
+Bem vindo(a)! Esse é a minha solução para o Tech Challenge Elixir!
 
 ---
 
 # O Desafio
 
-O Sistema Financeiro precisa representar valores monetários. A ideia básica é ter uma estrutura de dados que permita realizar operações financeiras com dinheiro dentro de uma mesma moeda. _Isso é pelo motivo de pontos flutuantes terem problemas de aritmética_, logo encodificamos valores decimais/fracionais/reais como uma estrutura de dados com campos em inteiros, além de mapeamos operações aritméticas sobre tal estrutura. No fim, a implementação acaba sendo uma Estrutura de Dados Abstrata.
+O Sistema Financeiro precisa representar valores monetários. A ideia básica é ter uma estrutura de dados que permita realizar operações financeiras com dinheiro dentro de uma mesma moeda. _Isso é pelo motivo de pontos flutuantes terem problemas de aritmética_, logo encodificamos valores decimais/fracionais/reais como uma estrutura de dados com campos em inteiros, além de mapearmos operações aritméticas sobre tal estrutura. No fim, a implementação acaba sendo uma Estrutura de Dados Abstrata.
 
 Essas operações financeiras precisam ser seguras e devem interromper a execução do programa em caso de erros críticos.
 
@@ -42,64 +30,96 @@ Sobre as operações financeiras que serão realizadas no sistema, é correto af
 
 ## Comandos básicos do projeto
 
-`iex -S mix` Para rodar em modo interativo
+`mix deps.get` Para baixar as dependências do projeto.
 
-`mix test` Para testar a aplicação
+`iex -S mix` Para rodar em modo interativo.
 
-## Diretrizes da aplicação
+`mix build` Task para execução conjunta dos comandos:
+ - `mix docs`
+ - `mix test`
+ - `mix coveralls`
+ - `mix format`
+ - `mix credo --strict`
 
-- O candidato está livre para adicionar sua própria lógica desde que mantenha a estrutura base que foi proposta.
+## A Solução
 
-#### Testes pré-programados
+Minha solução foi construída em duas etapas, a criação do pacote `:ex_dinheiro` para manipulação de dinheiro e a implementação de funcionalidades que contemplem o que foi proposto na pasta `/test` para o módulo `FinancialSystem`.
 
-- A lógica da aplicação deve contemplar os testes configurados na pasta `/test`
+Foi utilizado o [Travis CI](https://travis-ci.org/ramondelemos) para a orquestração das técnicas de _Continuous Integration_, _Continuous Delivery_ e _Continuous Deployment_.
 
-- Toda lógica que for adicionada no projeto deve ser testada também. 
+Para a cobertura dos testes foi utilizado o [Coveralls.io](https://coveralls.io/github/ramondelemos).
 
-## Critérios de Avaliação
+A análise do código é feita com o [Credo](http://credo-ci.org/) utilizando o parâmetro de execução `--strict` para reforçar o **guia de estilo do credo**.
 
-O desafio será avaliado através de cinco critérios.
+### O Pacote `:ex_dinheiro`
 
-### Entrega
+[![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)
+ [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
 
-* O código possui algum controle de dependências?
-* O resultado final está completo para ser executado?
-* O resultado final atende ao que se propõe fazer?
-* O resultado final atende totalmente aos requisitos propostos?
+Decidi pela construção do pacote `:ex_dinheiro` para remover do projeto principal a lógica de manipulação  de dinheiro, implementar _Continuous Integration_ e _Continuous Deployment_ e contribuir com a comunidade Elixir pelo seu repositório oficial [https://hex.pm/](https://hex.pm/).
 
-### Boas Práticas
+O pacote foi construído seguindo o [Martin Fowler's Money Pattern](https://martinfowler.com/eaaCatalog/money.html) e está em conformidade com a [ISO 4217](https://pt.wikipedia.org/wiki/ISO_4217).
 
-* O código está de acordo com o guia de estilo do Elixir?
-* O código está bem estruturado?
-* O código está fluente na linguagem?
-* O código faz o uso correto de _Design Patterns_?
+Para permitir maior flexibilidade o pacote permite que algumas propriedades sejam configuradas diretamente no `config.exs` da aplicação dependênte:
 
-### Documentação
+```elixir
+use Mix.Config
 
-* O código foi entregue com um arquivo de README claro de como se guiar?
-* O código possui comentários pertinentes?
-* O código está em algum controle de versão?
-* Os commits são pequenos e consistentes?
-* As mensagens de commit são claras?
+unofficial_currencies = %{
+  XBT: %{
+    name: "Bitcoin",
+    symbol: '฿',
+    alpha_code: "XBT",
+    num_code: 0,
+    exponent: 8
+  },
+  RLC: %{
+    name: "Ramon de Lemos's Currency",
+    symbol: 'RL€',
+    alpha_code: "RLC",
+    num_code: 0,
+    exponent: 7
+  }
+}
 
-### Código Limpo
+config :ex_dinheiro, :unofficial_currencies, unofficial_currencies
+config :ex_dinheiro, :thousand_separator, "."
+config :ex_dinheiro, :decimal_separator, ","
+config :ex_dinheiro, :display_currency_symbol, false
+config :ex_dinheiro, :display_currency_code, true
 
-* O código possibilita expansão para novas funcionalidades?
-* O código é _Don't Repeat Yourself_?
-* O código é fácil de compreender?
+```
 
-### Controle de Qualidade
+Mantive o nome do pacote e de seus módulos em Português com o objetivo de deixar uma assinatura de sua nacionalidade.
 
-* O código possui configuração de lint?
-* O código possui testes unitários?
-* O código possui teste de cobertura?
-* O código está em Integração Contínua?
+Para maiores informações a documentação em Inglês pode ser encontrada em [https://hexdocs.pm/ex_dinheiro](https://hexdocs.pm/ex_dinheiro).
 
-## Material de Estudo
+### O módulo `FinancialSystem`
+
+Para atender ao que foi proposto no diretório `/test` foram implementados os métodos `transfer!/3` e `exchange!/3`. Seguindo as conveções da comunidade Elixir também disponibilizei os métodos wrapper `transfer/3` e `exchange/3`.
+
+Foram adicionados os módulos `Account` e `AccountTransaction` para separar do módulo principal a lógica para manipulação de contas e suas transações.
+
+Nesse módulo apliquei as técnicas de _Continuous Integration_ e _Continuous Delivery_ com o objetivo de manter o branch master sempre atualizado e somente com código funcional.
+
+## Material de Referência Utilizado
 * [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
 * [O Guia de Estilo Elixir](https://github.com/gusaiani/elixir_style_guide/blob/master/README_ptBR.md)
 * [Boas Práticas na Stone](https://github.com/stone-payments/stoneco-best-practices/blob/master/README_pt.md)
-
-## Material de Referência Utilizado
+* [Credo's Elixir Style Guide](https://github.com/rrrene/elixir-style-guide)
+* [Specifications and types · Elixir School](https://elixirschool.com/en/lessons/advanced/typespec/#defining-custom-type)
+* [Error Handling . Elixir School](https://elixirschool.com/en/lessons/advanced/error-handling/)
+* [Option parameters with keyword lists · Elixir Recipes](http://elixir-recipes.github.io/functions/option-parameters-with-keyword-lists/)
+* [Erlang -- float_to_binary/1](http://erlang.org/doc/man/erlang.html#float_to_binary-1)
+* [ExUnit.Callbacks – ExUnit v1.6.1](https://hexdocs.pm/ex_unit/ExUnit.Callbacks.html)
+* [Elixir is just cool. An example with pattern matching and structs.](http://learningwithjb.com/posts/elixir-is-just-cool-an-example-with-pattern-matching-and-structs)
+* [Mix – Mix v1.6.2](https://hexdocs.pm/mix/Mix.html)
+* [How to create and publish Hex.pm package (Elixir) – kkempin’s dev blog – Medium](https://medium.com/kkempin/how-to-create-and-publish-hex-pm-package-elixir-90cb33e2592d)
+* [Automatic Hex Package Publishing with Travis-CI](http://erlware.org/automatic-hex-package-publishing-with-travis-ci/)
+* [Continous Documentation of Elixir packages with Hex and Travis CI by René Föhring · trivelop](http://trivelop.de/2014/10/17/continous-docs-in-elixir-with-hex-and-travis/)
 * [Auto-Merging with Travis-CI and Configuring Coveralls to Elixir](https://medium.com/@allanbrados/automerge-with-travis-ci-and-coveralls-to-elixir-248d1c6d2531)
-
+* [Continuous integration vs. continuous delivery vs. continuous deployment](https://www.atlassian.com/continuous-delivery/ci-vs-ci-vs-cd)
+* [Martin Fowler's Money Pattern](https://martinfowler.com/eaaCatalog/money.html)
+* [ISO 4217 Currency codes](https://www.iso.org/iso-4217-currency-codes.html)
+* [Current currency & funds code list – ISO Currency](https://www.currency-iso.org/en/home/tables/table-a1.html)
+* [XE - World Currency Symbols](http://www.xe.com/symbols.php)
