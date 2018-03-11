@@ -10,6 +10,5 @@ git stash
 git checkout master || exit
 git merge --no-ff "$TRAVIS_COMMIT" || exit
 git stash pop
-msg=$(git log --format=%B -n1)
-git commit --amend -am "${msg} - commit from Travis CI - rev: ${rev}"
+git commit --amend -am "Rev: ${rev} - commit from Travis CI"
 git push https://${GITHUB_TOKEN}@github.com/ramondelemos/tech-challenge.git
