@@ -360,6 +360,7 @@ defmodule Account do
   end
 
   defp do_withdraw!(account, money) do
+    prepare_and_execute!(account, money, -1)
   end
 
   @spec deposit(t(), Dinheiro.t() | [Dinheiro.t()]) ::
@@ -412,6 +413,33 @@ defmodule Account do
   end
 
   defp do_deposit!(account, money) do
+    prepare_and_execute!(account, money, 1)
+  end
+
+  defp prepare_and_execute!(account, money, multiplier) do
+    raise_if_is_not_account!(account)
+    raise_if_is_not_valid_money_list!(money)
+
+    transactions =
+      money
+      |> Enum.map(fn m -> get_transaction_async(m, multiplier) end)
+      |> Enum.map(&Task.await/1)
+      |> get_async_returns!()
+
+    execute!(account, transactions)
+  end
+
+  defp get_transaction_async(value, multiplier) do
+    Task.async(fn -> get_transaction(value, multiplier) end)
+  end
+
+  defp get_transaction(value, multiplier) do
+    AccountTransaction.new(
+      NaiveDateTime.utc_now(),
+      Dinheiro.multiply!(value, multiplier)
+    )
+  rescue
+    e -> {:error, e}
   end
 
   defp raise_if_is_not_valid_money_list!([head | tail]) do
@@ -419,6 +447,15 @@ defmodule Account do
 
     if tail != [] do
       raise_if_is_not_valid_money_list!(tail)
+    end
+  end
+
+  defp get_async_returns!([]), do: []
+
+  defp get_async_returns!([head | tail]) do
+    case head do
+      {:ok, value} -> [value | get_async_returns!(tail)]
+      {:error, reason} -> raise reason
     end
   end
 
