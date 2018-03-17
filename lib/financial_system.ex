@@ -86,13 +86,7 @@ defmodule FinancialSystem do
 
     credits = Dinheiro.divide!(value, ratios)
 
-    debits =
-      credits
-      |> Enum.map(fn debit -> get_debit_transaction_async(debit) end)
-      |> Enum.map(&Task.await/1)
-      |> get_async_returns!()
-
-    debit_account = Account.execute!(from, debits)
+    debit_account = Account.withdraw!(from, credits)
 
     credit_accounts =
       to
@@ -117,9 +111,9 @@ defmodule FinancialSystem do
 
   defp do_execute(account, value) do
     {:ok,
-     Account.execute!(
+     Account.deposit!(
        account,
-       AccountTransaction.new!(NaiveDateTime.utc_now(), value)
+       value
      )}
   rescue
     e -> {:error, e}
@@ -132,18 +126,6 @@ defmodule FinancialSystem do
       {:ok, value} -> [value | get_async_returns!(tail)]
       {:error, reason} -> raise reason
     end
-  end
-
-  defp get_debit_transaction_async(value) do
-    Task.async(fn -> get_debit_transaction(value) end)
-  end
-
-  defp get_debit_transaction(value) do
-    {:ok,
-     AccountTransaction.new!(
-       NaiveDateTime.utc_now(),
-       Dinheiro.multiply!(value, -1)
-     )}
   end
 
   @spec exchange(Dinheiro.t(), atom(), float()) ::
