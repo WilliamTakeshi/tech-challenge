@@ -86,40 +86,52 @@ defmodule FinancialSystem do
 
     credits = Dinheiro.divide!(value, ratios)
 
-    debits =
-      credits
-      |> Enum.map(fn debit -> get_debit_transaction_async(debit) end)
-      |> Enum.map(&Task.await/1)
-      |> get_async_returns!()
+    withdraw_task = Task.async(fn -> do_withdraw(from, credits) end)
 
-    debit_account = Account.execute!(from, debits)
-
-    credit_accounts =
+    deposits_tasks =
       to
       |> Enum.map(fn t -> t.account end)
-      |> get_credits(credits)
-      |> Enum.map(fn {account, value} -> execute_async(account, value) end)
+      |> get_accounts_and_values(credits)
+      |> Enum.map(fn {account, value} ->
+        execute_deposit_async(account, value)
+      end)
+
+    tasks = [withdraw_task | deposits_tasks]
+
+    [head | tail] =
+      tasks
       |> Enum.map(&Task.await/1)
       |> get_async_returns!()
 
-    {debit_account, credit_accounts}
+    {head, tail}
   end
 
-  defp get_credits([account_head | account_tail], [value_head | value_tail]) do
-    [{account_head, value_head} | get_credits(account_tail, value_tail)]
+  defp do_withdraw(account, debits) do
+    {:ok, Account.withdraw!(account, debits)}
+  rescue
+    e -> {:error, e}
   end
 
-  defp get_credits([], []), do: []
-
-  defp execute_async(account, value) do
-    Task.async(fn -> do_execute(account, value) end)
+  defp get_accounts_and_values([account_head | account_tail], [
+         value_head | value_tail
+       ]) do
+    [
+      {account_head, value_head}
+      | get_accounts_and_values(account_tail, value_tail)
+    ]
   end
 
-  defp do_execute(account, value) do
+  defp get_accounts_and_values([], []), do: []
+
+  defp execute_deposit_async(account, value) do
+    Task.async(fn -> do_execute_deposit(account, value) end)
+  end
+
+  defp do_execute_deposit(account, value) do
     {:ok,
-     Account.execute!(
+     Account.deposit!(
        account,
-       AccountTransaction.new!(NaiveDateTime.utc_now(), value)
+       value
      )}
   rescue
     e -> {:error, e}
@@ -132,18 +144,6 @@ defmodule FinancialSystem do
       {:ok, value} -> [value | get_async_returns!(tail)]
       {:error, reason} -> raise reason
     end
-  end
-
-  defp get_debit_transaction_async(value) do
-    Task.async(fn -> get_debit_transaction(value) end)
-  end
-
-  defp get_debit_transaction(value) do
-    {:ok,
-     AccountTransaction.new!(
-       NaiveDateTime.utc_now(),
-       Dinheiro.multiply!(value, -1)
-     )}
   end
 
   @spec exchange(Dinheiro.t(), atom(), float()) ::

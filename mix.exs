@@ -72,6 +72,7 @@ defmodule FinancialSystem.Mixfile do
         "credo --strict"
       ],
       build: [
+        "clean",
         "pre_build",
         "coveralls",
         "post_build"

@@ -101,12 +101,7 @@ defmodule Account do
           message: ":user must be a String"
         )
 
-    unless Dinheiro.is_dinheiro?(balance),
-      do:
-        raise(
-          ArgumentError,
-          message: ":balance must be a Dinheiro struct"
-        )
+    raise_if_is_not_dinheiro!(balance, ":balance")
 
     transaction = AccountTransaction.new!(date_time, balance)
 
@@ -210,12 +205,7 @@ defmodule Account do
   end
 
   def execute!(account, transactions) do
-    unless is_account?(account),
-      do:
-        raise(
-          ArgumentError,
-          message: ":account must be Account struct"
-        )
+    raise_if_is_not_account!(account)
 
     unless is_list_of_account_transaction?(transactions),
       do:
@@ -319,4 +309,182 @@ defmodule Account do
   end
 
   defp is_list_of_account_transaction?(_), do: false
+
+  @spec withdraw(t(), Dinheiro.t() | [Dinheiro.t()]) ::
+          {:ok, t()} | {:error, String.t()}
+  @doc """
+  To withdraw money into an new `Account` struct.
+
+  ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> one = Dinheiro.new!(1, :BRL)
+        iex> {:ok, account} = Account.new(user_name, Dinheiro.new!(10, :BRL))
+        iex> {:ok, account} = Account.withdraw(account, one)
+        iex> account.balance == Dinheiro.new!(9, :BRL)
+        true
+        iex> {:ok, account} = Account.withdraw(account, [one, one])
+        iex> account.balance == Dinheiro.new!(7, :BRL)
+        true
+        iex> Account.withdraw(account, %Dinheiro{amount: 1, currency: :NONE})
+        {:error, "'NONE' does not represent an ISO 4217 code"}
+  """
+  def withdraw(account, money) do
+    {:ok, withdraw!(account, money)}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec withdraw!(t(), Dinheiro.t() | [Dinheiro.t()]) :: t()
+  @doc """
+  To withdraw money into an new `Account` struct.
+
+  ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> one = Dinheiro.new!(1, :BRL)
+        iex> account = Account.new!(user_name, Dinheiro.new!(10, :BRL))
+        iex> account = Account.withdraw!(account, one)
+        iex> account.balance == Dinheiro.new!(9, :BRL)
+        true
+        iex> account = Account.withdraw!(account, [one, one])
+        iex> account.balance == Dinheiro.new!(7, :BRL)
+        true
+        iex> Account.withdraw!(account, %Dinheiro{amount: 1, currency: :NONE})
+        ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
+  """
+  def withdraw!(account, money) do
+    if is_list(money) do
+      do_withdraw!(account, money)
+    else
+      do_withdraw!(account, [money])
+    end
+  end
+
+  defp do_withdraw!(account, money) do
+    prepare_and_execute!(account, money, -1)
+  end
+
+  @spec deposit(t(), Dinheiro.t() | [Dinheiro.t()]) ::
+          {:ok, t()} | {:error, String.t()}
+  @doc """
+  To deposit money into an new `Account` struct.
+
+  ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> one = Dinheiro.new!(1, :BRL)
+        iex> {:ok, account} = Account.new(user_name, Dinheiro.new!(10, :BRL))
+        iex> {:ok, account} = Account.deposit(account, one)
+        iex> account.balance == Dinheiro.new!(11, :BRL)
+        true
+        iex> {:ok, account} = Account.deposit(account, [one, one])
+        iex> account.balance == Dinheiro.new!(13, :BRL)
+        true
+        iex> Account.deposit(account, %Dinheiro{amount: 1, currency: :NONE})
+        {:error, "'NONE' does not represent an ISO 4217 code"}
+  """
+  def deposit(account, money) do
+    {:ok, deposit!(account, money)}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec deposit!(t(), Dinheiro.t() | [Dinheiro.t()]) :: t()
+  @doc """
+  To deposit money into an new `Account` struct.
+
+  ## Example:
+        iex> user_name = "Ramon de Lemos"
+        iex> one = Dinheiro.new!(1, :BRL)
+        iex> account = Account.new!(user_name, Dinheiro.new!(10, :BRL))
+        iex> account = Account.deposit!(account, one)
+        iex> account.balance == Dinheiro.new!(11, :BRL)
+        true
+        iex> account = Account.deposit!(account, [one, one])
+        iex> account.balance == Dinheiro.new!(13, :BRL)
+        true
+        iex> Account.deposit!(account, %Dinheiro{amount: 1, currency: :NONE})
+        ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
+  """
+  def deposit!(account, money) do
+    if is_list(money) do
+      do_deposit!(account, money)
+    else
+      do_deposit!(account, [money])
+    end
+  end
+
+  defp do_deposit!(account, money) do
+    prepare_and_execute!(account, money, 1)
+  end
+
+  defp prepare_and_execute!(account, money, multiplier) do
+    raise_if_is_not_account!(account)
+    raise_if_is_not_valid_money_list!(money)
+
+    transactions =
+      money
+      |> Enum.map(fn m -> get_transaction_async(m, multiplier) end)
+      |> Enum.map(&Task.await/1)
+      |> get_async_returns!()
+
+    execute!(account, transactions)
+  end
+
+  defp get_transaction_async(value, multiplier) do
+    Task.async(fn -> get_transaction(value, multiplier) end)
+  end
+
+  defp get_transaction(value, multiplier) do
+    AccountTransaction.new(
+      NaiveDateTime.utc_now(),
+      Dinheiro.multiply!(value, multiplier)
+    )
+  rescue
+    e -> {:error, e}
+  end
+
+  defp raise_if_is_not_valid_money_list!([head | tail]) do
+    raise_if_is_not_valid_money!(head)
+
+    if tail != [] do
+      raise_if_is_not_valid_money_list!(tail)
+    end
+  end
+
+  defp get_async_returns!([]), do: []
+
+  defp get_async_returns!([head | tail]) do
+    case head do
+      {:ok, value} -> [value | get_async_returns!(tail)]
+      {:error, reason} -> raise reason
+    end
+  end
+
+  defp raise_if_is_not_valid_money!(money) do
+    raise_if_is_not_dinheiro!(money, ":money")
+
+    unless money.amount >= 0,
+      do:
+        raise(
+          ArgumentError,
+          message: ":money must be positive"
+        )
+  end
+
+  defp raise_if_is_not_dinheiro!(money, param_name) do
+    unless Dinheiro.is_dinheiro?(money),
+      do:
+        raise(
+          ArgumentError,
+          message: "#{param_name} must be a Dinheiro struct"
+        )
+  end
+
+  defp raise_if_is_not_account!(account) do
+    unless is_account?(account),
+      do:
+        raise(
+          ArgumentError,
+          message: ":account must be Account struct"
+        )
+  end
 end

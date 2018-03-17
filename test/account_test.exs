@@ -194,4 +194,68 @@ defmodule AccountTest do
 
     assert Account.is_account?(200) == false
   end
+
+  test "withdraw/2" do
+    user_name = "Ramon de Lemos"
+    one = Dinheiro.new!(1, :BRL)
+
+    {:ok, account} = Account.new(user_name, Dinheiro.new!(10, :BRL))
+
+    {:ok, account} = Account.withdraw(account, one)
+
+    assert account.balance == Dinheiro.new!(9, :BRL)
+
+    {:ok, account} = Account.withdraw(account, [one, one])
+
+    assert account.balance == Dinheiro.new!(7, :BRL)
+
+    assert Account.withdraw(account, %Dinheiro{amount: -1, currency: :BRL}) ==
+             {:error, ":money must be positive"}
+
+    assert Account.withdraw(account, %Dinheiro{amount: 1, currency: :NONE}) ==
+             {:error, "'NONE' does not represent an ISO 4217 code"}
+  end
+
+  test "withdraw!/2" do
+    user_name = "Ramon de Lemos"
+    one = Dinheiro.new!(1, :BRL)
+
+    {:ok, account} = Account.new(user_name, Dinheiro.new!(10, :BRL))
+
+    account = Account.withdraw!(account, one)
+
+    assert account.balance == Dinheiro.new!(9, :BRL)
+  end
+
+  test "deposit/2" do
+    user_name = "Ramon de Lemos"
+    one = Dinheiro.new!(1, :BRL)
+
+    {:ok, account} = Account.new(user_name, Dinheiro.new!(10, :BRL))
+
+    {:ok, account} = Account.deposit(account, one)
+
+    assert account.balance == Dinheiro.new!(11, :BRL)
+
+    {:ok, account} = Account.deposit(account, [one, one])
+
+    assert account.balance == Dinheiro.new!(13, :BRL)
+
+    assert Account.deposit(account, %Dinheiro{amount: -1, currency: :BRL}) ==
+             {:error, ":money must be positive"}
+
+    assert Account.deposit(account, %Dinheiro{amount: 1, currency: :NONE}) ==
+             {:error, "'NONE' does not represent an ISO 4217 code"}
+  end
+
+  test "deposit!/2" do
+    user_name = "Ramon de Lemos"
+    one = Dinheiro.new!(1, :BRL)
+
+    {:ok, account} = Account.new(user_name, Dinheiro.new!(10, :BRL))
+
+    account = Account.deposit!(account, one)
+
+    assert account.balance == Dinheiro.new!(11, :BRL)
+  end
 end
