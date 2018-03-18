@@ -57,7 +57,7 @@ A análise do código é feita com o [Credo](http://credo-ci.org/) utilizando o 
 [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)
  [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
 
-Decidi pela construção do pacote `:ex_dinheiro` para remover do projeto principal a lógica de manipulação  de dinheiro, implementar _Continuous Integration_ e _Continuous Deployment_ e contribuir com a comunidade Elixir pelo seu repositório oficial [https://hex.pm/](https://hex.pm/).
+Decidi pela construção do pacote [`:ex_dinheiro`](https://github.com/ramondelemos/ex_dinheiro) para remover do projeto principal a lógica de manipulação  de dinheiro, implementar _Continuous Integration_ e _Continuous Deployment_ e contribuir com a comunidade Elixir pelo seu repositório oficial [https://hex.pm/](https://hex.pm/).
 
 O pacote foi construído seguindo o [Martin Fowler's Money Pattern](https://martinfowler.com/eaaCatalog/money.html) e está em conformidade com a [ISO 4217](https://pt.wikipedia.org/wiki/ISO_4217).
 
