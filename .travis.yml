@@ -17,7 +17,7 @@ script:
 after_success:
   - ./travis_merge_script.sh
 before_deploy:
-  - docker login -u "$DOCKER_USER" --password-stdin "$DOCKER_PASS"
+  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
 deploy:
   skip_cleanup: true
   provider: script
