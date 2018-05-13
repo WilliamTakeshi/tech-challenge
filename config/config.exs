@@ -17,11 +17,12 @@ config :ex_dinheiro, :display_currency_symbol, false
 config :ex_dinheiro, :display_currency_code, true
 
 # mix_docker configurations.
-config :mix_docker, image: "ramondelemos/tech-challenge",
+config :mix_docker,
+  image: "ramondelemos/tech-challenge",
   tag: "{mix-version}",
   dockerfile_release: "Dockerfile.release",
   dockerfile_build: "Dockerfile.build"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

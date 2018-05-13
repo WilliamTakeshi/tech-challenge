@@ -1,3 +1,6 @@
+sudo: required
+services:
+  - docker
 language: elixir
 elixir:
   - '1.6.0'
@@ -8,7 +11,15 @@ before_install:
   - mix local.rebar --force
   - mix local.hex --force
   - mix deps.get
+  - mix deps.compile
 script:
   - mix build_travis
 after_success:
   - ./travis_merge_script.sh
+before_deploy:
+  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+deploy:
+  provider: script
+  script: mix docker.shipit
+  on:
+    branch: master
