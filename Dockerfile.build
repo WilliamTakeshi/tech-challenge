@@ -1,0 +1,37 @@
+# Build
+
+FROM elixir
+
+LABEL MAINTAINER="Ramon de Lemos"
+
+# Setting Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME=/opt/app/
+ENV TERM=xterm
+ENV MIX_ENV=prod
+ENV REPLACE_OS_VARS=true
+
+# Update
+RUN apt-get update
+
+# Install Hex and Rebar
+RUN mix local.hex --force
+RUN mix local.rebar --force
+
+WORKDIR /opt/app
+
+# Cache elixir deps
+COPY mix.exs mix.lock ./
+
+# Coping configurations
+COPY config ./config
+
+# Get elixir deps
+RUN mix deps.get
+
+# Compiling elixir deps
+RUN mix deps.compile
+COPY . .
+
+# Build prod release
+RUN mix release --env=prod

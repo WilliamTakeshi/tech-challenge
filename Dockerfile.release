@@ -1,0 +1,22 @@
+# Release
+
+FROM elixir
+
+LABEL MAINTAINER="Ramon de Lemos"
+
+# Setting Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV MIX_ENV=prod
+ENV REPLACE_OS_VARS=true
+ENV SHELL=/bin/bash
+
+WORKDIR /app
+
+# Coping released app
+COPY ./financial_system.tar.gz ./
+
+# Decompressing released app
+RUN tar xfz financial_system.tar.gz
+
+# Setting released app to ENTRYPOINT
+ENTRYPOINT ["bin/financial_system"]
