@@ -93,28 +93,18 @@ defmodule FinancialSystemApi.Mixfile do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
       pre_build: [
-        "docs",
-        &set_env_to_test/1
-      ],
-      post_build: [
         "format",
         "credo --strict"
       ],
       build: [
         "clean",
         "pre_build",
-        "coveralls",
-        "post_build"
+        "coveralls"
       ],
       build_travis: [
         "pre_build",
-        "coveralls.travis",
-        "post_build"
+        "coveralls.travis"
       ]
     ]
-  end
-
-  defp set_env_to_test(_) do
-    Mix.env(:test)
   end
 end
