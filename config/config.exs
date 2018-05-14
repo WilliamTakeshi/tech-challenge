@@ -11,8 +11,7 @@ config :financial_system_api, ecto_repos: [FinancialSystemApi.Repo]
 # Configures the endpoint
 config :financial_system_api, FinancialSystemApi.Endpoint,
   url: [host: "localhost"],
-  secret_key_base:
-    "7V90BNoyL0X9UQHmKOXoyp6RcV/Mo/8IkW23Qt0M2hQFbryjKaoMI53xZsbdIpYJ",
+  secret_key_base: System.get_env("SECRET_KEY") || "${SECRET_KEY}",
   render_errors: [view: FinancialSystemApi.ErrorView, accepts: ~w(html json)],
   pubsub: [name: FinancialSystemApi.PubSub, adapter: Phoenix.PubSub.PG2]
 
