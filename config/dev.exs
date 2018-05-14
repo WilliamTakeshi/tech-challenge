@@ -54,8 +54,9 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "financial_system_api_dev",
-  hostname: "db",
+  username: "kdiihhtdbtaeik",
+  password: "9ae5b607171690a0db0d982f335ffe700aa5990ef1d4b6175f3ba4088c5e64f2",
+  database: "d5475bvfimk5fo",
+  hostname: "ec2-107-21-103-146.compute-1.amazonaws.com",
+  ssl: true,
   pool_size: 10

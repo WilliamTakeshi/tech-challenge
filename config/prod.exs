@@ -75,4 +75,5 @@ config :financial_system_api, FinancialSystemApi.Repo,
   password: {:system, "DB_PASSWORD"} || "${DB_PASSWORD}",
   database: {:system, "DB_DATABASE"} || "${DB_DATABASE}",
   hostname: {:system, "DB_HOSTNAME"} || "${DB_HOSTNAME}",
+  ssl: true,
   pool_size: 15

@@ -16,4 +16,5 @@ config :financial_system_api, FinancialSystemApi.Repo,
   password: System.get_env("DB_PASSWORD"),
   database: System.get_env("DB_DATABASE"),
   hostname: System.get_env("DB_HOSTNAME"),
+  ssl: true,
   pool: Ecto.Adapters.SQL.Sandbox
