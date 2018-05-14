@@ -1,35 +1,54 @@
-defmodule FinancialSystem.Mixfile do
+defmodule FinancialSystemApi.Mixfile do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.2.0"
   @github_url "https://github.com/ramondelemos/tech-challenge"
 
   def project do
     [
-      app: :financial_system,
-      name: "FinancialSystem",
+      app: :financial_system_api,
+      name: "FinancialSystemApi",
       version: @version,
       elixir: "~> 1.6",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
+      deps: deps(),
       description: description(),
       package: package(),
-      deps: deps(),
       docs: docs(),
-      test_coverage: [tool: ExCoveralls],
-      aliases: aliases()
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
+  # Configuration for the OTP application.
+  #
+  # Type `mix help compile.app` for more information.
   def application do
     [
+      mod: {FinancialSystemApi, []},
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
+  defp elixirc_paths(_), do: ["lib", "web"]
+
+  # Specifies your project dependencies.
+  #
+  # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:phoenix, "~> 1.3.2"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.2"},
+      {:postgrex, ">= 0.0.0"},
+      {:phoenix_html, "~> 2.10"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:gettext, "~> 0.11"},
+      {:cowboy, "~> 1.0"},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
       {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.18", only: [:dev, :docs], runtime: false},
@@ -57,36 +76,35 @@ defmodule FinancialSystem.Mixfile do
     [
       source_ref: "v#{@version}",
       source_url: @github_url,
-      main: "FinancialSystem",
+      main: "FinancialSystemApi",
       extras: ["README.md"]
     ]
   end
 
+  # Aliases are shortcuts or tasks specific to the current project.
+  # For example, to create, migrate and run the seeds file at once:
+  #
+  #     $ mix ecto.setup
+  #
+  # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      # test: ["ecto.create --quiet", "ecto.migrate", "test"],
       pre_build: [
-        "docs",
-        &set_env_to_test/1
-      ],
-      post_build: [
         "format",
         "credo --strict"
       ],
       build: [
         "clean",
         "pre_build",
-        "coveralls",
-        "post_build"
+        "coveralls"
       ],
       build_travis: [
         "pre_build",
-        "coveralls.travis",
-        "post_build"
+        "coveralls.travis"
       ]
     ]
-  end
-
-  defp set_env_to_test(_) do
-    Mix.env(:test)
   end
 end

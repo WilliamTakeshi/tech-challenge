@@ -13,7 +13,7 @@ before_install:
   - mix deps.get
   - mix deps.compile
 script:
-  - mix build_travis
+  - MIX_ENV=test mix build_travis
 after_success:
   - ./travis_merge_script.sh
 before_deploy:
