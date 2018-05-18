@@ -2,19 +2,19 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-bitcoin = %{
-  XBT: %{
-    name: "Bitcoin",
-    symbol: '฿',
-    alpha_code: "XBT",
-    num_code: 0,
-    exponent: 8
-  }
-}
+# By default, the umbrella project as well as each child
+# application will require this configuration file, ensuring
+# they all use the same configuration. While one could
+# configure all applications here, we prefer to delegate
+# back to each application for organization purposes.
+import_config "../apps/*/config/config.exs"
 
-config :ex_dinheiro, :unofficial_currencies, bitcoin
-config :ex_dinheiro, :display_currency_symbol, false
-config :ex_dinheiro, :display_currency_code, true
+# Sample configuration (overrides the imported configuration above):
+#
+#     config :logger, :console,
+#       level: :info,
+#       format: "$date $time [$level] $metadata$message\n",
+#       metadata: [:user_id]
 
 # mix_docker configurations.
 config :mix_docker,
@@ -22,7 +22,3 @@ config :mix_docker,
   tag: "{mix-version}",
   dockerfile_release: "Dockerfile.release",
   dockerfile_build: "Dockerfile.build"
-
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env()}.exs"

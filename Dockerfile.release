@@ -13,10 +13,12 @@ ENV SHELL=/bin/bash
 WORKDIR /app
 
 # Coping released app
-COPY ./financial_system.tar.gz ./
+COPY financial_system_api.tar.gz .
 
 # Decompressing released app
-RUN tar xfz financial_system.tar.gz
+RUN tar xfz financial_system_api.tar.gz
+
+RUN chown -R root ./releases
 
 # Setting released app to ENTRYPOINT
-ENTRYPOINT ["bin/financial_system"]
+ENTRYPOINT ["bin/financial_system_api"]

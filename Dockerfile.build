@@ -26,6 +26,11 @@ COPY mix.exs mix.lock ./
 # Coping configurations
 COPY config ./config
 
+# Coping financial_system
+RUN mkdir -p apps/financial_system/config
+COPY apps/financial_system/mix.exs apps/financial_system/
+COPY apps/financial_system/config/* apps/financial_system/config/
+
 # Get elixir deps
 RUN mix deps.get
 

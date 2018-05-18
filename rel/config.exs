@@ -30,13 +30,13 @@ environment :dev do
   # dev mode.
   set dev_mode: true
   set include_erts: false
-  set cookie: :"(A)7ETQTiAl9`UYS=sZ5(avoywW8@NM9pHiI&<tFZ]v<n01}*Si5UMnRS&Zx)/>n"
+  set cookie: :"{G]6L.d@tPh?~3bYh$Ln9MS;|s:~vTP=BGy6ha%[3&k,fU(F?Srnz^MCSoyC$/$C"
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"02~?(UGO8P$uPHm$X)1&(6jF*m]^L=l!uHI~Tj$h,A)]m>|2g_UNdN*Rrw0t3*Nf"
+  set cookie: :"CAk~}Gkr))*c=,rMWE)G}u5Dqt7{Dc;{]6_R33g8v(4%[,B%|oKiT>!8VQndIBgj"
 end
 
 # You may define one or more releases in this file.
@@ -44,10 +44,11 @@ end
 # when running `mix release`, the first release in the file
 # will be used by default
 
-release :financial_system do
+release :financial_system_api do
   set version: current_version(:financial_system)
   set applications: [
-    :runtime_tools
+    :runtime_tools,
+    financial_system: :permanent
   ]
 end
 
