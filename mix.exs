@@ -8,6 +8,7 @@ defmodule FinancialSystemApi.MixProject do
       version: @version,
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls],
       deps: deps(),
       aliases: aliases()
     ]
@@ -20,7 +21,8 @@ defmodule FinancialSystemApi.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:mix_docker, "~> 0.5.0"}
+      {:mix_docker, "~> 0.5.0"},
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
     ]
   end
 
@@ -33,11 +35,11 @@ defmodule FinancialSystemApi.MixProject do
       build: [
         "clean",
         "pre_build",
-        "coveralls"
+        "coveralls --umbrella"
       ],
       build_travis: [
         "pre_build",
-        "coveralls.travis"
+        "coveralls.travis --umbrella"
       ]
     ]
   end
