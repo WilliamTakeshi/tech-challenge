@@ -48,7 +48,8 @@ release :financial_system_api do
   set version: current_version(:financial_system)
   set applications: [
     :runtime_tools,
-    financial_system: :permanent
+    financial_system: :permanent,
+    financial_system_api: :permanent
   ]
 end
 
