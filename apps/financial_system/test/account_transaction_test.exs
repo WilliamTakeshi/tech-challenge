@@ -42,7 +42,10 @@ defmodule AccountTransactionTest do
     end
 
     assert_raise ArgumentError, fn ->
-      AccountTransaction.new!(date_time, %Dinheiro{amount: 600, currency: :NONE})
+      AccountTransaction.new!(date_time, %Dinheiro{
+        amount: 600,
+        currency: :NONE
+      })
     end
   end
 
