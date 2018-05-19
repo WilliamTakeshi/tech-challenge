@@ -1,4 +1,4 @@
-defmodule FinancialSystemApi.Accounts do
+defmodule FinancialSystemApi.Users do
   @moduledoc """
   The Accounts context.
   """
@@ -6,7 +6,7 @@ defmodule FinancialSystemApi.Accounts do
   import Ecto.Query, warn: false
   alias FinancialSystemApi.Repo
 
-  alias FinancialSystemApi.Accounts.User
+  alias FinancialSystemApi.Users.User
 
   @doc """
   Returns the list of users.

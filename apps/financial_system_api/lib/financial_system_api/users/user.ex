@@ -1,4 +1,4 @@
-defmodule FinancialSystemApi.Accounts.User do
+defmodule FinancialSystemApi.Users.User do
   @moduledoc false
 
   use Ecto.Schema

@@ -1,7 +1,7 @@
 defmodule FinancialSystemApiWeb.Schema do
   @moduledoc false
 
-  alias FinancialSystemApi.Accounts.UserResolver
+  alias FinancialSystemApi.Users.UserResolver
 
   use Absinthe.Schema
   import_types(FinancialSystemApiWeb.Schema.Types)
