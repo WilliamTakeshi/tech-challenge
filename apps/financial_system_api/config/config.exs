@@ -13,7 +13,7 @@ config :financial_system_api,
 # Configures the endpoint
 config :financial_system_api, FinancialSystemApiWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base:  System.get_env("SECRET_KEY") || "${SECRET_KEY}",
+  secret_key_base: System.get_env("SECRET_KEY") || "${SECRET_KEY}",
   render_errors: [
     view: FinancialSystemApiWeb.ErrorView,
     accepts: ~w(html json)

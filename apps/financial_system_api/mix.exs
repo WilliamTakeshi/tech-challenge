@@ -49,6 +49,9 @@ defmodule FinancialSystemApi.Mixfile do
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_ecto, "~> 0.1.3"},
       {:poison, "~> 3.1"},
+      {:bcrypt_elixir, "~> 1.0.6"},
+      {:comeonin, "~> 3.0"},
+      {:secure_random, "~> 0.5.1"},
       {:financial_system, in_umbrella: true}
     ]
   end
