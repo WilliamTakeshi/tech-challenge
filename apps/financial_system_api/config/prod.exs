@@ -16,7 +16,18 @@ use Mix.Config
 config :financial_system_api, FinancialSystemApiWeb.Endpoint,
   load_from_system_env: true,
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  secret_key_base: System.get_env("SECRET_KEY") || "${SECRET_KEY}"
+
+# Configure your database
+config :financial_system_api, FinancialSystemApi.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("DB_USERNAME") || "${DB_USERNAME}",
+  password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
+  database: System.get_env("DB_DATABASE") || "${DB_DATABASE}",
+  hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}",
+  ssl: true,
+  pool_size: 15
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -58,7 +69,3 @@ config :logger, level: :info
 #
 #     config :financial_system_api, FinancialSystemApiWeb.Endpoint, server: true
 #
-
-# Finally import the config/prod.secret.exs
-# which should be versioned separately.
-import_config "prod.secret.exs"
