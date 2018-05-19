@@ -1,11 +1,9 @@
 defmodule FinancialSystemApi.MixProject do
   use Mix.Project
 
-  @version "0.1.2"
-
   def project do
     [
-      version: @version,
+      app: :financial_system_api,
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
