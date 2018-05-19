@@ -45,7 +45,7 @@ end
 # will be used by default
 
 release :financial_system_api do
-  set version: current_version(:financial_system)
+  set version: "0.1.3"
   set applications: [
     :runtime_tools,
     financial_system: :permanent,
