@@ -4,7 +4,6 @@ defmodule FinancialSystemApi.Application do
   use Application
 
   alias FinancialSystemApi.Repo
-  alias FinancialSystemApi.Supervisor
   alias FinancialSystemApiWeb.Endpoint
 
   # See https://hexdocs.pm/elixir/Application.html
