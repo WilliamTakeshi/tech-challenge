@@ -13,6 +13,10 @@ defmodule FinancialSystemApiWeb.ConnCase do
   of the test unless the test case is marked as async.
   """
 
+  alias FinancialSystemApi.Repo
+  alias Ecto.Adapters.SQL.Sandbox
+  alias Phoenix.ConnTest
+
   use ExUnit.CaseTemplate
 
   using do
@@ -26,13 +30,13 @@ defmodule FinancialSystemApiWeb.ConnCase do
     end
   end
 
-
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(FinancialSystemApi.Repo)
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(FinancialSystemApi.Repo, {:shared, self()})
-    end
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
-  end
+    :ok = Sandbox.checkout(Repo)
 
+    unless tags[:async] do
+      Sandbox.mode(Repo, {:shared, self()})
+    end
+
+    {:ok, conn: ConnTest.build_conn()}
+  end
 end

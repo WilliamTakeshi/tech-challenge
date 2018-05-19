@@ -13,10 +13,13 @@ config :financial_system_api,
 # Configures the endpoint
 config :financial_system_api, FinancialSystemApiWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "NqPr21uLKtL6xVArtFkGyMWLu6QTbFezWRaRBuYmPqzS3ypIiTIlWLIVZDj79ABA",
-  render_errors: [view: FinancialSystemApiWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: FinancialSystemApi.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  secret_key_base:
+    "NqPr21uLKtL6xVArtFkGyMWLu6QTbFezWRaRBuYmPqzS3ypIiTIlWLIVZDj79ABA",
+  render_errors: [
+    view: FinancialSystemApiWeb.ErrorView,
+    accepts: ~w(html json)
+  ],
+  pubsub: [name: FinancialSystemApi.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -25,4 +28,4 @@ config :logger, :console,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

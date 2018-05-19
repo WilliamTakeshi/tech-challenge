@@ -13,6 +13,9 @@ defmodule FinancialSystemApiWeb.ChannelCase do
   of the test unless the test case is marked as async.
   """
 
+  alias Ecto.Adapters.SQL.Sandbox
+  alias FinancialSystemApi.Repo
+
   use ExUnit.CaseTemplate
 
   using do
@@ -25,13 +28,13 @@ defmodule FinancialSystemApiWeb.ChannelCase do
     end
   end
 
-
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(FinancialSystemApi.Repo)
+    :ok = Sandbox.checkout(Repo)
+
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(FinancialSystemApi.Repo, {:shared, self()})
+      Sandbox.mode(Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end
