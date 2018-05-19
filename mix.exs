@@ -33,6 +33,8 @@ defmodule FinancialSystemApi.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
       pre_build: [
         "format",
         "credo --strict"
@@ -43,6 +45,8 @@ defmodule FinancialSystemApi.MixProject do
         "coveralls --umbrella"
       ],
       build_travis: [
+        "ecto.create --quiet",
+        "ecto.migrate",
         "pre_build",
         "coveralls.travis --umbrella"
       ]
