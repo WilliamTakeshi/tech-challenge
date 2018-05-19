@@ -1,7 +1,7 @@
 defmodule FinancialSystem.Mixfile do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.1.3"
   @github_url "https://github.com/ramondelemos/tech-challenge"
 
   def project do
@@ -35,7 +35,7 @@ defmodule FinancialSystem.Mixfile do
   defp deps do
     [
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false},
+      {:credo, "~> 0.9.2", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.18", only: [:dev, :docs], runtime: false},
       {:ex_dinheiro, "~> 0.2.1"}
     ]

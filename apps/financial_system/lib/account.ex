@@ -1,6 +1,6 @@
 defmodule Account do
   @moduledoc """
-
+  Account Module.
   """
 
   defstruct [:user, :balance, :transactions]

@@ -4,7 +4,7 @@ defmodule AccountTransactionTest do
 
   test "new/2" do
     date_time = NaiveDateTime.utc_now()
-    value = Dinheiro.new!(12345, :BRL)
+    value = Dinheiro.new!(12_345, :BRL)
 
     assert AccountTransaction.new(date_time, value) ==
              {:ok, %AccountTransaction{date_time: date_time, value: value}}
@@ -25,7 +25,7 @@ defmodule AccountTransactionTest do
 
   test "new!/2" do
     date_time = NaiveDateTime.utc_now()
-    value = Dinheiro.new!(12345, :BRL)
+    value = Dinheiro.new!(12_345, :BRL)
 
     assert AccountTransaction.new!(date_time, value) ==
              %AccountTransaction{date_time: date_time, value: value}
@@ -51,7 +51,7 @@ defmodule AccountTransactionTest do
 
   test "is_account_transaction?/1" do
     date_time = NaiveDateTime.utc_now()
-    value = Dinheiro.new!(12345, :BRL)
+    value = Dinheiro.new!(12_345, :BRL)
 
     transaction = %AccountTransaction{date_time: date_time, value: value}
     assert AccountTransaction.is_account_transaction?(transaction) == true

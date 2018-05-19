@@ -20,7 +20,8 @@ defmodule FinancialSystemApi.MixProject do
   defp deps do
     [
       {:mix_docker, "~> 0.5.0"},
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:credo, "~> 0.9.2", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -32,6 +33,8 @@ defmodule FinancialSystemApi.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
       pre_build: [
         "format",
         "credo --strict"
@@ -42,6 +45,8 @@ defmodule FinancialSystemApi.MixProject do
         "coveralls --umbrella"
       ],
       build_travis: [
+        "ecto.create --quiet",
+        "ecto.migrate",
         "pre_build",
         "coveralls.travis --umbrella"
       ]
