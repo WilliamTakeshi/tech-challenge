@@ -20,7 +20,8 @@ defmodule FinancialSystemApi.MixProject do
   defp deps do
     [
       {:mix_docker, "~> 0.5.0"},
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]}
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:credo, "~> 0.9.2", only: [:dev, :test], runtime: false}
     ]
   end
 
