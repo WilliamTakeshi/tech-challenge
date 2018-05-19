@@ -11,9 +11,4 @@ config :logger, level: :warn
 
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "",
-  database: "financial_system_api_test",
-  hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

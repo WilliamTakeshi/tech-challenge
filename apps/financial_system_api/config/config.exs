@@ -25,6 +25,14 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
+# Configure your database
+config :financial_system_api, FinancialSystemApi.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("DB_USERNAME") || "${DB_USERNAME}",
+  password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
+  database: System.get_env("DB_DATABASE") <> "_#{Mix.env()}",
+  hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

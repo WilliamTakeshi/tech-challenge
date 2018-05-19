@@ -21,11 +21,7 @@ config :financial_system_api, FinancialSystemApiWeb.Endpoint,
 
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("DB_USERNAME") || "${DB_USERNAME}",
-  password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
   database: System.get_env("DB_DATABASE") || "${DB_DATABASE}",
-  hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}",
   ssl: true,
   pool_size: 15
 
