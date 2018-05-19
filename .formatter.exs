@@ -1,6 +1,6 @@
 # Used by "mix format"
 [
-  inputs: ["mix.exs", "config/*.exs"],
+  inputs: ["mix.exs", ".formatter.exs", "config/*.exs"],
   subdirectories: ["apps/*"],
   line_length: 80
 ]
