@@ -11,4 +11,15 @@ defmodule FinancialSystemApiWeb.Schema do
       resolve(&UserResolver.all/2)
     end
   end
+
+  mutation do
+    field :register, type: :user do
+      arg(:name, non_null(:string))
+      arg(:username, non_null(:string))
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
+
+      resolve(&UserResolver.register/2)
+    end
+  end
 end

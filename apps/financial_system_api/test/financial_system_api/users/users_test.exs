@@ -14,6 +14,7 @@ defmodule FinancialSystemApi.UsersTest do
       token: "some token",
       username: "some username"
     }
+
     @update_attrs %{
       email: "some updated email",
       email_verified: false,
@@ -22,6 +23,7 @@ defmodule FinancialSystemApi.UsersTest do
       token: "some updated token",
       username: "some updated username"
     }
+
     @invalid_attrs %{
       email: nil,
       email_verified: nil,
@@ -29,6 +31,16 @@ defmodule FinancialSystemApi.UsersTest do
       password_hash: nil,
       token: nil,
       username: nil
+    }
+
+    @unique_attrs %{
+      email: "some@email",
+      email_verified: false,
+      name: "some name",
+      password: "some password",
+      password_hash: "some password_hash",
+      token: "some token",
+      username: "some username"
     }
 
     def user_fixture(attrs \\ %{}) do
@@ -94,6 +106,29 @@ defmodule FinancialSystemApi.UsersTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Users.change_user(user)
+    end
+
+    defp register_user do
+      assert {:ok, %User{} = user} = Users.register_user(@unique_attrs)
+      assert user.email == "some@email"
+      assert user.email_verified == false
+      assert user.name == "some name"
+      assert user.username == "some username"
+      assert user.password_hash != nil
+      assert user.token != nil
+    end
+
+    test "register_user/1 with valid data creates a user" do
+      register_user()
+    end
+
+    test "register_user/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Users.register_user(@invalid_attrs)
+    end
+
+    test "register_user/1 with same email" do
+      register_user()
+      assert {:error, %Ecto.Changeset{}} = Users.register_user(@unique_attrs)
     end
   end
 end
