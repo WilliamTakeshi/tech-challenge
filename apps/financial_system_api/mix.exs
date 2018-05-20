@@ -25,7 +25,25 @@ defmodule FinancialSystemApi.Mixfile do
   def application do
     [
       mod: {FinancialSystemApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :phoenix,
+        :phoenix_pubsub,
+        :phoenix_html,
+        :phoenix_ecto,
+        :cowboy,
+        :gettext,
+        :postgrex,
+        :absinthe,
+        :absinthe_plug,
+        :absinthe_ecto,
+        :poison,
+        :comeonin,
+        :bcrypt_elixir,
+        :secure_random,
+        :guardian
+      ]
     ]
   end
 
@@ -54,6 +72,7 @@ defmodule FinancialSystemApi.Mixfile do
       {:bcrypt_elixir, "~> 1.0.6"},
       {:comeonin, "~> 3.0"},
       {:secure_random, "~> 0.5.1"},
+      {:guardian, "~> 0.14"},
       {:financial_system, in_umbrella: true}
     ]
   end
