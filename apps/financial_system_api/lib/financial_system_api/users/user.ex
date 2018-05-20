@@ -43,7 +43,8 @@ defmodule FinancialSystemApi.Users.User do
     struct
     |> cast(params, [:name, :email, :username, :password])
     |> validate_required([:name, :email, :username, :password])
-    |> unique_constraint(:email)
+    |> unique_constraint(:email, message: "Email is already taken")
+    |> unique_constraint(:username, message: "Username is already taken")
     |> put_pass_hash()
     |> put_not_verified()
     |> put_token()
