@@ -38,6 +38,22 @@ defmodule FinancialSystemApi.Users do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets a single user.
+
+  Return `nil` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user(123)
+      %User{}
+
+      iex> get_user(456)
+      nil
+
+  """
+  def get_user(id), do: Repo.get(User, id)
+
+  @doc """
   Creates a user.
 
   ## Examples
@@ -118,5 +134,53 @@ defmodule FinancialSystemApi.Users do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Gets a single user.
+
+  Return `nil` if the User does not exist.
+
+  ## Examples
+
+      iex> find(%{id: 123})
+      %User{}
+
+      iex> find(%{id: 256})
+      nil
+
+      iex> find(%{token: "abc"})
+      %User{}
+
+      iex> find(%{token: "def"})
+      nil
+
+      iex> find(%{username: "valid username"})
+      %User{}
+
+      iex> find(%{username: "invalid username"})
+      nil
+
+      iex> find(%{email: "valid@email"})
+      %User{}
+
+      iex> find(%{email: "invalid@username"})
+      nil
+
+  """
+  def find(%{id: id}) do
+    get_user(id)
+  end
+
+  def find(%{token: token}) do
+    Repo.get_by(User, token: token)
+  end
+
+  def find(%{username: username}) do
+    Repo.get_by(User, username: username)
+  end
+
+  def find(%{email: email}) do
+    Repo.get_by(User, email: email)
   end
 end
