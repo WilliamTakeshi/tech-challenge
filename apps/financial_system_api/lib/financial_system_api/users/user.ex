@@ -2,6 +2,7 @@ defmodule FinancialSystemApi.Users.User do
   @moduledoc false
 
   use Ecto.Schema
+  alias Comeonin.Bcrypt
   import Ecto.Changeset
 
   schema "users" do
@@ -51,7 +52,7 @@ defmodule FinancialSystemApi.Users.User do
   defp put_pass_hash(changeset) do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
+        put_change(changeset, :password_hash, Bcrypt.hashpwsalt(pass))
 
       _ ->
         changeset

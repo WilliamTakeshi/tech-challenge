@@ -61,5 +61,4 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-config :financial_system_api, FinancialSystemApi.Repo,
-  pool_size: 10
+config :financial_system_api, FinancialSystemApi.Repo, pool_size: 10
