@@ -61,10 +61,4 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-config :financial_system_api, FinancialSystemApi.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "financial_system_api_dev",
-  hostname: "db",
-  pool_size: 10
+config :financial_system_api, FinancialSystemApi.Repo, pool_size: 10

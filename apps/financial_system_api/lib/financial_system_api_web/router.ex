@@ -1,6 +1,10 @@
 defmodule FinancialSystemApiWeb.Router do
   use FinancialSystemApiWeb, :router
 
+  alias Guardian.Plug.VerifyHeader
+  alias Guardian.Plug.LoadResource
+  alias FinancialSystemApiWeb.Plugs.Context
+
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
@@ -13,6 +17,13 @@ defmodule FinancialSystemApiWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  pipeline :secure_api do
+    plug(:accepts, ["json"])
+    plug(VerifyHeader, realm: "Bearer")
+    plug(LoadResource)
+    plug(Context)
+  end
+
   scope "/", FinancialSystemApiWeb do
     # Use the default browser stack
     pipe_through(:browser)
@@ -21,14 +32,20 @@ defmodule FinancialSystemApiWeb.Router do
   end
 
   scope "/api" do
-    pipe_through(:api)
+    pipe_through(:secure_api)
 
     forward("/", Absinthe.Plug, schema: FinancialSystemApiWeb.Schema)
   end
 
   scope "/graphiql" do
-    pipe_through(:api)
+    pipe_through(:secure_api)
 
     forward("/", Absinthe.Plug.GraphiQL, schema: FinancialSystemApiWeb.Schema)
+  end
+
+  scope "/activation", FinancialSystemApiWeb do
+    pipe_through(:api)
+
+    get("/activate/:token", UserActivationController, :activate)
   end
 end

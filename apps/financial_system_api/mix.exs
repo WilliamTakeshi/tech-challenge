@@ -13,6 +13,7 @@ defmodule FinancialSystemApi.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls],
       aliases: aliases(),
       deps: deps()
     ]
@@ -24,7 +25,25 @@ defmodule FinancialSystemApi.Mixfile do
   def application do
     [
       mod: {FinancialSystemApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :phoenix,
+        :phoenix_pubsub,
+        :phoenix_html,
+        :phoenix_ecto,
+        :cowboy,
+        :gettext,
+        :postgrex,
+        :absinthe,
+        :absinthe_plug,
+        :absinthe_ecto,
+        :poison,
+        :comeonin,
+        :bcrypt_elixir,
+        :secure_random,
+        :guardian
+      ]
     ]
   end
 
@@ -37,6 +56,7 @@ defmodule FinancialSystemApi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
       {:phoenix, "~> 1.3.2"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
@@ -49,6 +69,10 @@ defmodule FinancialSystemApi.Mixfile do
       {:absinthe_plug, "~> 1.4"},
       {:absinthe_ecto, "~> 0.1.3"},
       {:poison, "~> 3.1"},
+      {:bcrypt_elixir, "~> 1.0.6"},
+      {:comeonin, "~> 3.0"},
+      {:secure_random, "~> 0.5.1"},
+      {:guardian, "~> 0.14"},
       {:financial_system, in_umbrella: true}
     ]
   end
