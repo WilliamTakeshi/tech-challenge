@@ -183,4 +183,22 @@ defmodule FinancialSystemApi.Users do
   def find(%{email: email}) do
     Repo.get_by(User, email: email)
   end
+
+  @doc """
+  Activate a user.
+
+  ## Examples
+
+      iex> activate_user(%{field: value})
+      {:ok, %User{}}
+
+      iex> activate_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def activate_user(%User{} = user) do
+    user
+    |> User.put_verified_changeset(%{})
+    |> Repo.update()
+  end
 end

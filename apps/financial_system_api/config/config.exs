@@ -40,7 +40,8 @@ config :financial_system_api, FinancialSystemApi.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: System.get_env("DB_USERNAME") || "${DB_USERNAME}",
   password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
-  database: (System.get_env("DB_DATABASE") || "financial_system_api") <> "_#{Mix.env()}",
+  database:
+    (System.get_env("DB_DATABASE") || "financial_system_api") <> "_#{Mix.env()}",
   hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}"
 
 # Import environment specific config. This must remain at the bottom

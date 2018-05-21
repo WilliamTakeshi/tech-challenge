@@ -23,10 +23,10 @@ defmodule FinancialSystemApiWeb.Schema do
     end
 
     field :login, type: :session do
-      arg :email, non_null(:string)
-      arg :password, non_null(:string)
-  
-      resolve &UserResolver.login/2
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
+
+      resolve(&UserResolver.login/2)
     end
   end
 end

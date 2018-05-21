@@ -1,15 +1,18 @@
 defmodule FinancialSystemApi.Resolvers do
   @moduledoc false
+
+  alias Ecto.Changeset
+
   def response({status, payload}) do
     case payload do
-      %Ecto.Changeset{} = changeset ->
+      %Changeset{} = changeset ->
         {
           status,
           message: "operation failed",
           changeset: %{
             errors:
               changeset
-              |> Ecto.Changeset.traverse_errors(fn
+              |> Changeset.traverse_errors(fn
                 {msg, opts} ->
                   String.replace(msg, "%{count}", to_string(opts[:count]))
 

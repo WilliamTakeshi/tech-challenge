@@ -39,6 +39,21 @@ defmodule FinancialSystemApi.Users.User do
   end
 
   @doc false
+  def update_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:name, :email, :username], [:password])
+    |> validate_required([:name, :email, :username])
+    |> unique_constraint(:email)
+    |> put_pass_hash()
+  end
+
+  def put_verified_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [])
+    |> put_verified()
+  end
+
+  @doc false
   def registration_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :email, :username, :password])
@@ -64,6 +79,16 @@ defmodule FinancialSystemApi.Users.User do
     case changeset do
       %Ecto.Changeset{valid?: true} ->
         put_change(changeset, :email_verified, false)
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp put_verified(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true} ->
+        put_change(changeset, :email_verified, true)
 
       _ ->
         changeset

@@ -1,7 +1,8 @@
 defmodule FinancialSystemApiWeb.Session do
+  @moduledoc false
 
   alias Comeonin.Bcrypt
- 
+
   def authenticate(params, repository) do
     user = repository.find(%{email: String.downcase(params.email)})
 
@@ -18,7 +19,7 @@ defmodule FinancialSystemApiWeb.Session do
       {:error, "not found"}
     end
   end
- 
+
   defp check_password(user, password) do
     case user do
       nil -> false

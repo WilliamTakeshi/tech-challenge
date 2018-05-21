@@ -2,21 +2,46 @@ defmodule FinancialSystemApi.Users.UserResolver do
   @moduledoc false
 
   alias FinancialSystemApi.Users
+  alias FinancialSystemApiWeb.Session
 
   import FinancialSystemApi.Resolvers
 
-  def all(_args, _info) do
+  def all(_args, %{context: %{current_user: %{id: _id}}}) do
     {:ok, Users.list_users()}
   end
 
+  def all(_args, _info) do
+    {:error, "Not Authorized"}
+  end
+
+  def find(args, _info) do
+    case Users.find(args) do
+      nil -> {:error, "User not found"}
+      user -> {:ok, user}
+    end
+  end
+
   def register(args, _info) do
-    Users.register_user(args)
+    args
+    |> Users.register_user()
     |> response()
   end
 
+  def update(%{id: id, user: user_params}, _info) do
+    id
+    |> Users.get_user()
+    |> Users.update_user(user_params)
+  end
+
+  def activate(%{id: id}, _info) do
+    id
+    |> Users.get_user()
+    |> Users.activate_user()
+  end
+
   def login(params, _info) do
-    with {:ok, user} <- FinancialSystemApiWeb.Session.authenticate(params, Users),
-        {:ok, jwt, _ } <- Guardian.encode_and_sign(user, :access) do
+    with {:ok, user} <- Session.authenticate(params, Users),
+         {:ok, jwt, _} <- Guardian.encode_and_sign(user, :access) do
       {:ok, %{token: jwt}}
     end
   end
