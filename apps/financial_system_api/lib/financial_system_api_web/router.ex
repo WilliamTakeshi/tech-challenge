@@ -43,9 +43,9 @@ defmodule FinancialSystemApiWeb.Router do
     forward("/", Absinthe.Plug.GraphiQL, schema: FinancialSystemApiWeb.Schema)
   end
 
-  scope "/activation", FinancialSystemApiWeb do
+  scope "/activate", FinancialSystemApiWeb do
     pipe_through(:api)
 
-    get("/activate/:token", UserActivationController, :activate)
+    get("/:token", UserActivationController, :activate)
   end
 end

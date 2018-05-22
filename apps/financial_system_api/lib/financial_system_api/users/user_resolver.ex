@@ -2,6 +2,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
   @moduledoc false
 
   alias FinancialSystemApi.Users
+  alias FinancialSystemApi.MailSender
   alias FinancialSystemApiWeb.Session
 
   import FinancialSystemApi.Resolvers
@@ -22,9 +23,13 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def register(args, _info) do
-    args
-    |> Users.register_user()
-    |> response()
+    {:ok, user} = args
+      |> Users.register_user()
+      |> response()
+
+    MailSender.send_activation_email(user)
+
+    {:ok, user}
   end
 
   def update(%{id: id, user: user_params}, _info) do
