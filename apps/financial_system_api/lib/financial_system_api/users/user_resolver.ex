@@ -23,7 +23,8 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def register(args, _info) do
-    {:ok, user} = args
+    {:ok, user} =
+      args
       |> Users.register_user()
       |> response()
 
