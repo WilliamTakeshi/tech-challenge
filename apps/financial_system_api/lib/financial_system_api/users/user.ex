@@ -3,6 +3,7 @@ defmodule FinancialSystemApi.Users.User do
 
   use Ecto.Schema
   alias Comeonin.Bcrypt
+  alias FinancialSystemApi.Accounts.Account
   import Ecto.Changeset
 
   schema "users" do
@@ -13,6 +14,7 @@ defmodule FinancialSystemApi.Users.User do
     field(:password_hash, :string)
     field(:token, :string)
     field(:username, :string)
+    has_many(:accounts, Account)
 
     timestamps()
   end
