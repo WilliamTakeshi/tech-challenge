@@ -4,7 +4,7 @@ defmodule FinancialSystemApiWeb.Schema do
   alias FinancialSystemApi.Users.UserResolver
 
   use Absinthe.Schema
-  
+
   import_types(FinancialSystemApiWeb.Schema.Types)
 
   query do
