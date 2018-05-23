@@ -9,7 +9,6 @@ defmodule FinancialSystemApiWeb.Schema.Types do
     field(:name, :string)
     field(:username, :string)
     field(:email, :string)
-    field(:token, :string)
   end
 
   object :session do

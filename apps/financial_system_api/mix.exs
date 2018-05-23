@@ -42,7 +42,8 @@ defmodule FinancialSystemApi.Mixfile do
         :comeonin,
         :bcrypt_elixir,
         :secure_random,
-        :guardian
+        :guardian,
+        :bamboo
       ]
     ]
   end
@@ -73,6 +74,7 @@ defmodule FinancialSystemApi.Mixfile do
       {:comeonin, "~> 3.0"},
       {:secure_random, "~> 0.5.1"},
       {:guardian, "~> 0.14"},
+      {:bamboo, "~> 0.8"},
       {:financial_system, in_umbrella: true}
     ]
   end

@@ -30,6 +30,12 @@ config :guardian, Guardian,
   secret_key: System.get_env("SECRET_KEY") || "${SECRET_KEY}",
   serializer: FinancialSystemApi.GuardianSerializer
 
+# Configures Bamboo.
+config :financial_system_api, FinancialSystemApi.Mailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: System.get_env("BAMBOO_API_KEY") || "${BAMBOO_API_KEY}",
+  domain: System.get_env("BAMBOO_DOMAIN") || "${BAMBOO_DOMAIN}"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
