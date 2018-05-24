@@ -2,6 +2,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
   @moduledoc false
 
   alias FinancialSystemApi.Users
+  alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
   alias FinancialSystemApiWeb.Session
 
@@ -40,9 +41,23 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def activate(%{id: id}, _info) do
-    id
-    |> Users.get_user()
-    |> Users.activate_user()
+    user =
+      id
+      |> Users.get_user()
+
+    unless user.email_verified do
+      {:ok, _} =
+        user
+        |> Users.activate_user()
+
+      {:ok, account} =
+        %{user_id: id, amount: 10_000.00, currency: "BRL"}
+        |> Accounts.create_account()
+
+      MailSender.send_activated_email(user)
+    end
+
+    {:ok, user}
   end
 
   def login(params, _info) do
