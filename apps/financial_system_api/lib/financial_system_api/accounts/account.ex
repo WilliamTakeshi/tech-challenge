@@ -17,7 +17,7 @@ defmodule FinancialSystemApi.Accounts.Account do
   @doc false
   def changeset(account, attrs) do
     account
-    |> cast(attrs, [:amount, :currency])
-    |> validate_required([:amount, :currency])
+    |> cast(attrs, [:amount, :currency, :user_id])
+    |> validate_required([:amount, :currency, :user_id])
   end
 end

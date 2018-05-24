@@ -8,10 +8,10 @@ defmodule FinancialSystemApiWeb.UserActivationController do
       {:ok, user} ->
         case UserResolver.activate(%{id: user.id}, nil) do
           {:ok, _user} ->
-            conn |> put_status(200) |> json(%{ok: "e-mail verified"})
+            conn |> put_status(200) |> json(%{ok: "e-mail activated"})
 
           nil ->
-            conn |> put_status(500) |> json(%{error: "verification failed"})
+            conn |> put_status(500) |> json(%{error: "activation failed"})
         end
 
       {:error, _} ->

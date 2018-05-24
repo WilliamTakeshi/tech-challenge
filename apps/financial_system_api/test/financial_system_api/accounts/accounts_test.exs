@@ -2,21 +2,39 @@ defmodule FinancialSystemApi.AccountsTest do
   use FinancialSystemApi.DataCase
 
   alias FinancialSystemApi.Accounts
+  alias FinancialSystemApi.Users
 
   describe "accounts" do
     alias FinancialSystemApi.Accounts.Account
+
+    @valid_user_attrs %{
+      email: "some email",
+      email_verified: true,
+      name: "some name",
+      password_hash: "some password_hash",
+      token: "some token",
+      username: "some username"
+    }
 
     @valid_attrs %{amount: 42.0, currency: "some currency"}
     @update_attrs %{amount: 43.0, currency: "some updated currency"}
     @invalid_attrs %{amount: nil, currency: nil}
 
-    def account_fixture(attrs \\ %{}) do
+    def account_fixture(_attrs \\ %{}) do
       {:ok, account} =
-        attrs
+        get_valid_attrs()
         |> Enum.into(@valid_attrs)
         |> Accounts.create_account()
 
       account
+    end
+
+    def get_valid_attrs do
+      {:ok, user} =
+        @valid_user_attrs
+        |> Users.create_user()
+
+      %{amount: 42.0, currency: "some currency", user_id: user.id}
     end
 
     test "list_accounts/0 returns all accounts" do
@@ -30,7 +48,9 @@ defmodule FinancialSystemApi.AccountsTest do
     end
 
     test "create_account/1 with valid data creates a account" do
-      assert {:ok, %Account{} = account} = Accounts.create_account(@valid_attrs)
+      assert {:ok, %Account{} = account} =
+               Accounts.create_account(get_valid_attrs())
+
       assert account.amount == 42.0
       assert account.currency == "some currency"
     end
