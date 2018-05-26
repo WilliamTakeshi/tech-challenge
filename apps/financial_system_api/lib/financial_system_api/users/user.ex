@@ -20,51 +20,38 @@ defmodule FinancialSystemApi.Users.User do
   end
 
   @doc false
-  def changeset(user, params \\ %{}) do
-    user
-    |> cast(params, [
-      :name,
-      :email,
-      :username,
-      :password_hash,
-      :email_verified,
-      :token
-    ])
-    |> validate_required([
-      :name,
-      :email,
-      :username,
-      :password_hash,
-      :email_verified,
-      :token
-    ])
-  end
-
-  @doc false
-  def update_changeset(struct, params \\ %{}) do
+  def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :email, :username], [:password])
+    |> validate_email()
     |> validate_required([:name, :email, :username])
-    |> unique_constraint(:email)
+    |> unique_constraint(:email, message: "email is already taken")
+    |> unique_constraint(:username, message: "username is already taken")
     |> put_pass_hash()
-  end
-
-  def put_verified_changeset(struct, params \\ %{}) do
-    struct
-    |> cast(params, [])
-    |> put_verified()
   end
 
   @doc false
   def registration_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :email, :username, :password])
-    |> validate_required([:name, :email, :username, :password])
-    |> unique_constraint(:email, message: "Email is already taken")
-    |> unique_constraint(:username, message: "Username is already taken")
-    |> put_pass_hash()
+    |> changeset(params)
+    |> cast(params, [:password])
+    |> validate_required([:password])
     |> put_not_verified()
     |> put_token()
+    |> put_pass_hash()
+  end
+
+  defp validate_email(struct) do
+    struct
+    |> validate_format(:email, ~r/@/)
+  end
+
+  @doc false
+  def put_verified_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> cast(params, [])
+    |> put_verified()
   end
 
   defp put_pass_hash(changeset) do
