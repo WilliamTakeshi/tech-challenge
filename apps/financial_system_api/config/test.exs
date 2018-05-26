@@ -12,3 +12,7 @@ config :logger, level: :warn
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Configures Bamboo.
+config :financial_system_api, FinancialSystemApi.Mailer,
+  adapter: Bamboo.TestAdapter
