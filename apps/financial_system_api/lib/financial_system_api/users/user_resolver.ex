@@ -24,16 +24,19 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def register(args, _info) do
-    {:ok, user} =
-      args
-      |> Users.register_user()
-      |> response()
+    case args
+         |> Users.register_user()
+         |> response() do
+      {:ok, user} ->
+        user
+        |> MailSender.send_activation_email()
+        |> MailSender.deliver()
 
-    user
-    |> MailSender.send_activation_email()
-    |> MailSender.deliver()
+        {:ok, user}
 
-    {:ok, user}
+      {:error, reaseon} ->
+        {:error, reaseon}
+    end
   end
 
   def activate(%{id: id}, _info) do

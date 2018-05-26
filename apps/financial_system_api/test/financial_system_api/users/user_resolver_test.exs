@@ -54,6 +54,18 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
     assert_delivered_email(MailSender.send_activation_email(user))
   end
 
+  test "register/2 an duplicated user" do
+    user = register()
+
+    assert_delivered_email(MailSender.send_activation_email(user))
+
+    {:error, reason} =
+      @user
+      |> UserResolver.register(nil)
+
+    assert reason != nil
+  end
+
   test "activate/2" do
     user =
       register()
