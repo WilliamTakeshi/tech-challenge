@@ -24,6 +24,8 @@ defmodule FinancialSystemApiWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import FinancialSystemApiWeb.Router.Helpers
+      import FinancialSystemApi.GraphqlHelper
+      import FinancialSystemApi.AuthenticationHelper
 
       # The default endpoint for testing
       @endpoint FinancialSystemApiWeb.Endpoint

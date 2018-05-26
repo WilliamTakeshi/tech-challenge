@@ -8,11 +8,10 @@ defmodule FinancialSystemApi.AccountsTest do
     alias FinancialSystemApi.Accounts.Account
 
     @valid_user_attrs %{
-      email: "some email",
+      email: "some@email",
       email_verified: true,
       name: "some name",
-      password_hash: "some password_hash",
-      token: "some token",
+      password: "some password",
       username: "some username"
     }
 
@@ -32,7 +31,7 @@ defmodule FinancialSystemApi.AccountsTest do
     def get_valid_attrs do
       {:ok, user} =
         @valid_user_attrs
-        |> Users.create_user()
+        |> Users.register_user()
 
       %{amount: 42.0, currency: "some currency", user_id: user.id}
     end

@@ -13,31 +13,30 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def all(_args, _info) do
-    {:error, "Not Authorized"}
+    {:error, "not authorized"}
   end
 
   def find(args, _info) do
     case Users.find(args) do
-      nil -> {:error, "User not found"}
+      nil -> {:error, "user not found"}
       user -> {:ok, user}
     end
   end
 
   def register(args, _info) do
-    {:ok, user} =
-      args
-      |> Users.register_user()
-      |> response()
+    case args
+         |> Users.register_user()
+         |> response() do
+      {:ok, user} ->
+        user
+        |> MailSender.send_activation_email()
+        |> MailSender.deliver()
 
-    MailSender.send_activation_email(user)
+        {:ok, user}
 
-    {:ok, user}
-  end
-
-  def update(%{id: id, user: user_params}, _info) do
-    id
-    |> Users.get_user()
-    |> Users.update_user(user_params)
+      {:error, reaseon} ->
+        {:error, reaseon}
+    end
   end
 
   def activate(%{id: id}, _info) do
@@ -54,7 +53,9 @@ defmodule FinancialSystemApi.Users.UserResolver do
         %{user_id: id, amount: 10_000.00, currency: "BRL"}
         |> Accounts.create_account()
 
-      MailSender.send_activated_email(user)
+      user
+      |> MailSender.send_activated_email()
+      |> MailSender.deliver()
     end
 
     {:ok, user}
