@@ -29,7 +29,8 @@ defmodule FinancialSystemApi.Users.UserResolver do
       |> Users.register_user()
       |> response()
 
-    MailSender.send_activation_email(user)
+    user
+    |> MailSender.send_activation_email()
     |> MailSender.deliver()
 
     {:ok, user}
@@ -49,7 +50,8 @@ defmodule FinancialSystemApi.Users.UserResolver do
         %{user_id: id, amount: 10_000.00, currency: "BRL"}
         |> Accounts.create_account()
 
-      MailSender.send_activated_email(user)
+      user
+      |> MailSender.send_activated_email()
       |> MailSender.deliver()
     end
 

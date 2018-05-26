@@ -29,7 +29,9 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
 
   test "all/2 authorized" do
     user = register()
-    assert UserResolver.all(nil, %{context: %{current_user: %{id: user.id}}}) == {:ok, [%{user | password: nil}]}
+
+    assert UserResolver.all(nil, %{context: %{current_user: %{id: user.id}}}) ==
+             {:ok, [%{user | password: nil}]}
   end
 
   test "all/2 not authorized" do
@@ -38,7 +40,9 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
 
   test "find/2 valid user" do
     user = register()
-    assert UserResolver.find(%{id: user.id}, nil) == {:ok, %{user | password: nil}}
+
+    assert UserResolver.find(%{id: user.id}, nil) ==
+             {:ok, %{user | password: nil}}
   end
 
   test "find/2 invalid user" do
@@ -47,21 +51,24 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
 
   test "register/2" do
     user = register()
-    assert_delivered_email MailSender.send_activation_email(user)
+    assert_delivered_email(MailSender.send_activation_email(user))
   end
 
   test "activate/2" do
-    user = register()
-    |> activate()
+    user =
+      register()
+      |> activate()
 
-    assert_delivered_email MailSender.send_activated_email(user)
+    assert_delivered_email(MailSender.send_activated_email(user))
   end
 
   test "login/2" do
-    user = register()
-    |> activate()
+    user =
+      register()
+      |> activate()
 
-    {:ok, login} = UserResolver.login(%{email: user.email, password: @user.password}, nil)
+    {:ok, login} =
+      UserResolver.login(%{email: user.email, password: @user.password}, nil)
 
     assert login.token != nil
   end

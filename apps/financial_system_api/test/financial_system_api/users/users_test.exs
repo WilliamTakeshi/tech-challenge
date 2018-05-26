@@ -132,7 +132,7 @@ defmodule FinancialSystemApi.UsersTest do
       user = user_fixture()
       assert Users.find(%{token: user.token}) == %{user | password: nil}
     end
-    
+
     test "find/1 with %{username: username}" do
       user = user_fixture()
       assert Users.find(%{username: user.username}) == %{user | password: nil}
