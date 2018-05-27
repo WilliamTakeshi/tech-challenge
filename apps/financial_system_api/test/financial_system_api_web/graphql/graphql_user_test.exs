@@ -1,8 +1,6 @@
 defmodule FinancialSystemApiWeb.GraphqlUserTest do
   use FinancialSystemApiWeb.ConnCase
 
-  alias FinancialSystemApi.Users.UserResolver
-
   @user %{
     email: "some@email",
     name: "some name",
@@ -22,19 +20,8 @@ defmodule FinancialSystemApiWeb.GraphqlUserTest do
   """
 
   setup do
-    user = register_and_activate_user()
+    user = build_an_activated_user(@user)
     {:ok, %{user: user}}
-  end
-
-  defp register_and_activate_user(attrs \\ %{}) do
-    {:ok, user} =
-      attrs
-      |> Enum.into(@user)
-      |> UserResolver.register(nil)
-
-    {:ok, activated_user} = UserResolver.activate(%{id: user.id}, nil)
-
-    activated_user
   end
 
   test "list all users authenticated", %{conn: conn, user: user} do
