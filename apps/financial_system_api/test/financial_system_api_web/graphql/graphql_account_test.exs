@@ -42,6 +42,32 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
     assert response["data"]["createAccount"]["user"]["id"] == "#{user.id}"
   end
 
+  test "create an account to an authenticated user with an inválid currency", %{
+    conn: conn
+  } do
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @query,
+        variables: %{
+          currency: "NONE"
+        }
+      )
+
+    assert response ==
+             %{
+               "errors" => [
+                 %{
+                   "message" => "'NONE' does not represent an ISO 4217 code",
+                   "locations" => [%{"column" => 0, "line" => 2}],
+                   "path" => ["createAccount"]
+                 }
+               ],
+               "data" => %{"createAccount" => nil}
+             }
+  end
+
   test "create an account to an not authenticated user", %{conn: conn} do
     response =
       conn
