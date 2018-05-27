@@ -2,6 +2,7 @@ defmodule FinancialSystemApiWeb.Schema do
   @moduledoc false
 
   alias FinancialSystemApi.Users.UserResolver
+  alias FinancialSystemApi.Accounts.AccountResolver
 
   use Absinthe.Schema
 
@@ -28,6 +29,12 @@ defmodule FinancialSystemApiWeb.Schema do
       arg(:password, non_null(:string))
 
       resolve(&UserResolver.login/2)
+    end
+
+    field :create_account, type: :account do
+      arg(:currency, non_null(:string))
+
+      resolve(&AccountResolver.create/2)
     end
   end
 end
