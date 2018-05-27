@@ -22,7 +22,7 @@ defmodule FinancialSystemApi.MailSender do
     |> subject("FinancialSystemApi - Account activated")
     |> html_body("<p>Thanks for signing up with us</p>")
     |> html_body(
-      "<p>Congratulations, your account is active and your have R$ 10,000 of balance.</p>"
+      "<p>Congratulations, your account is active and your have R$ 1,000 of balance.</p>"
     )
   end
 
