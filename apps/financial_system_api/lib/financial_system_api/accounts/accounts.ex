@@ -35,7 +35,7 @@ defmodule FinancialSystemApi.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_account!(id), do: Repo.get!(Account, id)
+  def get_account!(id), do: Repo.get!(Account, id) |> Repo.preload(:transactions)
 
   @doc """
   Creates a account.

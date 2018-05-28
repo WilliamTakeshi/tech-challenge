@@ -23,4 +23,15 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   def create(_args, _info) do
     {:error, "not authorized"}
   end
+
+  def transfer(args, %{context: %{current_user: %{id: id}}}) do
+    from = Accounts.get_account!(args.from)
+    to = Accounts.get_account!(args.to)
+
+    FinancialSystemWrapper.transfer(from, to, args.value)
+  end
+
+  def transfer(_args, _info) do
+    {:error, "not authorized"}
+  end
 end

@@ -36,5 +36,13 @@ defmodule FinancialSystemApiWeb.Schema do
 
       resolve(&AccountResolver.create/2)
     end
+
+    field :transfer, type: :transference do
+      arg(:from, non_null(:id))
+      arg(:to, non_null(:id))
+      arg(:value, non_null(:float))
+
+      resolve(&AccountResolver.transfer/2)
+    end
   end
 end
