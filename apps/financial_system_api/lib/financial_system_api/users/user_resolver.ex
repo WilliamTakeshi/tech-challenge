@@ -49,8 +49,8 @@ defmodule FinancialSystemApi.Users.UserResolver do
         user
         |> Users.activate_user()
 
-      {:ok, account} =
-        %{user_id: id, amount: 10_000.00, currency: "BRL"}
+      {:ok, _account} =
+        %{user_id: id, amount: 1_000.00, currency: "BRL"}
         |> Accounts.create_account()
 
       user

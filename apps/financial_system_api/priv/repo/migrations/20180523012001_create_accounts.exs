@@ -10,7 +10,6 @@ defmodule FinancialSystemApi.Repo.Migrations.CreateAccounts do
       timestamps()
     end
 
-    create unique_index(:accounts, [:user_id, :currency])
     create index(:accounts, [:user_id])
   end
 end

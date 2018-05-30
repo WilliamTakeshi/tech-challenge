@@ -26,6 +26,7 @@ defmodule FinancialSystemApiWeb.ConnCase do
       import FinancialSystemApiWeb.Router.Helpers
       import FinancialSystemApi.GraphqlHelper
       import FinancialSystemApi.AuthenticationHelper
+      import FinancialSystemApi.UserHelper
 
       # The default endpoint for testing
       @endpoint FinancialSystemApiWeb.Endpoint

@@ -43,7 +43,7 @@ defmodule FinancialSystemApi.AccountsTest do
 
     test "get_account!/1 returns the account with given id" do
       account = account_fixture()
-      assert Accounts.get_account!(account.id) == account
+      assert Accounts.get_account!(account.id) == %{account | transactions: []}
     end
 
     test "create_account/1 with valid data creates a account" do
@@ -73,7 +73,7 @@ defmodule FinancialSystemApi.AccountsTest do
       assert {:error, %Ecto.Changeset{}} =
                Accounts.update_account(account, @invalid_attrs)
 
-      assert account == Accounts.get_account!(account.id)
+      assert %{account | transactions: []} == Accounts.get_account!(account.id)
     end
 
     test "delete_account/1 deletes the account" do

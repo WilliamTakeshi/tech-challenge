@@ -51,7 +51,11 @@ defmodule FinancialSystemApi.Users do
       nil
 
   """
-  def get_user(id), do: Repo.get(User, id)
+  def get_user(id) do
+    get_user!(id)
+  rescue
+    _e -> nil
+  end
 
   @doc """
   Updates a user.

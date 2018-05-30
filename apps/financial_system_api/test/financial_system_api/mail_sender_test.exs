@@ -26,7 +26,7 @@ defmodule FinancialSystemApi.MailSenderTest do
     assert email.subject == "FinancialSystemApi - Account activated"
 
     assert email.html_body =~
-             "Congratulations, your account is active and your have R$ 10,000 of balance."
+             "Congratulations, your account is active and your have R$ 1,000 of balance."
   end
 
   test "deliver/1 sending activation e-mail" do

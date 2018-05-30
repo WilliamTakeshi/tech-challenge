@@ -32,4 +32,9 @@ defmodule FinancialSystemApiWeb.Schema.Types do
   object :session do
     field(:token, :string)
   end
+
+  object :transference do
+    field(:from, :account)
+    field(:to, :account)
+  end
 end
