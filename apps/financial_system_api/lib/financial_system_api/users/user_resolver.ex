@@ -49,9 +49,11 @@ defmodule FinancialSystemApi.Users.UserResolver do
         user
         |> Users.activate_user()
 
-      {:ok, _account} =
+      {:ok, account} =
         %{user_id: id, amount: 1_000.00, currency: "BRL"}
         |> Accounts.create_account()
+
+      user = %{user | accounts: [account]}
 
       user
       |> MailSender.send_activated_email()
