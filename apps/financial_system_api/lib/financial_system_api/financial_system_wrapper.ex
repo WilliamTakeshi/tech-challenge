@@ -21,11 +21,13 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
           :ok,
           %{
             from: %PersistentAccount{
+              id: from.id,
               amount: Dinheiro.to_float!(f.balance),
               currency: Atom.to_string(f.balance.currency),
               user_id: from.user_id
             },
             to: %PersistentAccount{
+              id: to.id,
               amount: Dinheiro.to_float!(t.balance),
               currency: Atom.to_string(t.balance.currency),
               user_id: to.user_id

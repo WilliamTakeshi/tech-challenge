@@ -37,11 +37,13 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
   mutation Transfer($from: ID!, $to: ID!, $value: Float!) {
     transfer(from: $from, to: $to, value: $value){
       from {
-        amount
+        id
+        , amount
         , currency
       }
       , to {
-        amount
+        id
+        , amount
         , currency
       }
     }
@@ -148,8 +150,12 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
         }
       )
 
+    assert response["data"]["transfer"]["from"]["id"] ==
+             "#{principal_account.id}"
+
     assert response["data"]["transfer"]["from"]["currency"] == "BRL"
     assert response["data"]["transfer"]["from"]["amount"] == 989.5
+    assert response["data"]["transfer"]["to"]["id"] == "#{brl_account.id}"
     assert response["data"]["transfer"]["to"]["currency"] == "BRL"
     assert response["data"]["transfer"]["to"]["amount"] == 10.5
   end
