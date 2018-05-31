@@ -43,4 +43,18 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   def transfer(_args, _info) do
     {:error, "not authorized"}
   end
+
+  def withdraw(args, %{context: %{current_user: %{id: id}}}) do
+    from = Accounts.get_account!(args.from)
+
+    if from.user_id == id do
+      FinancialSystemWrapper.withdraw(from, args.value)
+    else
+      {:error, "this account does not belongs to you"}
+    end
+  end
+
+  def withdraw(_args, _info) do
+    {:error, "not authorized"}
+  end
 end

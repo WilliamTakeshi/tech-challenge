@@ -38,6 +38,27 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
     end
   end
 
+  def withdraw(from, value) do
+    money = Dinheiro.new!(value, from.currency)
+    new_from = build_account(from)
+
+    case Account.withdraw(new_from, money) do
+      {:ok, f} ->
+        {
+          :ok,
+          %PersistentAccount{
+            id: from.id,
+            amount: Dinheiro.to_float!(f.balance),
+            currency: Atom.to_string(f.balance.currency),
+            user_id: from.user_id
+          }
+        }
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
   defp build_account(account) do
     transactions =
       case is_list(account.transactions) do
