@@ -48,6 +48,19 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
   }
   """
 
+  @withdraw_query """
+  mutation Withdraw($from: ID!, $value: Float!) {
+    withdraw(from: $from, value: $value){
+      id
+      , amount
+      , currency
+      , user {
+        id
+      }
+    }
+  }
+  """
+
   setup do
     user = build_an_activated_user(@user)
     another_user = build_an_activated_user(@another_user)
@@ -97,16 +110,10 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
       )
 
     assert response ==
-             %{
-               "errors" => [
-                 %{
-                   "message" => "'NONE' does not represent an ISO 4217 code",
-                   "locations" => [%{"column" => 0, "line" => 2}],
-                   "path" => ["createAccount"]
-                 }
-               ],
-               "data" => %{"createAccount" => nil}
-             }
+             graphql_error_message(
+               "createAccount",
+               "'NONE' does not represent an ISO 4217 code"
+             )
   end
 
   test "create an account to a not authenticated user", %{conn: conn} do
@@ -260,6 +267,115 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
              graphql_error_message(
                "transfer",
                "you can not transfer money to same account"
+             )
+  end
+
+  test "withdraw money from an account of the authenticated user", %{
+    conn: conn,
+    user: user
+  } do
+    principal_account = List.first(user.accounts)
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @withdraw_query,
+        variables: %{
+          from: principal_account.id,
+          value: 10.5
+        }
+      )
+
+    assert response["data"]["withdraw"]["id"] == "#{principal_account.id}"
+    assert response["data"]["withdraw"]["amount"] == 989.5
+    assert response["data"]["withdraw"]["currency"] == "BRL"
+    assert response["data"]["withdraw"]["user"]["id"] == "#{user.id}"
+  end
+
+  test "withdraw with a not authenticated user", %{conn: conn} do
+    response =
+      conn
+      |> graphql_query(
+        query: @withdraw_query,
+        variables: %{
+          from: 1,
+          value: 10.5
+        }
+      )
+
+    assert response == graphql_error_message("withdraw", "not authorized")
+  end
+
+  test "withdraw money from a different user account", %{
+    conn: conn,
+    another_user: another_user
+  } do
+    another_user_account = List.first(another_user.accounts)
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @withdraw_query,
+        variables: %{
+          from: another_user_account.id,
+          value: 10.5
+        }
+      )
+
+    assert response ==
+             graphql_error_message(
+               "withdraw",
+               "this account does not belongs to you"
+             )
+  end
+
+  test "withdraw negative value from an account of the authenticated user", %{
+    conn: conn,
+    user: user
+  } do
+    principal_account = List.first(user.accounts)
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @withdraw_query,
+        variables: %{
+          from: principal_account.id,
+          value: -10.5
+        }
+      )
+
+    assert response ==
+             graphql_error_message(
+               "withdraw",
+               ":money must be positive"
+             )
+  end
+
+  test "withdraw a value greater than the balance", %{
+    conn: conn,
+    user: user
+  } do
+    principal_account = List.first(user.accounts)
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @withdraw_query,
+        variables: %{
+          from: principal_account.id,
+          value: 1_000.01
+        }
+      )
+
+    assert response ==
+             graphql_error_message(
+               "withdraw",
+               "not enough balance available on the account"
              )
   end
 end
