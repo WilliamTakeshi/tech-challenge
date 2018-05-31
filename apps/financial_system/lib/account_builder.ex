@@ -43,9 +43,7 @@ defmodule AccountBuilder do
         params.transactions
         |> build_transactions!(params.currency)
 
-      account =
-        account
-        |> Account.execute!(transactions)
+      account = %{account | transactions: transactions}
 
       unless Dinheiro.equals?(
                account.balance,
