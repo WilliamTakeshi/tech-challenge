@@ -53,7 +53,7 @@ defmodule AccountBuilderTest do
              |> AccountBuilder.build()
   end
 
-  test "building with an invalid user", context do
+  test "building with an invalid user" do
     assert {:error, ":user must be a String"} ==
              0
              |> AccountBuilder.set_user()
