@@ -44,5 +44,12 @@ defmodule FinancialSystemApiWeb.Schema do
 
       resolve(&AccountResolver.transfer/2)
     end
+
+    field :withdraw, type: :account do
+      arg(:from, non_null(:id))
+      arg(:value, non_null(:float))
+
+      resolve(&AccountResolver.withdraw/2)
+    end
   end
 end
