@@ -5,8 +5,9 @@ defmodule FinancialSystemApi.Accounts do
 
   import Ecto.Query, warn: false
   alias FinancialSystemApi.Repo
-
+  alias Ecto.Changeset
   alias FinancialSystemApi.Accounts.Account
+  alias FinancialSystemApi.Accounts.AccountTransaction
 
   @doc """
   Returns the list of accounts.
@@ -18,7 +19,9 @@ defmodule FinancialSystemApi.Accounts do
 
   """
   def list_accounts do
-    Repo.all(Account)
+    Account
+    |> Repo.all()
+    |> Repo.preload(:transactions)
   end
 
   @doc """
@@ -53,6 +56,10 @@ defmodule FinancialSystemApi.Accounts do
   def create_account(attrs \\ %{}) do
     %Account{}
     |> Account.changeset(attrs)
+    |> Changeset.cast_assoc(
+      :transactions,
+      with: &AccountTransaction.changeset/2
+    )
     |> Repo.insert()
   end
 
@@ -70,8 +77,23 @@ defmodule FinancialSystemApi.Accounts do
   """
   def update_account(%Account{} = account, attrs) do
     account
+    |> Repo.preload(:transactions)
     |> Account.changeset(attrs)
+    |> Changeset.put_assoc(:transactions, attrs.transactions)
     |> Repo.update()
+  end
+
+  def update_transfer(%Account{} = from, from_attrs, %Account{} = to, to_attrs) do
+    Repo.transaction(fn ->
+      with {:ok, f} <- update_account(from, from_attrs),
+           {:ok, t} <- update_account(to, to_attrs) do
+        {:ok, f, t}
+      else
+        {:error, reason} ->
+          Repo.rollback(reason)
+          {:error, reason}
+      end
+    end)
   end
 
   @doc """
@@ -102,8 +124,6 @@ defmodule FinancialSystemApi.Accounts do
   def change_account(%Account{} = account) do
     Account.changeset(account, %{})
   end
-
-  alias FinancialSystemApi.Accounts.AccountTransaction
 
   @doc """
   Returns the list of transactions.
