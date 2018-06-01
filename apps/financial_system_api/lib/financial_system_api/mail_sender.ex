@@ -9,8 +9,6 @@ defmodule FinancialSystemApi.MailSender do
     user
     |> create_email()
     |> subject("FinancialSystemApi - Activate your account")
-    |> html_body("<p>Thanks for signing up with us</p>")
-    |> html_body("<p>Please click the link below to activate your account</p>")
     |> html_body(
       "<a href=http://localhost:4000/activate/#{user.token}>Active account</a>"
     )
@@ -20,9 +18,19 @@ defmodule FinancialSystemApi.MailSender do
     user
     |> create_email()
     |> subject("FinancialSystemApi - Account activated")
-    |> html_body("<p>Thanks for signing up with us</p>")
     |> html_body(
       "<p>Congratulations, your account is active and your have R$ 1,000 of balance.</p>"
+    )
+  end
+
+  def send_withdraw_email(user, value, balance) do
+    user
+    |> create_email()
+    |> subject("FinancialSystemApi - Account statement")
+    |> html_body(
+      "<p>Your withdrawal of #{value} was successful, your current balance is #{
+        balance
+      }.</p>"
     )
   end
 
