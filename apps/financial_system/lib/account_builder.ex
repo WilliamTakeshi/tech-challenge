@@ -15,14 +15,8 @@ defmodule AccountBuilder do
     %{params | :balance => balance}
   end
 
-  def set_transaction(params \\ %__MODULE__{}, date_time, value) do
-    transactions = params.transactions || []
-
-    %{
-      params
-      | :transactions =>
-          List.flatten([transactions, [%{date_time: date_time, value: value}]])
-    }
+  def set_transactions(params \\ %__MODULE__{}, transactions) do
+    %{params | :transactions => transactions}
   end
 
   def build(params \\ %__MODULE__{}) do
@@ -42,18 +36,22 @@ defmodule AccountBuilder do
       transactions =
         params.transactions
         |> build_transactions!(params.currency)
+        |> deal_with_empty_list(Dinheiro.new!(params.balance, params.currency))
+
+      account = Account.execute!(account, transactions)
 
       account = %{account | transactions: transactions}
 
       unless Dinheiro.equals?(
                account.balance,
                Dinheiro.new!(params.balance, params.currency)
-             ) do
-        raise(
-          AccountError,
-          message: "balance must to be equals of the sum of transactions values"
-        )
-      end
+             ),
+             do:
+               raise(
+                 AccountError,
+                 message:
+                   "balance must to be equals of the sum of transactions values"
+               )
 
       account
     else
@@ -74,4 +72,12 @@ defmodule AccountBuilder do
   end
 
   defp build_transactions!([], _currency), do: []
+
+  defp deal_with_empty_list([head | tail], _value) do
+    [head | tail]
+  end
+
+  defp deal_with_empty_list([], value) do
+    [AccountTransaction.new!(NaiveDateTime.utc_now(), value)]
+  end
 end
