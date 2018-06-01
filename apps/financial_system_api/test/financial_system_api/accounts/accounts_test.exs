@@ -15,9 +15,13 @@ defmodule FinancialSystemApi.AccountsTest do
       username: "some username"
     }
 
-    @valid_attrs %{amount: 42.0, currency: "some currency"}
-    @update_attrs %{amount: 43.0, currency: "some updated currency"}
-    @invalid_attrs %{amount: nil, currency: nil}
+    @valid_attrs %{amount: 42.0, currency: "some currency", transactions: []}
+    @update_attrs %{
+      amount: 43.0,
+      currency: "some updated currency",
+      transactions: []
+    }
+    @invalid_attrs %{amount: nil, currency: nil, transactions: nil}
 
     def account_fixture(_attrs \\ %{}) do
       {:ok, account} =

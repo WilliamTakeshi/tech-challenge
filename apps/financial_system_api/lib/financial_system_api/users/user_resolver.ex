@@ -44,7 +44,9 @@ defmodule FinancialSystemApi.Users.UserResolver do
       id
       |> Users.get_user()
 
-    unless user.email_verified do
+    if user.email_verified do
+      {:ok, user}
+    else
       {:ok, _} =
         user
         |> Users.activate_user()
@@ -53,14 +55,12 @@ defmodule FinancialSystemApi.Users.UserResolver do
         %{user_id: id, amount: 1_000.00, currency: "BRL"}
         |> Accounts.create_account()
 
-      user = %{user | accounts: [account]}
-
       user
       |> MailSender.send_activated_email()
       |> MailSender.deliver()
-    end
 
-    {:ok, user}
+      {:ok, %{user | accounts: [account]}}
+    end
   end
 
   def login(params, _info) do
