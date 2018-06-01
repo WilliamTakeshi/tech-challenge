@@ -13,6 +13,32 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
     end
   end
 
+  def create(user_id, amount, currency) do
+    money = Dinheiro.new!(amount, currency)
+
+    case Account.new("#{user_id}", money) do
+      {:ok, account} ->
+        {
+          :ok,
+          build_persistent_account(
+            %{
+              id: nil,
+              user_id: user_id,
+              amount: amount,
+              currency: currency,
+              transactions: []
+            },
+            account
+          )
+        }
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  rescue
+    e -> {:error, e.message}
+  end
+
   def transfer(from, to, value) do
     money = Dinheiro.new!(value, from.currency)
     new_from = build_account(from)
@@ -31,6 +57,8 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
       {:error, reason} ->
         {:error, reason}
     end
+  rescue
+    e -> {:error, e.message}
   end
 
   def withdraw(from, value) do
@@ -47,12 +75,14 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
       {:error, reason} ->
         {:error, reason}
     end
+  rescue
+    e -> {:error, e.message}
   end
 
   defp build_account(account) do
     transactions =
       case is_list(account.transactions) do
-        true -> account.transactions
+        true -> build_transactions(account.transactions)
         false -> []
       end
 
@@ -60,20 +90,21 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
     |> AccountBuilder.set_user("#{account.id}")
     |> AccountBuilder.set_currency(account.currency)
     |> AccountBuilder.set_balance(account.amount)
-    |> build_transactions(transactions)
+    |> AccountBuilder.set_transactions(transactions)
     |> AccountBuilder.build!()
   end
 
-  defp build_transactions(builder, [head | tail]) do
-    builder
-    |> builder.set_transaction(head.date_time, head.value)
-    |> build_transactions(tail)
+  defp build_transactions([head | tail]) do
+    [
+      %{date_time: head.date_time, value: head.value}
+      | build_transactions(tail)
+    ]
   end
 
-  defp build_transactions(builder, []), do: builder
+  defp build_transactions([]), do: []
 
   defp build_persistent_account(old, new) do
-    account = %PersistentAccount{
+    %{
       id: old.id,
       amount: Dinheiro.to_float!(new.balance),
       currency: old.currency,
@@ -97,7 +128,7 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
         old_head.id,
         account_id,
         old_head.date_time,
-        new_head.value.amount
+        Dinheiro.to_float!(new_head.value)
       )
       | build_persistent_transactions(account_id, old_tail, new_tail)
     ]
@@ -111,14 +142,14 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
         nil,
         account_id,
         new_head.date_time,
-        new_head.value.amount
+        Dinheiro.to_float!(new_head.value)
       )
       | build_persistent_transactions(account_id, [], new_tail)
     ]
   end
 
   defp build_persistent_transaction(id, account_id, date_time, value) do
-    %PersistentAccountTransaction{
+    %{
       id: id,
       account_id: account_id,
       date_time: date_time,
