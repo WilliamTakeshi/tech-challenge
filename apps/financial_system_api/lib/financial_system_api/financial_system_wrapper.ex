@@ -1,16 +1,10 @@
 defmodule FinancialSystemApi.FinancialSystemWrapper do
   @moduledoc false
 
-  alias FinancialSystemApi.Accounts.Account, as: PersistentAccount
-
-  alias FinancialSystemApi.Accounts.AccountTransaction,
-    as: PersistentAccountTransaction
-
-  def validate_currency(args) do
-    case Dinheiro.new(args.amount, args.currency) do
-      {:ok, value} -> {:ok, value.currency |> Atom.to_string()}
-      {:error, reason} -> {:error, reason}
-    end
+  def format_value(amount, currency) do
+    amount
+    |> Dinheiro.new!(currency)
+    |> Dinheiro.to_string!()
   end
 
   def create(user_id, amount, currency) do
