@@ -30,8 +30,23 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
   }
   """
 
-  @brl_account %{amount: 0.0, currency: "BRL", user_id: nil}
-  @usd_account %{amount: 0.0, currency: "USD", user_id: nil}
+  @brl_account %{
+    amount: 0.01,
+    currency: "BRL",
+    user_id: nil,
+    transactions: [
+      %{date_time: NaiveDateTime.utc_now(), value: 0.01}
+    ]
+  }
+
+  @usd_account %{
+    amount: 0.01,
+    currency: "USD",
+    user_id: nil,
+    transactions: [
+      %{date_time: NaiveDateTime.utc_now(), value: 0.01}
+    ]
+  }
 
   @transfer_query """
   mutation Transfer($from: ID!, $to: ID!, $value: Float!) {
@@ -157,7 +172,7 @@ defmodule FinancialSystemApiWeb.GraphqlAccountTest do
     assert response["data"]["transfer"]["from"]["amount"] == 989.5
     assert response["data"]["transfer"]["to"]["id"] == "#{brl_account.id}"
     assert response["data"]["transfer"]["to"]["currency"] == "BRL"
-    assert response["data"]["transfer"]["to"]["amount"] == 10.5
+    assert response["data"]["transfer"]["to"]["amount"] == 10.51
   end
 
   test "transfer money from an empty account", %{
