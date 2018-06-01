@@ -1,11 +1,6 @@
 defmodule FinancialSystemApi.FinancialSystemWrapper do
   @moduledoc false
 
-  alias FinancialSystemApi.Accounts.Account, as: PersistentAccount
-
-  alias FinancialSystemApi.Accounts.AccountTransaction,
-    as: PersistentAccountTransaction
-
   def format_value(amount, currency) do
     amount
     |> Dinheiro.new!(currency)
