@@ -1,7 +1,9 @@
 defmodule FinancialSystemApi.Accounts.AccountResolver do
   @moduledoc false
 
+  alias FinancialSystemApi.Users
   alias FinancialSystemApi.Accounts
+  alias FinancialSystemApi.MailSender
   alias FinancialSystemApi.FinancialSystemWrapper
 
   import FinancialSystemApi.Resolvers
@@ -63,8 +65,21 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
 
     if from.user_id == id do
       case FinancialSystemWrapper.withdraw(from, args.value) do
-        {:ok, f} -> Accounts.update_account(from, f)
-        {:error, reason} -> {:error, reason}
+        {:ok, f} ->
+          case Accounts.update_account(from, f) do
+            {:ok, account} ->
+              id
+              |> Users.get_user()
+              |> notify_user_of_withdraw(account, args.value)
+
+              {:ok, account}
+
+            {:error, reason} ->
+              {:error, reason}
+          end
+
+        {:error, reason} ->
+          {:error, reason}
       end
     else
       {:error, "this account does not belongs to you"}
@@ -75,5 +90,19 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
 
   def withdraw(_args, _info) do
     {:error, "not authorized"}
+  end
+
+  defp notify_user_of_withdraw(user, account, value) do
+    formated_value =
+      value
+      |> FinancialSystemWrapper.format_value(account.currency)
+
+    formated_balance =
+      account.amount
+      |> FinancialSystemWrapper.format_value(account.currency)
+
+    user
+    |> MailSender.send_withdraw_email(formated_value, formated_balance)
+    |> MailSender.deliver()
   end
 end
