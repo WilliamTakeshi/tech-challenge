@@ -22,7 +22,7 @@ config :financial_system_api, FinancialSystemApiWeb.Endpoint,
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
   database: System.get_env("DB_DATABASE") || "${DB_DATABASE}",
-  ssl: (System.get_env("DB_SSL") || "${DB_SSL}") == "true",
+  ssl: true,
   pool_size: 15
 
 # Do not print debug messages in production
