@@ -1,3 +1,66 @@
+# Build
+
+FROM elixir as builder
+
+LABEL MAINTAINER="Ramon de Lemos"
+
+# Update
+RUN apt-get update
+
+# Install Node.js 8.x
+RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
+RUN bash nodesource_setup.sh
+RUN apt-get install nodejs
+
+# Setting Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME=/opt/app/
+ENV TERM=xterm
+ENV MIX_ENV=prod
+ENV REPLACE_OS_VARS=true
+
+# Install Hex and Rebar
+RUN mix local.hex --force
+RUN mix local.rebar --force
+
+WORKDIR /opt/app
+
+# Cache elixir deps
+COPY mix.exs mix.lock ./
+
+# Coping configurations
+COPY config ./config
+
+# Coping financial_system
+RUN mkdir -p apps/financial_system/config
+COPY apps/financial_system/mix.exs apps/financial_system/
+COPY apps/financial_system/config/* apps/financial_system/config/
+
+# Coping financial_system_api
+RUN mkdir -p apps/financial_system_api/config
+COPY apps/financial_system_api/mix.exs apps/financial_system_api/
+COPY apps/financial_system_api/config/* apps/financial_system_api/config/
+
+# Get elixir deps
+RUN mix deps.get
+
+# Compiling elixir deps
+RUN mix deps.compile
+COPY . .
+
+# Build assets in production mode:
+WORKDIR /opt/app/apps/financial_system_api/assets
+RUN npm install && ./node_modules/brunch/bin/brunch build --production
+
+WORKDIR /opt/app/apps/financial_system_api
+RUN MIX_ENV=prod mix phx.digest
+
+WORKDIR /opt/app
+
+# Build prod release
+RUN MIX_ENV=prod mix release --env=prod
+
+
 # Release
 
 FROM elixir
@@ -12,13 +75,18 @@ ENV SHELL=/bin/bash
 
 WORKDIR /app
 
-# Coping released app
-COPY financial_system_api.tar.gz .
-
-# Decompressing released app
-RUN tar xfz financial_system_api.tar.gz
-
-RUN chown -R root ./releases
+COPY --from=builder /app/_build/prod/rel/financial_system_api .
 
 # Setting released app to ENTRYPOINT
-ENTRYPOINT ["bin/financial_system_api"]
+ENTRYPOINT ["./bin/financial_system_api"]
+
+# Coping released app
+#COPY financial_system_api.tar.gz .
+
+# Decompressing released app
+#RUN tar xfz financial_system_api.tar.gz
+
+#RUN chown -R root ./releases
+
+# Setting released app to ENTRYPOINT
+#ENTRYPOINT ["bin/financial_system_api"]
