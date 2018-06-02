@@ -4,15 +4,20 @@ FROM elixir
 
 LABEL MAINTAINER="Ramon de Lemos"
 
+# Update
+RUN apt-get update
+
+# Install Node.js 8.x
+RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
+RUN bash nodesource_setup.sh
+RUN apt-get install nodejs
+
 # Setting Environment Variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/opt/app/
 ENV TERM=xterm
 ENV MIX_ENV=prod
 ENV REPLACE_OS_VARS=true
-
-# Update
-RUN apt-get update
 
 # Install Hex and Rebar
 RUN mix local.hex --force
@@ -42,6 +47,15 @@ RUN mix deps.get
 # Compiling elixir deps
 RUN mix deps.compile
 COPY . .
+
+# Build assets in production mode:
+WORKDIR /opt/app/apps/financial_system_api/assets
+RUN npm install && ./node_modules/brunch/bin/brunch build --production
+
+WORKDIR /opt/app/apps/financial_system_api
+RUN MIX_ENV=prod mix phx.digest
+
+WORKDIR /opt/app
 
 # Build prod release
 RUN mix release --env=prod
