@@ -52,10 +52,10 @@ COPY . .
 WORKDIR /opt/app/apps/financial_system_api/assets
 RUN npm install && ./node_modules/brunch/bin/brunch build --production
 
-WORKDIR /opt/app/apps/financial_system_api
-RUN MIX_ENV=prod mix phx.digest
-
 WORKDIR /opt/app
+
+# Run phx.digest
+RUN MIX_ENV=prod mix phx.digest
 
 # Build prod release
 RUN MIX_ENV=prod mix release --env=prod
