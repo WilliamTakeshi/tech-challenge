@@ -9,4 +9,3 @@ erl_crash.dump
 *.ez
 apps/financial_system_api/assets/node_modules
 apps/financial_system_api/priv/static
-financial_system_api.tar.gz
