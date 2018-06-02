@@ -13,7 +13,7 @@ ENV SHELL=/bin/bash
 WORKDIR /app
 
 # Coping released app
-# COPY financial_system_api.tar.gz .
+COPY financial_system_api.tar.gz .
 
 # Decompressing released app
 RUN tar xfz financial_system_api.tar.gz

@@ -58,4 +58,4 @@ RUN MIX_ENV=prod mix phx.digest
 WORKDIR /opt/app
 
 # Build prod release
-RUN mix release --env=prod
+RUN MIX_ENV=prod mix release --env=prod
