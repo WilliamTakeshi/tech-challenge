@@ -21,4 +21,4 @@ RUN tar xfz financial_system_api.tar.gz
 RUN chown -R root ./releases
 
 # Setting released app to ENTRYPOINT
-ENTRYPOINT ["bin/financial_system_api"]
+ENTRYPOINT ["bin/financial_system_api", "start"]
