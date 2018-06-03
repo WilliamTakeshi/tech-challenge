@@ -10,13 +10,15 @@ defmodule FinancialSystemApi.MailSenderTest do
   }
 
   test "send_activation_email/1" do
+    host = System.get_env("APP_HOSTNAME") || "${APP_HOSTNAME}"
+
     email = MailSender.send_activation_email(@user)
 
     assert email.to == @user.email
     assert email.subject == "FinancialSystemApi - Activate your account"
 
     assert email.html_body =~
-             "<a href=http://localhost:4000/activate/#{@user.token}>Active account"
+             "<a href=http://#{host}/activate/#{@user.token}>Active account"
   end
 
   test "send_activated_email/1" do
