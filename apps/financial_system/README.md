@@ -1,4 +1,4 @@
-# Tech Challenge
+# Tech Challenge - Desafio Nº 1
 
  - master: [![Build Status](https://travis-ci.org/ramondelemos/tech-challenge.svg?branch=master)](https://travis-ci.org/ramondelemos/tech-challenge)
  [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/tech-challenge/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/tech-challenge)
@@ -10,7 +10,7 @@ Bem vindo(a)! Esse é a minha solução para o Tech Challenge Elixir!
 
 ---
 
-# Desafio Nº 1
+# O Desafio
 
 O Sistema Financeiro precisa representar valores monetários. A ideia básica é ter uma estrutura de dados que permita realizar operações financeiras com dinheiro dentro de uma mesma moeda. _Isso é pelo motivo de pontos flutuantes terem problemas de aritmética_, logo encodificamos valores decimais/fracionais/reais como uma estrutura de dados com campos em inteiros, além de mapearmos operações aritméticas sobre tal estrutura. No fim, a implementação acaba sendo uma Estrutura de Dados Abstrata.
 
@@ -124,75 +124,3 @@ Nesse módulo apliquei as técnicas de _Continuous Integration_ e _Continuous De
 * [ISO 4217 Currency codes](https://www.iso.org/iso-4217-currency-codes.html)
 * [Current currency & funds code list – ISO Currency](https://www.currency-iso.org/en/home/tables/table-a1.html)
 * [XE - World Currency Symbols](http://www.xe.com/symbols.php)
-
-# Desafio Nº 2
-
-# API de Banking
-
-O sistema deve oferecer a possibilidade de usuários realizarem transações financeiras
-como saque e transferencia entre contas.
-
-Um usuário pode se cadastrar e ao completar o cadastro (com verificação de email) ele
-recebe R$ 1000,00.
-
-Com isso ele pode transferir dinheiro para outras contas e pode sacar dinheiro. O saque do dinheiro simplesmente manda um email para o usuário informando sobre o saque e reduz o seu saldo.
-
-Nenhuma conta pode ficar com saldo negativo.
-
-É necessário autenticação para realizar qualquer operação.
-
-Alguns relatórios devem ser gerados para o backoffice:
-* Total transacionado (R$) por dia, mês, ano e total.
-* Número de usuários que não transacionam há mais de 1 mês (por dia)
-
-## Requisitos Técnicos
-
-* O desafio deve ser feito na linguagem [Elixir](http://elixir-lang.github.io/).
-* A API pode ser JSON ou GraphQL
-* Docker é um diferencial.
-
-## Critérios de Avaliação
-
-O desafio será avaliado através de cinco critérios.
-
-### Entrega
-
-* O código possui algum controle de dependências?
-* O resultado final está completo para ser executado?
-* O resultado final atende ao que se propõe fazer?
-* O resultado final atende totalmente aos requisitos propostos?
-* O sistema está rodando em algum lugar público?
-* Existe monitoramento de logs e falhas no sistema?
-
-### Boas Práticas
-
-* O código está de acordo com o guia de estilo do Elixir?
-* O código está bem estruturado?
-* O código está fluente na linguagem?
-* O código faz o uso correto de _Design Patterns_?
-
-### Documentação
-
-* O código foi entregue com um arquivo de README claro de como se guiar?
-* O código possui comentários pertinentes?
-* O código está em algum controle de versão?
-* Os commits são pequenos e consistentes?
-* As mensagens de commit são claras?
-
-### Código Limpo
-
-* O código possibilita expansão para novas funcionalidades?
-* O código é _Don't Repeat Yourself_?
-* O código é fácil de compreender?
-
-### Controle de Qualidade
-
-* O código possui configuração de lint?
-* O código possui testes unitários?
-* O código possui teste de cobertura?
-* Integração Contínua?
-
-## Material de Estudo
-* [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
-* [O Guia de Estilo Elixir](https://github.com/gusaiani/elixir_style_guide/blob/master/README_ptBR.md)
-* [Boas Práticas na Stone](https://github.com/stone-payments/stoneco-best-practices/blob/master/README_pt.md)
