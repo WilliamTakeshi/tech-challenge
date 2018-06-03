@@ -6,11 +6,13 @@ defmodule FinancialSystemApi.MailSender do
   alias FinancialSystemApi.Mailer
 
   def send_activation_email(user) do
+    host = System.get_env("APP_HOSTNAME") || "${APP_HOSTNAME}"
+
     user
     |> create_email()
     |> subject("FinancialSystemApi - Activate your account")
     |> html_body(
-      "<a href=http://localhost:4000/activate/#{user.token}>Active account</a>"
+      "<a href=http://#{host}/activate/#{user.token}>Active account</a>"
     )
   end
 
