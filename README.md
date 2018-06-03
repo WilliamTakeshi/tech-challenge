@@ -10,7 +10,7 @@ Bem vindo(a)! Esse é a minha solução para o Tech Challenge Elixir!
 
 ---
 
-# Desafio Nº 1
+## [O Desafio Nº 1](https://github.com/ramondelemos/tech-challenge/tree/master/apps/financial_system)
 
 O Sistema Financeiro precisa representar valores monetários. A ideia básica é ter uma estrutura de dados que permita realizar operações financeiras com dinheiro dentro de uma mesma moeda. _Isso é pelo motivo de pontos flutuantes terem problemas de aritmética_, logo encodificamos valores decimais/fracionais/reais como uma estrutura de dados com campos em inteiros, além de mapearmos operações aritméticas sobre tal estrutura. No fim, a implementação acaba sendo uma Estrutura de Dados Abstrata.
 
@@ -26,108 +26,13 @@ Sobre as operações financeiras que serão realizadas no sistema, é correto af
 
 ## Requisitos Técnicos
 
-* O código do desafio está na linguagem [Elixir](http://elixir-lang.github.io/)
+* O código deve estar na linguagem [Elixir](http://elixir-lang.github.io/)
 
-## Comandos básicos do projeto
+---
 
-`mix deps.get` Para baixar as dependências do projeto.
+## Tech Challenge - Desafio Nº 2
 
-`iex -S mix` Para rodar em modo interativo.
-
-`mix build` Task para execução conjunta dos comandos:
- - `mix clean`
- - `mix docs`
- - `mix test`
- - `mix coveralls`
- - `mix format`
- - `mix credo --strict`
-
-## A Solução
-
-Minha solução foi construída em duas etapas, a criação do pacote `:ex_dinheiro` para manipulação de dinheiro e a implementação de funcionalidades que contemplem o que foi proposto na pasta `/test` para o módulo `FinancialSystem`.
-
-Foi utilizado o [Travis CI](https://travis-ci.org/ramondelemos) para a orquestração das técnicas de _Continuous Integration_, _Continuous Delivery_ e _Continuous Deployment_.
-
-Para a cobertura dos testes foi utilizado o [Coveralls.io](https://coveralls.io/github/ramondelemos).
-
-A análise do código é feita com o [Credo](http://credo-ci.org/) utilizando o parâmetro de execução `--strict` para reforçar o **guia de estilo do credo**.
-
-### O Pacote `:ex_dinheiro`
-
-[![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)
- [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
-
-Decidi pela construção do pacote [`:ex_dinheiro`](https://github.com/ramondelemos/ex_dinheiro) para remover do projeto principal a lógica de manipulação  de dinheiro, implementar _Continuous Integration_ e _Continuous Deployment_ e contribuir com a comunidade Elixir pelo seu repositório oficial [https://hex.pm/](https://hex.pm/).
-
-O pacote foi construído seguindo o [Martin Fowler's Money Pattern](https://martinfowler.com/eaaCatalog/money.html) e está em conformidade com a [ISO 4217](https://pt.wikipedia.org/wiki/ISO_4217).
-
-Para permitir maior flexibilidade o pacote permite que algumas propriedades sejam configuradas diretamente no `config.exs` da aplicação dependênte:
-
-```elixir
-use Mix.Config
-
-unofficial_currencies = %{
-  XBT: %{
-    name: "Bitcoin",
-    symbol: '฿',
-    alpha_code: "XBT",
-    num_code: 0,
-    exponent: 8
-  },
-  RLC: %{
-    name: "Ramon de Lemos's Currency",
-    symbol: 'RL€',
-    alpha_code: "RLC",
-    num_code: 0,
-    exponent: 7
-  }
-}
-
-config :ex_dinheiro, :unofficial_currencies, unofficial_currencies
-config :ex_dinheiro, :thousand_separator, "."
-config :ex_dinheiro, :decimal_separator, ","
-config :ex_dinheiro, :display_currency_symbol, false
-config :ex_dinheiro, :display_currency_code, true
-
-```
-
-Mantive o nome do pacote e de seus módulos em Português com o objetivo de deixar uma assinatura de sua nacionalidade.
-
-Para maiores informações a documentação em Inglês pode ser encontrada em [https://hexdocs.pm/ex_dinheiro](https://hexdocs.pm/ex_dinheiro).
-
-### O módulo `FinancialSystem`
-
-Para atender ao que foi proposto no diretório `/test` foram implementados os métodos `transfer!/3` e `exchange!/3`. Seguindo as conveções da comunidade Elixir também disponibilizei os métodos wrapper `transfer/3` e `exchange/3`.
-
-Foram adicionados os módulos `Account` e `AccountTransaction` para separar do módulo principal a lógica para manipulação de contas e suas transações.
-
-Nesse módulo apliquei as técnicas de _Continuous Integration_ e _Continuous Delivery_ com o objetivo de manter o branch master sempre atualizado e somente com código funcional.
-
-## Material de Referência Utilizado
-* [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
-* [O Guia de Estilo Elixir](https://github.com/gusaiani/elixir_style_guide/blob/master/README_ptBR.md)
-* [Boas Práticas na Stone](https://github.com/stone-payments/stoneco-best-practices/blob/master/README_pt.md)
-* [Credo's Elixir Style Guide](https://github.com/rrrene/elixir-style-guide)
-* [Specifications and types · Elixir School](https://elixirschool.com/en/lessons/advanced/typespec/#defining-custom-type)
-* [Error Handling . Elixir School](https://elixirschool.com/en/lessons/advanced/error-handling/)
-* [Option parameters with keyword lists · Elixir Recipes](http://elixir-recipes.github.io/functions/option-parameters-with-keyword-lists/)
-* [Erlang -- float_to_binary/1](http://erlang.org/doc/man/erlang.html#float_to_binary-1)
-* [ExUnit.Callbacks – ExUnit v1.6.1](https://hexdocs.pm/ex_unit/ExUnit.Callbacks.html)
-* [Elixir is just cool. An example with pattern matching and structs.](http://learningwithjb.com/posts/elixir-is-just-cool-an-example-with-pattern-matching-and-structs)
-* [Mix – Mix v1.6.2](https://hexdocs.pm/mix/Mix.html)
-* [How to create and publish Hex.pm package (Elixir) – kkempin’s dev blog – Medium](https://medium.com/kkempin/how-to-create-and-publish-hex-pm-package-elixir-90cb33e2592d)
-* [Automatic Hex Package Publishing with Travis-CI](http://erlware.org/automatic-hex-package-publishing-with-travis-ci/)
-* [Continous Documentation of Elixir packages with Hex and Travis CI by René Föhring · trivelop](http://trivelop.de/2014/10/17/continous-docs-in-elixir-with-hex-and-travis/)
-* [Auto-Merging with Travis-CI and Configuring Coveralls to Elixir](https://medium.com/@allanbrados/automerge-with-travis-ci-and-coveralls-to-elixir-248d1c6d2531)
-* [Continuous integration vs. continuous delivery vs. continuous deployment](https://www.atlassian.com/continuous-delivery/ci-vs-ci-vs-cd)
-* [Martin Fowler's Money Pattern](https://martinfowler.com/eaaCatalog/money.html)
-* [ISO 4217 Currency codes](https://www.iso.org/iso-4217-currency-codes.html)
-* [Current currency & funds code list – ISO Currency](https://www.currency-iso.org/en/home/tables/table-a1.html)
-* [XE - World Currency Symbols](http://www.xe.com/symbols.php)
-
-# Desafio Nº 2
-
-# API de Banking
+### API de Banking
 
 O sistema deve oferecer a possibilidade de usuários realizarem transações financeiras
 como saque e transferencia entre contas.
@@ -151,48 +56,137 @@ Alguns relatórios devem ser gerados para o backoffice:
 * A API pode ser JSON ou GraphQL
 * Docker é um diferencial.
 
-## Critérios de Avaliação
+## A Solução
 
-O desafio será avaliado através de cinco critérios.
+Para atender ao que foi proposto foi criado um projeto `umbrella` contendo as aplicações `FinancialSystem` (Desafio Nº 1) e `FinancialSystemApi`, que é uma aplicação Phoenix responsável por servir uma API GraphQL para transações bancárias.
 
-### Entrega
+Foi utilizado o [Travis CI](https://travis-ci.org/ramondelemos) para a orquestração das técnicas de _Continuous Integration_, _Continuous Delivery_ e _Continuous Deployment_.
 
-* O código possui algum controle de dependências?
-* O resultado final está completo para ser executado?
-* O resultado final atende ao que se propõe fazer?
-* O resultado final atende totalmente aos requisitos propostos?
-* O sistema está rodando em algum lugar público?
-* Existe monitoramento de logs e falhas no sistema?
+Para a cobertura dos testes foi utilizado o [Coveralls.io](https://coveralls.io/github/ramondelemos).
 
-### Boas Práticas
+A análise do código é feita com o [Credo](http://credo-ci.org/) utilizando o parâmetro de execução `--strict` para reforçar o **guia de estilo do credo**.
 
-* O código está de acordo com o guia de estilo do Elixir?
-* O código está bem estruturado?
-* O código está fluente na linguagem?
-* O código faz o uso correto de _Design Patterns_?
+Para o release da aplicação foram utilizados em conjunto os pacotes [mix docker](https://github.com/Recruitee/mix_docker) e [Distillery](https://github.com/bitwalker/distillery). A aplicação é disponibilizada automaticamente em containers Docker no repositório público [ramondelemos/tech-challenge](https://hub.docker.com/r/ramondelemos/tech-challenge/tags/).
 
-### Documentação
+## API de Banking
 
-* O código foi entregue com um arquivo de README claro de como se guiar?
-* O código possui comentários pertinentes?
-* O código está em algum controle de versão?
-* Os commits são pequenos e consistentes?
-* As mensagens de commit são claras?
+A solução está disponível em [http://ramondelemos.com/api](http://ramondelemos.com/api). Para facilitar o uso, no endpoint [http://ramondelemos.com/graphiql](http://ramondelemos.com/graphiql) foi diponibilizada a interface gráfica _GraphiQL_ fornecida pelo módulo `absinthe`.
 
-### Código Limpo
+O sistema permite o registro de novos usuários com confirmação por e-mail, autenticação, consulta de usuários e contas, transferência entre contas e saque. Com exceção do registro e autenticação, para todas as operações os usuários precisarão assinar suas requisições com o token jwt fornecido após a autenticação.
 
-* O código possibilita expansão para novas funcionalidades?
-* O código é _Don't Repeat Yourself_?
-* O código é fácil de compreender?
+### Registro de Usuários
 
-### Controle de Qualidade
+O registro de novos usuários é feito utilizado a mutation `register`, onde serão informados os dados do usuário.
 
-* O código possui configuração de lint?
-* O código possui testes unitários?
-* O código possui teste de cobertura?
-* Integração Contínua?
+```javascript
+mutation UserRegister {
+  register(name:"Ramon de Lemos",  username: "ramondelemos", email: "ramondelemos@gmail.com", password: "password") {
+    email
+    , name
+    , username
+    , id
+  }
+}
+```
 
-## Material de Estudo
+Logo após o registro o e-mail fornecido receberá um link para confirmação e ativação da conta. Depois de confirmado, o usuário receberá um e-mail de confirmação e uma conta com 1.000,00 BRL de saldo para operações.
+
+### Autenticação
+
+A autenticação na aplicação é feita através da mutation `login`. Se a autenticação for bem sucedida o usuário receberá um token para ser utilizado em todas as demais operações.
+
+```javascript
+mutation UserLogin {
+  login(email: "ramondelemos@gmail.com", password: "password") {
+    token
+  }
+}
+```
+
+### Criação de Contas
+
+O usuário pode abrir novas contas, para isso será necessário informar o código [ISO 4217](https://pt.wikipedia.org/wiki/ISO_4217) da moéda que a conta armazenará. Esta operação é feita com a mutation `createAccount`.
+
+```javascript
+mutation CreateAccount {
+  createAccount(currency: "BRL") {
+    id
+    , amount
+    , currency
+    , transactions {
+      id
+      , dateTime
+      , value
+    }
+  }
+}
+```
+
+Contas novas são criadas com saldo 0.0.
+
+### Transferência entre contas
+
+Os usuários podem fazer transferências entre contas, bastando informarem os códigos identificadores das contas de origem e destino e o valor da operação. O usuário não poderá transferir valores superiores ao saldo da conta de origem, para contas de moedas diferentes e de contas de terceiros. Para realizar trasferência utilize a mutation `transfer`.
+
+```javascript
+mutation Transfer {
+  transfer(from: "1", to: "2", value: 10.5){
+    from {
+      amount
+      , currency
+      , transactions {
+        value
+        , dateTime
+      }
+    }
+  }
+}
+```
+
+### Saque de valores
+
+Os usuários podem fazer saques de suas contas, bastando informar o código identificador da conta e o valor da operação. Os usuários que realizarem saques receberão uma notificação por e-mail informando o valor retirado e o salda atual da conta. O usuário não poderá sacar valores superiores ao saldo disponível. Para realizar saques utilize a mutation `withdraw`.
+
+```javascript
+mutation Withdraw {
+  withdraw(from: "1", value: 10.5){
+    id
+  	, amount
+    , currency
+    , transactions {
+      value
+      , dateTime
+    }
+  }
+}
+```
+
+### Relatórios
+
+* Total transacionado (R$) por dia, mês, ano e total. [Em construção]
+* Número de usuários que não transacionam há mais de 1 mês (por dia). [Em construção]
+
+## Material de Referência Utilizado
 * [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
 * [O Guia de Estilo Elixir](https://github.com/gusaiani/elixir_style_guide/blob/master/README_ptBR.md)
 * [Boas Práticas na Stone](https://github.com/stone-payments/stoneco-best-practices/blob/master/README_pt.md)
+* [Phoenix Framework - A productive web framework that does not compromise speed and maintainability](http://phoenixframework.org/)
+* [Ecto, the database wrapper and query generator for Elixir.](https://hexdocs.pm/ecto/Ecto.html)
+* [GraphQL - A query language for your API](https://graphql.org/)
+* [GraphQL toolkit for Elixir](https://hexdocs.pm/absinthe/overview.html)
+* [Phoenix GraphQL Tutorial with Absinthe](https://ryanswapp.com/2016/11/29/phoenix-graphql-tutorial-with-absinthe/)
+* [Phoenix 1.3 and GraphQL with Absinthe](https://www.seanclayton.me/post/phoenix-1-3-and-graphql-with-absinthe/)
+* [Test your GraphQL API in Elixir](https://nicolasdular.com/blog/2017/09/03/test-your-graphql-api-in-elixir/)
+* [Bamboo](https://github.com/thoughtbot/bamboo)
+* [Building and configuring a Phoenix app with Umbrella for releasing with Docker](https://cultivatehq.com/posts/elixir-distillery-umbrella-docker/)
+* [uilding an Elixir Umbrella App with Phoenix and React](http://www.thegreatcodeadventure.com/building-an-elixir-umbrella-app-part-3/amp/)
+* [Mix Docker](https://github.com/Recruitee/mix_docker)
+* [Dockerizing Elixir and Phoenix Applications](https://semaphoreci.com/community/tutorials/dockerizing-elixir-and-phoenix-applications)
+* [Builder design pattern in Elixir](https://medium.com/kkempin/builder-design-pattern-in-elixir-c841e7cea307)
+* [A tour of Elixir performance & monitoring tools](https://hackernoon.com/a-tour-of-elixir-performance-monitoring-tools-aac2df726e8c)
+* [Monitoring Phoenix](https://medium.com/@mschae/measuring-your-phoenix-app-d63a77b13bda)
+* [dogstatsd-elixir](https://github.com/adamkittelson/dogstatsd-elixir)
+* [Elixir Logger And The Power Of Metadata](https://timber.io/blog/elixir-logger-and-the-power-of-metadata/)
+* [A Complete Guide to Deploying Elixir & Phoenix Applications on Kubernetes](https://medium.com/polyscribe/a-complete-guide-to-deploying-elixir-phoenix-applications-on-kubernetes-part-1-setting-up-d88b35b64dcd)
+* [SETTING UP ELIXIR CLUSTER USING DOCKER AND RANCHER](http://teamon.eu/2017/setting-up-elixir-cluster-using-docker-and-rancher/)
+* [Running distributed Erlang & Elixir applications on Docker](https://www.erlang-solutions.com/blog/running-distributed-erlang-elixir-applications-on-docker.html)
