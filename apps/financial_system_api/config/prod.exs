@@ -24,7 +24,7 @@ config :financial_system_api, FinancialSystemApiWeb.Endpoint,
 config :financial_system_api, FinancialSystemApi.Repo,
   database: System.get_env("DB_DATABASE") || "${DB_DATABASE}",
   ssl: true,
-  pool_size: 15
+  pool_size: 3
 
 # Do not print debug messages in production
 config :logger, level: :info
