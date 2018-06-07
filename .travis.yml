@@ -22,6 +22,9 @@ before_deploy:
 deploy:
   skip_cleanup: true
   provider: script
-  script: mix docker.shipit
+  script:
+    - mix docker.shipit
+    - docker tag ramondelemos/tech-challenge:release ramondelemos/tech-challenge:latest
+    - docker push ramondelemos/tech-challenge:latest
   on:
     branch: master
