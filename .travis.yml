@@ -9,6 +9,7 @@ otp_release:
   - '20.2.2'
 before_install:
   - chmod +x travis_merge_script.sh
+  - chmod +x deploy.sh
   - mix local.rebar --force
   - mix local.hex --force
   - mix deps.get
@@ -22,9 +23,6 @@ before_deploy:
 deploy:
   skip_cleanup: true
   provider: script
-  script:
-    - mix docker.shipit
-    - docker tag ramondelemos/tech-challenge:release ramondelemos/tech-challenge:latest
-    - docker push ramondelemos/tech-challenge:latest
+  script: bash deploy.sh
   on:
     branch: master
