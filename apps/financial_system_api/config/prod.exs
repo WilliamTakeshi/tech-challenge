@@ -20,6 +20,11 @@ config :financial_system_api, FinancialSystemApiWeb.Endpoint,
   secret_key_base: System.get_env("SECRET_KEY") || "${SECRET_KEY}",
   server: true
 
+# Configures Rancher
+config :financial_system_api,
+       :rancher_service_name,
+       System.get_env("RANCHER_SERVICE_NAME") || "${RANCHER_SERVICE_NAME}"
+
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
   database: System.get_env("DB_DATABASE") || "${DB_DATABASE}",

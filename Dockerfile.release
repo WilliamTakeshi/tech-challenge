@@ -10,7 +10,7 @@ ENV MIX_ENV=prod
 ENV REPLACE_OS_VARS=true
 ENV SHELL=/bin/bash
 
-WORKDIR /app
+WORKDIR /opt/app
 
 # Coping released app
 COPY financial_system_api.tar.gz .
@@ -20,5 +20,9 @@ RUN tar xfz financial_system_api.tar.gz
 
 RUN chown -R root ./releases
 
+# Coping boot script
+COPY rel/boot.sh /opt/app/bin/boot.sh
+RUN chmod +x /opt/app/bin/boot.sh
+
 # Setting released app to ENTRYPOINT
-ENTRYPOINT ["bin/financial_system_api"]
+ENTRYPOINT ["/opt/app/bin/boot.sh"]
