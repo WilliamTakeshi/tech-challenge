@@ -1,4 +1,6 @@
 defmodule FinancialSystemApi.Rancher do
+  @moduledoc false
+
   use GenServer
 
   # try to connect every 5 seconds
