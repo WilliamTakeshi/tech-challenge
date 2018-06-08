@@ -16,10 +16,11 @@ defmodule FinancialSystemApi.Application do
       # Start the Ecto repository
       supervisor(Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Endpoint, [])
+      supervisor(Endpoint, []),
       # Start your own worker by calling:
       #     FinancialSystemApi.Worker.start_link(arg1, arg2, arg3)
       # worker(FinancialSystemApi.Worker, [arg1, arg2, arg3]),
+      worker(FinancialSystemApi.Rancher, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -45,10 +45,11 @@ end
 # will be used by default
 
 release :financial_system_api do
-  set version: "0.1.7"
+  set version: "0.1.8"
   set applications: [
     :runtime_tools,
     financial_system: :permanent,
     financial_system_api: :permanent
   ]
+  set vm_args: "rel/vm.args"
 end

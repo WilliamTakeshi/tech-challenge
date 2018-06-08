@@ -1,0 +1,9 @@
+# rel/vm.args
+## Name of the node - this is the only change
+-name financial_system_api@${RANCHER_IP}
+
+## Cookie for distributed erlang
+-setcookie ${COOKIE}
+
+# Enable SMP automatically based on availability
+-smp auto
