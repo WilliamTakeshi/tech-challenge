@@ -11,10 +11,16 @@ defmodule FinancialSystemApi.Rancher do
   end
 
   def init([]) do
-    name = Application.fetch_env!(:financial_system_api, :rancher_service_name)
-    send(self, :connect)
+    name = Application.fetch_env(:financial_system_api, :rancher_service_name)
 
-    {:ok, to_char_list(name)}
+    case name do
+      {:ok, value} ->
+        send(self(), :connect)
+        {:ok, to_char_list(value)}
+
+      :error ->
+        {:ok, []}
+    end
   end
 
   def handle_info(:connect, name) do
@@ -31,7 +37,7 @@ defmodule FinancialSystemApi.Rancher do
     end
 
     IO.puts("Nodes: #{inspect(Node.list())}")
-    Process.send_after(self, :connect, @connect_interval)
+    Process.send_after(self(), :connect, @connect_interval)
 
     {:noreply, name}
   end
