@@ -41,6 +41,8 @@ defmodule FinancialSystemApi.MixProject do
       ],
       build: [
         "clean",
+        "ecto.create --quiet",
+        "ecto.migrate",
         "pre_build",
         "coveralls --umbrella"
       ],
