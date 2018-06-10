@@ -60,13 +60,18 @@ Alguns relatórios devem ser gerados para o backoffice:
 
 Para atender ao que foi proposto foi criado um projeto `umbrella` contendo as aplicações `FinancialSystem` (Desafio Nº 1) e `FinancialSystemApi`, que é uma aplicação Phoenix responsável por servir uma API GraphQL para transações bancárias.
 
-Foi utilizado o [Travis CI](https://travis-ci.org/ramondelemos) para a orquestração das técnicas de _Continuous Integration_, _Continuous Delivery_ e _Continuous Deployment_.
-
 Para a cobertura dos testes foi utilizado o [Coveralls.io](https://coveralls.io/github/ramondelemos).
 
 A análise do código é feita com o [Credo](http://credo-ci.org/) utilizando o parâmetro de execução `--strict` para reforçar o **guia de estilo do credo**.
 
 Para o release da aplicação foram utilizados em conjunto os pacotes [mix docker](https://github.com/Recruitee/mix_docker) e [Distillery](https://github.com/bitwalker/distillery). A aplicação é disponibilizada automaticamente em containers Docker no repositório público [ramondelemos/tech-challenge](https://hub.docker.com/r/ramondelemos/tech-challenge/tags/).
+
+Foram utilizados em conjunto o [Travis CI](https://travis-ci.org/ramondelemos), [Webhooks do Docker Hub](https://docs.docker.com/docker-hub/webhooks/) e o [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) para a orquestração das técnicas de _Continuous Integration_, _Continuous Delivery_ e _Continuous Deployment_.
+
+A aplicação está distribuída em dois servidores geograficamente separados e trabalhando de forma clusterizada.
+
+* Servidor [Linode](https://www.linode.com/) localizado em Fremont, USA
+* Servidor [DigitalOcean](https://www.digitalocean.com/) localizado em London, UK 
 
 ## API de Banking
 
@@ -190,3 +195,4 @@ mutation Withdraw {
 * [A Complete Guide to Deploying Elixir & Phoenix Applications on Kubernetes](https://medium.com/polyscribe/a-complete-guide-to-deploying-elixir-phoenix-applications-on-kubernetes-part-1-setting-up-d88b35b64dcd)
 * [SETTING UP ELIXIR CLUSTER USING DOCKER AND RANCHER](http://teamon.eu/2017/setting-up-elixir-cluster-using-docker-and-rancher/)
 * [Running distributed Erlang & Elixir applications on Docker](https://www.erlang-solutions.com/blog/running-distributed-erlang-elixir-applications-on-docker.html)
+* [Rancher - Deploying A Load Balancer](https://blog.programster.org/rancher-deploying-a-load-balancer)
