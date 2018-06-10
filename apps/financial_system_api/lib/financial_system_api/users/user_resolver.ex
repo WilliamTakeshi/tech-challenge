@@ -4,6 +4,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
   alias FinancialSystemApi.Users
   alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
+  alias FinancialSystemApi.FinancialSystemWrapper
   alias FinancialSystemApiWeb.Session
 
   import FinancialSystemApi.Resolvers
@@ -55,8 +56,12 @@ defmodule FinancialSystemApi.Users.UserResolver do
         %{user_id: id, amount: 1_000.00, currency: "BRL"}
         |> Accounts.create_account()
 
+      formated_balance =
+        account.amount
+        |> FinancialSystemWrapper.format_value(account.currency)
+
       user
-      |> MailSender.send_activated_email()
+      |> MailSender.send_activated_email(formated_balance)
       |> MailSender.deliver()
 
       {:ok, %{user | accounts: [account]}}

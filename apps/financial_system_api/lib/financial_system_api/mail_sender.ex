@@ -16,12 +16,12 @@ defmodule FinancialSystemApi.MailSender do
     )
   end
 
-  def send_activated_email(user) do
+  def send_activated_email(user, balance) do
     user
     |> create_email()
     |> subject("FinancialSystemApi - Account activated")
     |> html_body(
-      "<p>Congratulations, your account is active and your have R$ 1,000 of balance.</p>"
+      "<p>Congratulations, your account is active and your have #{balance} of balance.</p>"
     )
   end
 
