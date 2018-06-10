@@ -71,7 +71,9 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
       register()
       |> activate()
 
-    assert_delivered_email(MailSender.send_activated_email(user))
+    balance = "1.000,00 BRL"
+
+    assert_delivered_email(MailSender.send_activated_email(user, balance))
   end
 
   test "login/2" do

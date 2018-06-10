@@ -22,13 +22,17 @@ defmodule FinancialSystemApi.MailSenderTest do
   end
 
   test "send_activated_email/1" do
-    email = MailSender.send_activated_email(@user)
+    balance = "R$ 99,99"
+
+    email =
+      @user
+      |> MailSender.send_activated_email(balance)
 
     assert email.to == @user.email
     assert email.subject == "FinancialSystemApi - Account activated"
 
     assert email.html_body =~
-             "Congratulations, your account is active and your have R$ 1,000 of balance."
+             "Congratulations, your account is active and your have #{balance} of balance."
   end
 
   test "deliver/1 sending activation e-mail" do
@@ -40,11 +44,13 @@ defmodule FinancialSystemApi.MailSenderTest do
   end
 
   test "deliver/1 sending activated e-mail" do
+    balance = "R$ 99,99"
+
     @user
-    |> MailSender.send_activated_email()
+    |> MailSender.send_activated_email(balance)
     |> MailSender.deliver()
 
-    assert_delivered_email(MailSender.send_activated_email(@user))
+    assert_delivered_email(MailSender.send_activated_email(@user, balance))
   end
 
   test "send_withdraw_email/3" do
