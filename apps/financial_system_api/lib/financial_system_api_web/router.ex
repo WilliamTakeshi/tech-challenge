@@ -4,6 +4,7 @@ defmodule FinancialSystemApiWeb.Router do
   alias Guardian.Plug.VerifyHeader
   alias Guardian.Plug.LoadResource
   alias FinancialSystemApiWeb.Plugs.Context
+  alias FinancialSystemApiWeb.Plugs.Metrics
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -15,6 +16,7 @@ defmodule FinancialSystemApiWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug(Metrics)
   end
 
   pipeline :secure_api do
@@ -22,6 +24,7 @@ defmodule FinancialSystemApiWeb.Router do
     plug(VerifyHeader, realm: "Bearer")
     plug(LoadResource)
     plug(Context)
+    plug(Metrics)
   end
 
   scope "/", FinancialSystemApiWeb do

@@ -43,6 +43,9 @@ defmodule FinancialSystemApi.Mixfile do
         :bcrypt_elixir,
         :secure_random,
         :guardian,
+        :faker,
+        :ex_erlstats,
+        :dogstatsd,
         :bamboo
       ]
     ]
@@ -75,6 +78,9 @@ defmodule FinancialSystemApi.Mixfile do
       {:secure_random, "~> 0.5.1"},
       {:guardian, "~> 0.14"},
       {:bamboo, "~> 0.8"},
+      {:faker, "~> 0.10"},
+      {:ex_erlstats, "~> 0.1.6"},
+      {:dogstatsd, "0.0.4"},
       {:financial_system, in_umbrella: true}
     ]
   end
