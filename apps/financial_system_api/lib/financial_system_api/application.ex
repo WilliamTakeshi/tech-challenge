@@ -20,7 +20,8 @@ defmodule FinancialSystemApi.Application do
       # Start your own worker by calling:
       #     FinancialSystemApi.Worker.start_link(arg1, arg2, arg3)
       # worker(FinancialSystemApi.Worker, [arg1, arg2, arg3]),
-      worker(FinancialSystemApi.Rancher, [])
+      worker(FinancialSystemApi.Rancher, []),
+      worker(FinancialSystemApi.SystemMetrics, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
