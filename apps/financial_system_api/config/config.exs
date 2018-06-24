@@ -49,7 +49,10 @@ config :financial_system_api, FinancialSystemApi.Repo,
   database:
     (System.get_env("DB_DATABASE") || "financial_system_api") <> "_#{Mix.env()}",
   hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}",
-  loggers: [{Ecto.LogEntry, :log, []}, {FinancialSystemApi.Repo.Metrics, :log, []}]
+  loggers: [
+    {Ecto.LogEntry, :log, []},
+    {FinancialSystemApi.Repo.Metrics, :log, []}
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
