@@ -39,7 +39,7 @@ config :financial_system_api, FinancialSystemApi.Mailer,
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:user_id]
+  metadata: [:request_id, :module, :function, :user_id]
 
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
@@ -48,7 +48,8 @@ config :financial_system_api, FinancialSystemApi.Repo,
   password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
   database:
     (System.get_env("DB_DATABASE") || "financial_system_api") <> "_#{Mix.env()}",
-  hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}"
+  hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}",
+  loggers: [{Ecto.LogEntry, :log, []}, {FinancialSystemApi.Repo.Metrics, :log, []}]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

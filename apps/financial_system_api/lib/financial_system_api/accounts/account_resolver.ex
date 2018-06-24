@@ -1,6 +1,8 @@
 defmodule FinancialSystemApi.Accounts.AccountResolver do
   @moduledoc false
 
+  require Logger
+
   alias FinancialSystemApi.Users
   alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
@@ -9,17 +11,24 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   import FinancialSystemApi.Resolvers
 
   def create(args, %{context: %{current_user: %{id: id}}}) do
+    Logger.info("creating account", user_id: id)
+
     case FinancialSystemWrapper.create(id, 0.0, args.currency) do
       {:ok, account} ->
+        Logger.info("inserting account", user_id: id)
+
         account
         |> Accounts.create_account()
         |> response()
 
       {:error, reason} ->
+        Logger.info("#{inspect(reason)}", user_id: id)
         {:error, reason}
     end
   rescue
-    e -> {:error, e.message}
+    e ->
+      Logger.info("#{inspect(e)}", user_id: id)
+      {:error, "#{inspect(e)}"}
   end
 
   def create(_args, _info) do
@@ -27,25 +36,35 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   def transfer(args, %{context: %{current_user: %{id: id}}}) do
+    Logger.info("getting debit account", user_id: id)
+
     from = Accounts.get_account!(args.from)
 
     if from.user_id == id do
+      Logger.info("getting credit account", user_id: id)
+
       to = Accounts.get_account!(args.to)
 
       if from.id == to.id do
         {:error, "you can not transfer money to same account"}
       else
+        Logger.info("transfering values", user_id: id)
+
         case FinancialSystemWrapper.transfer(from, to, args.value) do
           {:ok, result} ->
+            Logger.info("updating accounts", user_id: id)
+
             case Accounts.update_transfer(from, result.from, to, result.to) do
               {:ok, {:ok, f, t}} ->
                 {:ok, %{from: f, to: t}}
 
               {:error, reason} ->
+                Logger.info("#{inspect(reason)}", user_id: id)
                 {:error, reason}
             end
 
           {:error, reason} ->
+            Logger.info("#{inspect(reason)}", user_id: id)
             {:error, reason}
         end
       end
@@ -53,7 +72,9 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
       {:error, "the origin account does not belongs to you"}
     end
   rescue
-    e -> {:error, e.message}
+    e ->
+      Logger.info("#{inspect(e)}", user_id: id)
+      {:error, "#{inspect(e)}"}
   end
 
   def transfer(_args, _info) do
@@ -61,31 +82,45 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   def withdraw(args, %{context: %{current_user: %{id: id}}}) do
+    Logger.info("getting account", user_id: id)
+
     from = Accounts.get_account!(args.from)
 
     if from.user_id == id do
+      Logger.info("starting withdraw", user_id: id)
+
       case FinancialSystemWrapper.withdraw(from, args.value) do
         {:ok, f} ->
+          Logger.info("updating account", user_id: id)
+
           case Accounts.update_account(from, f) do
             {:ok, account} ->
+              Logger.info("notifing user", user_id: id)
+
               id
               |> Users.get_user()
               |> notify_user_of_withdraw(account, args.value)
 
+              Logger.info("withdraw completed", user_id: id)
+
               {:ok, account}
 
             {:error, reason} ->
+              Logger.info("#{inspect(reason)}", user_id: id)
               {:error, reason}
           end
 
         {:error, reason} ->
+          Logger.info("#{inspect(reason)}", user_id: id)
           {:error, reason}
       end
     else
       {:error, "this account does not belongs to you"}
     end
   rescue
-    e -> {:error, e.message}
+    e ->
+      Logger.info("#{inspect(e)}", user_id: id)
+      {:error, "#{inspect(e)}"}
   end
 
   def withdraw(_args, _info) do
