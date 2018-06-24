@@ -73,6 +73,8 @@ A aplicação está distribuída em dois servidores geograficamente separados e 
 * Servidor [Linode](https://www.linode.com/) localizado em Fremont, USA
 * Servidor [DigitalOcean](https://www.digitalocean.com/) localizado em London, UK 
 
+A adição de novos servidores ao cluster é feita de forma simples e rápida através da API do [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/). As aplicações se conectam automaticamente umas as outras utilizando API de Metadata fornecida pelo [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) e um módulo worker `FinancialSystemApi.Rancher` que atualiza as conexões dos nós a cada 5 segundos. O crescimento/encolhimento horizontal pode ser feito de forma programática, mas não implementei para não estender em muito o escopo da solução. 
+
 ## API de Banking
 
 A solução está disponível em [http://ramondelemos.com/api](http://ramondelemos.com/api). Para facilitar o uso, no endpoint [http://ramondelemos.com/graphiql](http://ramondelemos.com/graphiql) foi diponibilizada a interface gráfica _GraphiQL_ fornecida pelo módulo `absinthe`.
