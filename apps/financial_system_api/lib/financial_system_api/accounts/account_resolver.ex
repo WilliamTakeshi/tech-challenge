@@ -7,10 +7,13 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
   alias FinancialSystemApi.FinancialSystemWrapper
+  alias FinancialSystemApi.StatsdWrapper
 
   import FinancialSystemApi.Resolvers
 
   def create(args, %{context: %{current_user: %{id: id}}}) do
+    send_metrics("create.account")
+
     Logger.info("creating account", user_id: id)
 
     case FinancialSystemWrapper.create(id, 0.0, args.currency) do
@@ -32,10 +35,13 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   def create(_args, _info) do
+    send_metrics("create.account.unauthorized")
     {:error, "not authorized"}
   end
 
   def transfer(args, %{context: %{current_user: %{id: id}}}) do
+    send_metrics("transfer")
+
     Logger.info("getting debit account", user_id: id)
 
     from = Accounts.get_account!(args.from)
@@ -78,10 +84,13 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   def transfer(_args, _info) do
+    send_metrics("transfer.unauthorized")
     {:error, "not authorized"}
   end
 
   def withdraw(args, %{context: %{current_user: %{id: id}}}) do
+    send_metrics("withdraw")
+
     Logger.info("getting account", user_id: id)
 
     from = Accounts.get_account!(args.from)
@@ -124,6 +133,7 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   def withdraw(_args, _info) do
+    send_metrics("withdraw.unauthorized")
     {:error, "not authorized"}
   end
 
@@ -139,5 +149,16 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
     user
     |> MailSender.send_withdraw_email(formated_value, formated_balance)
     |> MailSender.deliver()
+  end
+
+  defp send_metrics(method) do
+    {:ok, statsd} = StatsdWrapper.build_statsd_agent()
+
+    if statsd do
+      StatsdWrapper.increment(
+        statsd,
+        "financial_system_api.account.#{method}"
+      )
+    end
   end
 end

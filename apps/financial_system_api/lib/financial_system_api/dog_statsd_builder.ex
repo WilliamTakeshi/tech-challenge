@@ -6,23 +6,27 @@ defmodule FinancialSystemApi.DogStatsdBuilder do
   Builder module to DogStatsd Agent.
   """
   def build_dogstatsd_agent do
-    dogstatsd_ip =
-      Application.fetch_env(:financial_system_api, :rancher_host_ip)
+    if Mix.env() == :prod do
+      dogstatsd_ip =
+        Application.fetch_env(:financial_system_api, :rancher_host_ip)
 
-    case dogstatsd_ip do
-      {:ok, value} ->
-        case DogStatsd.new(value, 8125) do
-          {:ok, dogstatsd} ->
-            {:ok, dogstatsd}
+      case dogstatsd_ip do
+        {:ok, value} ->
+          case DogStatsd.new(value, 8125) do
+            {:ok, dogstatsd} ->
+              {:ok, dogstatsd}
 
-          {:error, reason} ->
-            Logger.info("#{inspect(reason)}")
-            {:ok, nil}
-        end
+            {:error, reason} ->
+              Logger.info("#{inspect(reason)}")
+              {:ok, nil}
+          end
 
-      :error ->
-        Logger.info(":rancher_host_ip not found")
-        {:ok, nil}
+        :error ->
+          Logger.info(":rancher_host_ip not found")
+          {:ok, nil}
+      end
+    else
+      {:ok, nil}
     end
   end
 end

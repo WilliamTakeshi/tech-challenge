@@ -20,14 +20,15 @@ defmodule FinancialSystemApiWeb.Plugs.Metrics do
 
       {:ok, statsd} = StatsdWrapper.build_statsd_agent()
 
-      # Exometer.update(
-      #  [:financial_system_api, :graphql_api, :resp_time],
-      #  diff / 1_000
-      # )
-      # Exometer.update(
-      #  [:financial_system_api, :graphql_api, :resp_count],
-      #  1
-      # )
+      if statsd do
+        StatsdWrapper.histogram(
+          statsd,
+          "financial_system_api.web.resp_time",
+          diff / 1_000
+        )
+
+        StatsdWrapper.increment(statsd, "financial_system_api.web.resp_count")
+      end
 
       conn
     end)
