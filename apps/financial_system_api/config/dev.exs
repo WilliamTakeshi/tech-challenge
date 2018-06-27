@@ -62,3 +62,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo, pool_size: 10
+
+# Configuring the dev enviroment
+config :financial_system_api, :environment, :dev
