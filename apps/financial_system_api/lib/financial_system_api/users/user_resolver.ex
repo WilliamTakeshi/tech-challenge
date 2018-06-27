@@ -1,6 +1,8 @@
 defmodule FinancialSystemApi.Users.UserResolver do
   @moduledoc false
 
+  require Logger
+
   alias FinancialSystemApi.Users
   alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
@@ -10,6 +12,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
   import FinancialSystemApi.Resolvers
 
   def all(_args, %{context: %{current_user: %{id: _id}}}) do
+    Logger.info("listing users", user_id: id)
     {:ok, Users.list_users()}
   end
 
@@ -25,22 +28,33 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def register(args, _info) do
+    Logger.info("registering user")
+
     case args
          |> Users.register_user()
          |> response() do
       {:ok, user} ->
+        Logger.info("sending activation e-mail")
+
         user
         |> MailSender.send_activation_email()
         |> MailSender.deliver()
 
         {:ok, user}
 
-      {:error, reaseon} ->
-        {:error, reaseon}
+      {:error, reason} ->
+        Logger.info("#{inspect(reason)}")
+        {:error, reason}
     end
+  rescue
+    e ->
+      Logger.info("#{inspect(e)}")
+      {:error, "#{inspect(e)}"}
   end
 
   def activate(%{id: id}, _info) do
+    Logger.info("getting user", user_id: id)
+
     user =
       id
       |> Users.get_user()
@@ -48,9 +62,12 @@ defmodule FinancialSystemApi.Users.UserResolver do
     if user.email_verified do
       {:ok, user}
     else
+      Logger.info("activating user", user_id: id)
       {:ok, _} =
         user
         |> Users.activate_user()
+
+      Logger.info("creating user account", user_id: id)
 
       {:ok, account} =
         %{user_id: id, amount: 1_000.00, currency: "BRL"}
@@ -60,12 +77,18 @@ defmodule FinancialSystemApi.Users.UserResolver do
         account.amount
         |> FinancialSystemWrapper.format_value(account.currency)
 
+      Logger.info("sending activated e-mail", user_id: id)
+
       user
       |> MailSender.send_activated_email(formated_balance)
       |> MailSender.deliver()
 
       {:ok, %{user | accounts: [account]}}
     end
+  rescue
+    e ->
+      Logger.info("#{inspect(e)}")
+      {:error, "#{inspect(e)}"}
   end
 
   def login(params, _info) do
@@ -73,5 +96,9 @@ defmodule FinancialSystemApi.Users.UserResolver do
          {:ok, jwt, _} <- Guardian.encode_and_sign(user, :access) do
       {:ok, %{token: jwt}}
     end
+  rescue
+    e ->
+      Logger.info("#{inspect(e)}")
+      {:error, "#{inspect(e)}"}
   end
 end
