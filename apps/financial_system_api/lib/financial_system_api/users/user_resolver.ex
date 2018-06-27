@@ -12,7 +12,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
 
   import FinancialSystemApi.Resolvers
 
-  def all(_args, %{context: %{current_user: %{id: _id}}}) do
+  def all(_args, %{context: %{current_user: %{id: id}}}) do
     send_metrics("list")
     Logger.info("listing users", user_id: id)
     {:ok, Users.list_users()}
@@ -69,6 +69,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
       {:ok, user}
     else
       Logger.info("activating user", user_id: id)
+
       {:ok, _} =
         user
         |> Users.activate_user()
@@ -112,16 +113,13 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   defp send_metrics(method) do
-    case StatsdWrapper.build_statsd_agent() do
-      {:ok, statsd} ->
-        StatsdWrapper.increment(
-          statsd,
-          "financial_system_api.user.#{method}"
-        )
-        :ok
+    {:ok, statsd} = StatsdWrapper.build_statsd_agent()
 
-      {:ok, nil} ->
-        :error
+    if statsd do
+      StatsdWrapper.increment(
+        statsd,
+        "financial_system_api.user.#{method}"
+      )
     end
   end
 end

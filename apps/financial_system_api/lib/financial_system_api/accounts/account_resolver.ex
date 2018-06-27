@@ -152,16 +152,13 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   defp send_metrics(method) do
-    case StatsdWrapper.build_statsd_agent() do
-      {:ok, statsd} ->
-        StatsdWrapper.increment(
-          statsd,
-          "financial_system_api.account.#{method}"
-        )
-        :ok
+    {:ok, statsd} = StatsdWrapper.build_statsd_agent()
 
-      {:ok, nil} ->
-        :error
+    if statsd do
+      StatsdWrapper.increment(
+        statsd,
+        "financial_system_api.account.#{method}"
+      )
     end
   end
 end

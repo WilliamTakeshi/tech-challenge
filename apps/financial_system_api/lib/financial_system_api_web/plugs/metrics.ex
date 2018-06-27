@@ -20,8 +20,15 @@ defmodule FinancialSystemApiWeb.Plugs.Metrics do
 
       {:ok, statsd} = StatsdWrapper.build_statsd_agent()
 
-      StatsdWrapper.histogram(statsd, "financial_system_api.web.resp_time", diff / 1_000)
-      StatsdWrapper.increment(statsd, "financial_system_api.web.resp_count")
+      if statsd do
+        StatsdWrapper.histogram(
+          statsd,
+          "financial_system_api.web.resp_time",
+          diff / 1_000
+        )
+
+        StatsdWrapper.increment(statsd, "financial_system_api.web.resp_count")
+      end
 
       conn
     end)
