@@ -6,7 +6,7 @@ defmodule FinancialSystemApi.DogStatsdBuilder do
   Builder module to DogStatsd Agent.
   """
   def build_dogstatsd_agent do
-    if Mix.env() == :prod do
+    if Application.get_env(:financial_system_api, :environment) == :prod do
       dogstatsd_ip =
         Application.fetch_env(:financial_system_api, :rancher_host_ip)
 

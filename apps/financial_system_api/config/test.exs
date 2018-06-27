@@ -16,3 +16,6 @@ config :financial_system_api, FinancialSystemApi.Repo,
 # Configures Bamboo.
 config :financial_system_api, FinancialSystemApi.Mailer,
   adapter: Bamboo.TestAdapter
+
+# Configuring the test enviroment
+config :financial_system_api, :environment, :test

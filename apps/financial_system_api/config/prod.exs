@@ -71,3 +71,6 @@ config :logger, level: :info
 #
 #     config :financial_system_api, FinancialSystemApiWeb.Endpoint, server: true
 #
+
+# Configuring the prod enviroment
+config :financial_system_api, :environment, :prod
