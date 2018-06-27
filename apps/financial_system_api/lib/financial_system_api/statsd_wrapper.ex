@@ -14,4 +14,12 @@ defmodule FinancialSystemApi.StatsdWrapper do
   def gauge(agent, tag, value) do
     DogStatsd.gauge(agent, tag, value)
   end
+
+  def histogram(agent, tag, value) do
+    DogStatsd.histogram(agent, tag, value)
+  end
+
+  def increment(agent, tag) do
+    DogStatsd.increment(agent, tag)
+  end
 end
