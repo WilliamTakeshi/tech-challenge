@@ -25,6 +25,11 @@ config :financial_system_api,
        :rancher_service_name,
        System.get_env("RANCHER_SERVICE_NAME") || "${RANCHER_SERVICE_NAME}"
 
+# Configures Rancher Host IP
+config :financial_system_api,
+       :rancher_host_ip,
+       System.get_env("RANCHER_HOST_IP") || "${RANCHER_HOST_IP}"
+
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
   database: System.get_env("DB_DATABASE") || "${DB_DATABASE}",
