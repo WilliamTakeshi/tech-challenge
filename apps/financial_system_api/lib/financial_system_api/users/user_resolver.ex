@@ -7,11 +7,13 @@ defmodule FinancialSystemApi.Users.UserResolver do
   alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
   alias FinancialSystemApi.FinancialSystemWrapper
+  alias FinancialSystemApi.StatsdWrapper
   alias FinancialSystemApiWeb.Session
 
   import FinancialSystemApi.Resolvers
 
   def all(_args, %{context: %{current_user: %{id: _id}}}) do
+    send_metrics("list")
     Logger.info("listing users", user_id: id)
     {:ok, Users.list_users()}
   end
@@ -28,6 +30,8 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def register(args, _info) do
+    send_metrics("register")
+
     Logger.info("registering user")
 
     case args
@@ -53,6 +57,8 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def activate(%{id: id}, _info) do
+    send_metrics("activate")
+
     Logger.info("getting user", user_id: id)
 
     user =
@@ -92,13 +98,30 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   def login(params, _info) do
+    send_metrics("login")
+
     with {:ok, user} <- Session.authenticate(params, Users),
          {:ok, jwt, _} <- Guardian.encode_and_sign(user, :access) do
+      send_metrics("login.ok")
       {:ok, %{token: jwt}}
     end
   rescue
     e ->
       Logger.info("#{inspect(e)}")
       {:error, "#{inspect(e)}"}
+  end
+
+  defp send_metrics(method) do
+    case StatsdWrapper.build_statsd_agent() do
+      {:ok, statsd} ->
+        StatsdWrapper.increment(
+          statsd,
+          "financial_system_api.user.#{method}"
+        )
+        :ok
+
+      {:ok, nil} ->
+        :error
+    end
   end
 end
