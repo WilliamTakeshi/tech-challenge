@@ -48,6 +48,8 @@ defmodule FinancialSystemApi.SystemMetrics do
       if statsd_agent != nil do
         statsd_agent
         |> send_memory_status(state[:name])
+        |> send_erlang_system_info(state[:name])
+        |> send_erlang_runtime_info(state[:name])
 
         state
       else
@@ -72,6 +74,30 @@ defmodule FinancialSystemApi.SystemMetrics do
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
         tag = "#{system_name}.memory" |> get_tag(k)
+        StatsdWrapper.gauge(statsd, tag, v)
+      end)
+
+    statsd
+  end
+
+  def send_erlang_system_info(statsd, system_name) do
+    _result =
+      ExErlstats.memory()
+      |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
+      |> Enum.map(fn {k, v} ->
+        tag = "#{system_name}.erlang" |> get_tag(k)
+        StatsdWrapper.gauge(statsd, tag, v)
+      end)
+
+    statsd
+  end
+
+  def send_erlang_runtime_info(statsd, system_name) do
+    _result =
+      ExErlstats.memory()
+      |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
+      |> Enum.map(fn {k, v} ->
+        tag = "#{system_name}.erlang" |> get_tag(k)
         StatsdWrapper.gauge(statsd, tag, v)
       end)
 
