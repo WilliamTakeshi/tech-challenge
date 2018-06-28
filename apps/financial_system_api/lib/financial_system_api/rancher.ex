@@ -26,10 +26,12 @@ defmodule FinancialSystemApi.Rancher do
   def handle_info(:connect, name) do
     case :inet_tcp.getaddrs(name) do
       {:ok, ips} ->
-        IO.puts("Connecting to #{name}: #{inspect(ips)}")
+        self_ip = Application.get_env(:financial_system_api, :rancher_ip)
 
         for {a, b, c, d} <- ips do
-          Node.connect(:"financial_system_api@#{a}.#{b}.#{c}.#{d}")
+          if self_ip != "#{a}.#{b}.#{c}.#{d}" do
+            Node.connect(:"financial_system_api@#{a}.#{b}.#{c}.#{d}")
+          end
         end
 
       {:error, reason} ->
@@ -37,6 +39,7 @@ defmodule FinancialSystemApi.Rancher do
     end
 
     IO.puts("Nodes: #{inspect(Node.list())}")
+
     Process.send_after(self(), :connect, @connect_interval)
 
     {:noreply, name}
