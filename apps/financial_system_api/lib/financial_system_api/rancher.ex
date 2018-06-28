@@ -25,7 +25,7 @@ defmodule FinancialSystemApi.Rancher do
 
   def handle_info(:connect, name) do
     case :inet_tcp.getaddrs(name) do
-      {:ok, ips} ->        
+      {:ok, ips} ->
         self_ip = Application.get_env(:financial_system_api, :rancher_ip)
 
         for {a, b, c, d} <- ips do
