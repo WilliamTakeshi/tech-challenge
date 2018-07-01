@@ -3,6 +3,8 @@ defmodule FinancialSystemApi.Repo.Metrics do
   Module responseble to send ecto metrics to DataDog Agent.
   """
 
+  require Logger
+
   alias FinancialSystemApi.StatsdWrapper
 
   def log(log_entry) do
@@ -12,7 +14,7 @@ defmodule FinancialSystemApi.Repo.Metrics do
       StatsdWrapper.histogram(
         statsd,
         "financial_system_api.ecto.query_exec_time",
-        (log_entry.query_time + log_entry.queue_time || 0) / 1_000
+        (log_entry.query_time + (log_entry.queue_time || 0)) / 1_000
       )
 
       StatsdWrapper.histogram(
@@ -26,5 +28,9 @@ defmodule FinancialSystemApi.Repo.Metrics do
         "financial_system_api.ecto.query_count"
       )
     end
+  rescue
+    e ->
+      Logger.error("#{inspect(e)}")
+      e
   end
 end

@@ -9,8 +9,8 @@ defmodule FinancialSystemApi.SystemMetrics do
 
   alias FinancialSystemApi.StatsdWrapper
 
-  # try to connect every 5 seconds
-  @interval 2_000
+  # Interval to send metrics.
+  @interval Application.get_env(:financial_system_api, :metrics_interval)
 
   def start_link do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
@@ -38,7 +38,16 @@ defmodule FinancialSystemApi.SystemMetrics do
 
     {:ok, statsd} = StatsdWrapper.build_statsd_agent()
 
-    Map.put(state, :statsd, statsd)
+    state = Map.put(state, :statsd, statsd)
+
+    Map.put(state, :interval, get_interval())
+  end
+
+  defp get_interval do
+    case Integer.parse(@interval) do
+      :error -> 1_000
+      {value, _} -> value
+    end
   end
 
   def handle_info(:status, state) do
@@ -57,14 +66,14 @@ defmodule FinancialSystemApi.SystemMetrics do
         Map.put(state, :statsd, statsd)
       end
 
-    Process.send_after(self(), :status, @interval)
+    Process.send_after(self(), :status, state[:interval])
 
     {:noreply, state}
   rescue
     e ->
       Logger.info("#{inspect(e)}")
       Logger.info("reseting state")
-      Process.send_after(self(), :status, @interval)
+      Process.send_after(self(), :status, state[:interval])
       {:noreply, get_initial_state(%{})}
   end
 
