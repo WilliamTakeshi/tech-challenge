@@ -54,6 +54,11 @@ config :financial_system_api, FinancialSystemApi.Repo,
     {FinancialSystemApi.Repo.Metrics, :log, []}
   ]
 
+# Configuring interval to send metrics.
+config :financial_system_api,
+       :metrics_interval,
+       System.get_env("METRICS_INTERVAL") || "${METRICS_INTERVAL}"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
