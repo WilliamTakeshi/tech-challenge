@@ -21,7 +21,8 @@ defmodule FinancialSystemApi.Application do
       #     FinancialSystemApi.Worker.start_link(arg1, arg2, arg3)
       # worker(FinancialSystemApi.Worker, [arg1, arg2, arg3]),
       worker(FinancialSystemApi.Rancher, []),
-      worker(FinancialSystemApi.SystemMetrics, [])
+      worker(FinancialSystemApi.SystemMetrics, []),
+      worker(FinancialSystemApi.AggregationTaskRunner, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
