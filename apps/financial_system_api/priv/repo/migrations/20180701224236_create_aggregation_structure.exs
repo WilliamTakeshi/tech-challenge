@@ -15,10 +15,9 @@ defmodule FinancialSystemApi.Repo.Migrations.CreateAggregationStructure do
   end
 
   defp do_execute(file_name) do
-    Path.join(
-      :code.priv_dir(:financial_system_api),
-      "repo/scripts/#{file_name}"
-    )
+    :financial_system_api
+    |> :code.priv_dir()
+    |> Path.join("repo/scripts/#{file_name}")
     |> File.read!()
     |> execute()
   end
