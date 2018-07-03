@@ -19,7 +19,9 @@ BEGIN
         from transactions as t
        inner join accounts c on c.id = t.account_id
        where t.id between start_id and end_id
-       group by date_trunc('day', t.date_time), c.currency
+
+       group by date_trunc('day', t.date_time), c.currency 
+
       ON CONFLICT (transaction_day, currency) DO UPDATE
       SET credit = transactions_1day.credit + EXCLUDED.credit
         , debit = transactions_1day.debit + EXCLUDED.debit;
