@@ -6,7 +6,7 @@ defmodule FinancialSystemApi.Repo.Migrations.CreateAggregationStructure do
     do_execute("insert_into_rollup_table.sql")
     do_execute("create_incremental_rollup_window_function.sql")
     do_execute("create_transactions_1day_table.sql")
-    do_execute("create_do_transactions_aggregations_function.sql")
+    #do_execute("create_do_transactions_aggregations_function.sql")
   end
 
   def down do
