@@ -59,6 +59,11 @@ config :financial_system_api,
        :metrics_interval,
        System.get_env("METRICS_INTERVAL") || "${METRICS_INTERVAL}"
 
+# Configuring interval to update aggregation tables.
+config :financial_system_api,
+       :aggregation_interval,
+       System.get_env("AGGREGATION_INTERVAL") || "${AGGREGATION_INTERVAL}"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
