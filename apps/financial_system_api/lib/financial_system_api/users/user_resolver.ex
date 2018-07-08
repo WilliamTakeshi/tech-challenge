@@ -76,21 +76,30 @@ defmodule FinancialSystemApi.Users.UserResolver do
 
       Logger.info("creating user account", user_id: id)
 
-      {:ok, account} =
-        %{user_id: id, amount: 1_000.00, currency: "BRL"}
-        |> Accounts.create_account()
+      case FinancialSystemWrapper.create(id, 1_000.00, "BRL") do
+        {:ok, new_account} ->
+          Logger.info("inserting account", user_id: id)
 
-      formated_balance =
-        account.amount
-        |> FinancialSystemWrapper.format_value(account.currency)
+          {:ok, account} =
+            new_account
+            |> Accounts.create_account()
 
-      Logger.info("sending activated e-mail", user_id: id)
+          formated_balance =
+            account.amount
+            |> FinancialSystemWrapper.format_value(account.currency)
 
-      user
-      |> MailSender.send_activated_email(formated_balance)
-      |> MailSender.deliver()
+          Logger.info("sending activated e-mail", user_id: id)
 
-      {:ok, %{user | accounts: [account]}}
+          user
+          |> MailSender.send_activated_email(formated_balance)
+          |> MailSender.deliver()
+
+          {:ok, %{user | accounts: [account]}}
+
+        {:error, reason} ->
+          Logger.info("#{inspect(reason)}", user_id: id)
+          {:error, reason}
+      end
     end
   rescue
     e ->
