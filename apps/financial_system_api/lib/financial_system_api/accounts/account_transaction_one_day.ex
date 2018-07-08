@@ -3,8 +3,8 @@ defmodule FinancialSystemApi.Accounts.AccountTransactionOneDay do
   use Ecto.Schema
 
   @primary_key false
-  schema "transactions_1day" do   
-    field(:date, :naive_datetime, [source: :transaction_day])
+  schema "transactions_1day" do
+    field(:date, :naive_datetime, source: :transaction_day)
     field(:currency, :string)
     field(:credit, :float)
     field(:debit, :float)

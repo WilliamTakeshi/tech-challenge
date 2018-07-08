@@ -40,9 +40,9 @@ defmodule FinancialSystemApiWeb.Schema.Types do
 
   @desc "Balance type"
   enum :balance_type do
-    value :day, description: "Day"
-    value :month, description: "Month"
-    value :year, description: "Year"
+    value(:day, description: "Day")
+    value(:month, description: "Month")
+    value(:year, description: "Year")
   end
 
   @desc "Balance result"
