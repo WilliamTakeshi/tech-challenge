@@ -18,6 +18,7 @@ elixir:
 otp_release:
   - '20.2.2'
 before_install:
+  - psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
   - chmod +x travis_merge_script.sh
   - chmod +x deploy.sh
   - mix local.rebar --force
