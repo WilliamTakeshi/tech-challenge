@@ -7,8 +7,7 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
 
   require Logger
 
-  alias Ecto.Adapters.SQL
-  alias FinancialSystemApi.Repo
+  alias FinancialSystemApi.Accounts
 
   # Interval to update aggregations.
   @interval Application.get_env(:financial_system_api, :aggregation_interval)
@@ -55,8 +54,7 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
 
   defp do_update do
     if Application.get_env(:financial_system_api, :environment) == :prod do
-      Repo
-      |> SQL.query("select do_transactions_aggregations()")
+      Accounts.update_transactions_aggregations()
     else
       {:ok, nil}
     end
