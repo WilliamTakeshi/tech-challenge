@@ -137,7 +137,7 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
     {:error, "not authorized"}
   end
 
-  def balance_report(args, %{context: %{current_user: %{id: id}}}) do
+  def balance_report(args, %{context: %{current_user: %{id: _id}}}) do
     {:ok, Accounts.balance_report(args.by, args[:date])}
   end
 
