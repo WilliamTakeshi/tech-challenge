@@ -18,9 +18,6 @@ elixir:
 otp_release:
   - '20.2.2'
 before_install:
-  - sudo /etc/init.d/postgresql stop
-  - sudo cp /etc/postgresql/9.6/main/pg_hba.conf /etc/postgresql/10/main/pg_hba.conf
-  - sudo /etc/init.d/postgresql restart
   - chmod +x travis_merge_script.sh
   - chmod +x deploy.sh
   - mix local.rebar --force
