@@ -37,4 +37,19 @@ defmodule FinancialSystemApiWeb.Schema.Types do
     field(:from, :account)
     field(:to, :account)
   end
+
+  @desc "Balance type"
+  enum :balance_type do
+    value(:day, description: "Day")
+    value(:month, description: "Month")
+    value(:year, description: "Year")
+  end
+
+  @desc "Balance result"
+  object :balance_result do
+    field(:date, :naive_datetime)
+    field(:currency, :string)
+    field(:credit, :float)
+    field(:debit, :float)
+  end
 end

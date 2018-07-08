@@ -137,6 +137,15 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
     {:error, "not authorized"}
   end
 
+  def balance_report(args, %{context: %{current_user: %{id: id}}}) do
+    {:ok, Accounts.balance_report(args.by, args[:date])}
+  end
+
+  def balance_report(_args, _info) do
+    send_metrics("withdraw.unauthorized")
+    {:error, "not authorized"}
+  end
+
   defp notify_user_of_withdraw(user, account, value) do
     formated_value =
       value

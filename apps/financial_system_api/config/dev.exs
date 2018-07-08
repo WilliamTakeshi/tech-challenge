@@ -65,3 +65,9 @@ config :financial_system_api, FinancialSystemApi.Repo, pool_size: 10
 
 # Configuring the dev enviroment
 config :financial_system_api, :environment, :dev
+
+# Configuring interval to send metrics.
+config :financial_system_api, :metrics_interval, "90000000"
+
+# Configuring interval to update aggregation tables.
+config :financial_system_api, :aggregation_interval, "90000000"
