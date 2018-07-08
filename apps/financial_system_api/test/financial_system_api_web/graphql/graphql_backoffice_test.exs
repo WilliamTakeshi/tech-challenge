@@ -75,7 +75,7 @@ defmodule FinancialSystemApiWeb.GraphqlBackofficeTest do
 
     {:ok, brl_account} = Accounts.create_account(transient_account)
 
-    {:ok, _} = Accounts.update_transactions_aggregations()
+    :ok = Accounts.update_transactions_aggregations()
 
     {:ok,
      %{

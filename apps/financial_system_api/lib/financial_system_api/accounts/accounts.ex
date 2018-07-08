@@ -349,7 +349,14 @@ defmodule FinancialSystemApi.Accounts do
   end
 
   def update_transactions_aggregations do
-    Repo
-    |> SQL.query("select do_transactions_aggregations()")
+    {:ok, _} =
+      Repo
+      |> SQL.query("select do_transactions_aggregations()")
+
+    {:ok, _} =
+      Repo
+      |> SQL.query("select do_transactions_aggregations()")
+
+    :ok
   end
 end

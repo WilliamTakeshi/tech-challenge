@@ -37,7 +37,7 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
 
   def handle_info(:update, state) do
     case do_update() do
-      {:ok, _} -> Logger.info("aggregation tables updated")
+      :ok -> Logger.info("aggregation tables updated")
       {:error, reason} -> Logger.info("error: #{inspect(reason)}")
     end
 
@@ -56,7 +56,7 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
     if Application.get_env(:financial_system_api, :environment) == :prod do
       Accounts.update_transactions_aggregations()
     else
-      {:ok, nil}
+      :ok
     end
   end
 end

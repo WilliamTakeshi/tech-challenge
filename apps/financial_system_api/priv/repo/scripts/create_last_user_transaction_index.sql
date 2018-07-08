@@ -1,0 +1,1 @@
+CREATE INDEX last_user_transaction_idx ON last_user_transaction (last_transaction);

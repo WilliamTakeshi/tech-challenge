@@ -7,11 +7,15 @@ defmodule FinancialSystemApi.Repo.Migrations.CreateAggregationStructure do
     do_execute("create_incremental_rollup_window_function.sql")
     do_execute("create_transactions_1day_table.sql")
     do_execute("create_do_transactions_aggregations_function.sql")
+    do_execute("create_last_user_transaction.sql")
+    do_execute("create_last_user_transaction_index.sql")
+    do_execute("create_do_last_user_transactions.sql")
   end
 
   def down do
     do_execute("drop_rollups_table.sql")
     do_execute("drop_transactions_1day_table.sql")
+    do_execute("drop_last_user_transaction_table.sql")
   end
 
   defp do_execute(file_name) do
