@@ -8,6 +8,7 @@ defmodule FinancialSystemApi.Accounts do
   alias Ecto.Changeset
   alias FinancialSystemApi.Accounts.Account
   alias FinancialSystemApi.Accounts.AccountTransaction
+  alias FinancialSystemApi.Accounts.AccountTransactionOneDay
 
   @doc """
   Returns the list of accounts.
@@ -221,4 +222,82 @@ defmodule FinancialSystemApi.Accounts do
   def change_account_transaction(%AccountTransaction{} = account_transaction) do
     AccountTransaction.changeset(account_transaction, %{})
   end
+
+  def balance_report(:day, date) do
+    query = from r in AccountTransactionOneDay
+
+    query =
+      if date != nil do
+        query = from r in query,
+          where: r.transaction_day == type(^date, :date)
+      else
+        query
+      end
+
+    Repo.all(query)
+  end
+
+  def balance_report(:month, date) do
+    query = from r in AccountTransactionOneDay
+
+    query =
+      if date != nil do
+        query = from r in query,
+          where: fragment(
+            "date_trunc('month', ?)",
+            r.transaction_day
+          ) == fragment(
+            "date_trunc('month', ?)",
+            type(^date, :date)
+          )
+      else
+        query
+      end
+
+    query = from r in query,
+      group_by: [
+        fragment("date_trunc('month', ?)", r.transaction_day),
+        r.currency
+      ],
+      select: %AccountTransactionOneDay{
+        date: type(fragment("date_trunc('month', ?)", r.transaction_day), :naive_datetime),
+        currency: r.currency,
+        credit: sum(r.credit),
+        debit: sum(r.debit)
+      }
+
+    Repo.all(query)
+  end
+
+  def balance_report(:year, date) do
+    query = from r in AccountTransactionOneDay
+
+    query =
+      if date != nil do
+        query = from r in query,
+          where: fragment(
+            "date_trunc('year', ?)",
+            r.transaction_day
+          ) == fragment(
+            "date_trunc('year', ?)",
+            type(^date, :date)
+          )
+      else
+        query
+      end
+
+    query = from r in query,
+      group_by: [
+        fragment("date_trunc('year', ?)", r.transaction_day),
+        r.currency
+      ],
+      select: %AccountTransactionOneDay{
+        date: type(fragment("date_trunc('year', ?)", r.transaction_day), :naive_datetime),
+        currency: r.currency,
+        credit: sum(r.credit),
+        debit: sum(r.debit)
+      }
+
+    Repo.all(query)
+  end  
 end
