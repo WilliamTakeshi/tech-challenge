@@ -75,6 +75,8 @@ defmodule FinancialSystemApiWeb.GraphqlBackofficeTest do
 
     {:ok, brl_account} = Accounts.create_account(transient_account)
 
+    {:ok, _} = Accounts.update_transactions_aggregations()
+
     {:ok,
      %{
        user: user,
@@ -98,16 +100,174 @@ defmodule FinancialSystemApiWeb.GraphqlBackofficeTest do
     assert response == graphql_error_message("balanceReport", "not authorized")
   end
 
-  test "run balance report to edge day", %{conn: conn} do
+  test "run balance report to edge day", %{conn: conn, edge_day: day} do
+    date =
+      day
+      |> Date.to_string()
+
     response =
       conn
+      |> authenticate_user(@user)
       |> graphql_query(
         query: @balance_report_query,
         variables: %{
-          by: "DAY"
+          by: "DAY",
+          date: date
         }
       )
 
-    assert response == graphql_error_message("balanceReport", "not authorized")
+    assert response["data"]["balanceReport"] != nil
+
+    result = List.first(response["data"]["balanceReport"])
+
+    assert result != nil
+
+    assert result["currency"] == "BRL"
+    assert result["credit"] == 0.01
+    assert result["debit"] == 0.00
+    assert result["date"] == "#{date}T00:00:00.000000"
+  end
+
+  test "run balance report to middle day", %{conn: conn, middle_day: day} do
+    date =
+      day
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @balance_report_query,
+        variables: %{
+          by: "DAY",
+          date: date
+        }
+      )
+
+    assert response["data"]["balanceReport"] != nil
+
+    result = List.first(response["data"]["balanceReport"])
+
+    assert result != nil
+
+    assert result["currency"] == "BRL"
+    assert result["credit"] == 0.00
+    assert result["debit"] == 0.01
+    assert result["date"] == "#{date}T00:00:00.000000"
+  end
+
+  test "run balance report to handle day", %{conn: conn, handle_day: day} do
+    date =
+      day
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @balance_report_query,
+        variables: %{
+          by: "DAY",
+          date: date
+        }
+      )
+
+    assert response["data"]["balanceReport"] != nil
+
+    result = List.first(response["data"]["balanceReport"])
+
+    assert result != nil
+
+    assert result["currency"] == "BRL"
+    assert result["credit"] == 1_000.00
+    assert result["debit"] == 0.00
+    assert result["date"] == "#{date}T00:00:00.000000"
+  end
+
+  test "run balance report by month", %{conn: conn, handle_day: day} do
+    {:ok, new_day} = Date.new(day.year, day.month, 1)
+
+    date =
+      new_day
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @balance_report_query,
+        variables: %{
+          by: "MONTH",
+          date: date
+        }
+      )
+
+    assert response["data"]["balanceReport"] != nil
+
+    result = List.first(response["data"]["balanceReport"])
+
+    assert result != nil
+
+    assert result["currency"] == "BRL"
+    assert result["credit"] == 1_000.01
+    assert result["debit"] == 0.01
+    assert result["date"] == "#{date}T00:00:00.000000"
+  end
+
+  test "run balance report by year", %{conn: conn, handle_day: day} do
+    {:ok, new_day} = Date.new(day.year, 1, 1)
+
+    date =
+      new_day
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @balance_report_query,
+        variables: %{
+          by: "YEAR",
+          date: date
+        }
+      )
+
+    assert response["data"]["balanceReport"] != nil
+
+    result = List.first(response["data"]["balanceReport"])
+
+    assert result != nil
+
+    assert result["currency"] == "BRL"
+    assert result["credit"] == 1_000.01
+    assert result["debit"] == 0.01
+    assert result["date"] == "#{date}T00:00:00.000000"
+  end
+
+  test "run balance report to total", %{conn: conn} do
+    date =
+      Date.utc_today()
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(
+        query: @balance_report_query,
+        variables: %{
+          by: "TOTAL"
+        }
+      )
+
+    assert response["data"]["balanceReport"] != nil
+
+    result = List.first(response["data"]["balanceReport"])
+
+    assert result != nil
+
+    assert result["currency"] == "BRL"
+    assert result["credit"] == 1_000.01
+    assert result["debit"] == 0.01
+    assert result["date"] =~ date
   end
 end

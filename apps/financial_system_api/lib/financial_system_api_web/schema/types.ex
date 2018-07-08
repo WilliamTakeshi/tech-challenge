@@ -43,6 +43,7 @@ defmodule FinancialSystemApiWeb.Schema.Types do
     value(:day, description: "Day")
     value(:month, description: "Month")
     value(:year, description: "Year")
+    value(:total, description: "Total")
   end
 
   @desc "Balance result"
