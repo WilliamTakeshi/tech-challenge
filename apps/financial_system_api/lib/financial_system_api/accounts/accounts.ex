@@ -348,6 +348,25 @@ defmodule FinancialSystemApi.Accounts do
     Repo.all(query)
   end
 
+  def idle_report do
+    query =
+      from(
+        l in "last_user_transaction",
+        where:
+          l.last_transaction <= fragment("current_date - interval '1' month"),
+        select: %{
+          date:
+            type(
+              fragment("current_timestamp"),
+              :naive_datetime
+            ),
+          count: count(l.user_id)
+        }
+      )
+
+    Repo.one(query)
+  end
+
   def update_transactions_aggregations do
     {:ok, _} =
       Repo
@@ -355,7 +374,7 @@ defmodule FinancialSystemApi.Accounts do
 
     {:ok, _} =
       Repo
-      |> SQL.query("select do_transactions_aggregations()")
+      |> SQL.query("select do_last_user_transactions()")
 
     :ok
   end

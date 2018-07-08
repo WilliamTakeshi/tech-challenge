@@ -142,7 +142,16 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
   end
 
   def balance_report(_args, _info) do
-    send_metrics("withdraw.unauthorized")
+    send_metrics("balance.report.unauthorized")
+    {:error, "not authorized"}
+  end
+
+  def idle_report(_args, %{context: %{current_user: %{id: _id}}}) do
+    {:ok, Accounts.idle_report()}
+  end
+
+  def idle_report(_args, _info) do
+    send_metrics("idle.report.unauthorized")
     {:error, "not authorized"}
   end
 

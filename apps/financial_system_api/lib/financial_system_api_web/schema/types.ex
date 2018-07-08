@@ -53,4 +53,10 @@ defmodule FinancialSystemApiWeb.Schema.Types do
     field(:credit, :float)
     field(:debit, :float)
   end
+
+  @desc "Idle users"
+  object :idle_users do
+    field(:date, :naive_datetime)
+    field(:count, :integer)
+  end
 end

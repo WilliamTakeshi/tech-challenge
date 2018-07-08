@@ -21,6 +21,11 @@ defmodule FinancialSystemApiWeb.Schema do
 
       resolve(&AccountResolver.balance_report/2)
     end
+
+    @desc "Idle users more then 1 month"
+    field :idle_report, :idle_users do
+      resolve(&AccountResolver.idle_report/2)
+    end
   end
 
   mutation do

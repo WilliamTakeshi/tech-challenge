@@ -23,6 +23,15 @@ defmodule FinancialSystemApiWeb.GraphqlBackofficeTest do
   }
   """
 
+  @idle_report_query """
+  query Backoffice {
+    idleReport {
+      count
+      , date
+    }
+  }
+  """
+
   setup do
     user = build_an_activated_user(@user)
 
@@ -269,5 +278,45 @@ defmodule FinancialSystemApiWeb.GraphqlBackofficeTest do
     assert result["credit"] == 1_000.01
     assert result["debit"] == 0.01
     assert result["date"] =~ date
+  end
+
+  test "run idle report to a not authenticated user", %{conn: conn} do
+    response =
+      conn
+      |> graphql_query(query: @idle_report_query)
+
+    assert response == graphql_error_message("idleReport", "not authorized")
+  end
+
+  test "run idle report", %{conn: conn} do
+    date =
+      Date.utc_today()
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(query: @idle_report_query)
+
+    assert response["data"]["idleReport"]["date"] =~ date
+    assert response["data"]["idleReport"]["count"] == 0
+  end
+
+  test "run idle report with idle users", %{conn: conn} do
+    build_an_idle_user()
+
+    :ok = Accounts.update_transactions_aggregations()
+
+    date =
+      Date.utc_today()
+      |> Date.to_string()
+
+    response =
+      conn
+      |> authenticate_user(@user)
+      |> graphql_query(query: @idle_report_query)
+
+    assert response["data"]["idleReport"]["date"] =~ date
+    assert response["data"]["idleReport"]["count"] == 1
   end
 end
