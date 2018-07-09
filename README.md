@@ -53,8 +53,35 @@ Alguns relatórios devem ser gerados para o backoffice:
 ## Requisitos Técnicos
 
 * O desafio deve ser feito na linguagem [Elixir](http://elixir-lang.github.io/).
-* A API pode ser JSON ou GraphQL
+* A API pode ser JSON ou GraphQL.
 * Docker é um diferencial.
+
+## Comandos básicos do projeto
+
+`mix deps.get` Para obter as dependências.
+
+`mix deps.compile` Para compilar as dependências.
+
+`MIX_ENV=test mix build` Para testar a aplicação.
+
+`mix ecto.setup` Para configuar a base de dados.
+
+`mix phx.server` Para rodar a aplicação.
+
+Certifique-se de que as variáveis de ambiente abaixo estão corretamente configuradas:
+
+* `DB_USERNAME=postgres`
+* `DB_PASSWORD=postgres`
+* `DB_DATABASE=financial_system_api`
+* `DB_HOSTNAME=db`
+* `DB_PORT=5432`
+* `SECRET_KEY=your-key`
+* `BAMBOO_API_KEY=your-key`
+* `BAMBOO_DOMAIN=your-domain`
+* `APP_HOSTNAME=localhost:4000`
+* `PORT=4000`
+
+Para facilitar o setup de teste está disponível meu [ambiente de desenvolvimento elixir](https://github.com/ramondelemos/docker-elixir-phoenix).
 
 ## A Solução
 
@@ -73,7 +100,9 @@ A aplicação está distribuída em dois servidores geograficamente separados e 
 * Servidor [Linode](https://www.linode.com/) localizado em Fremont, USA
 * Servidor [DigitalOcean](https://www.digitalocean.com/) localizado em London, UK 
 
-A adição de novos servidores ao cluster é feita de forma simples e rápida através da API do [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/). As aplicações se conectam automaticamente umas as outras utilizando API de Metadata fornecida pelo [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) e um módulo worker `FinancialSystemApi.Rancher` que atualiza as conexões dos nós a cada 5 segundos. O crescimento/encolhimento horizontal pode ser feito de forma programática, mas não implementei para não estender em muito o escopo da solução. 
+A adição de novos servidores ao cluster é feita de forma simples e rápida através da API do [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/). As aplicações se conectam automaticamente umas as outras utilizando API de Metadata fornecida pelo [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) e um módulo worker `FinancialSystemApi.Rancher` que atualiza as conexões dos nós a cada 5 segundos. O crescimento/encolhimento horizontal pode ser feito de forma programática, mas não implementei para não estender em muito o escopo da solução.
+
+O banco de dados da aplicação é o [PostgreSQL 10](https://www.postgresql.org/) hospedado por [Heroku Postgres](https://www.heroku.com/home).
 
 ## API de Banking
 
@@ -168,10 +197,35 @@ mutation Withdraw {
 }
 ```
 
-### Relatórios
+## Relatórios de Backoffice.
 
-* Total transacionado (R$) por dia, mês, ano e total. [Em construção]
-* Número de usuários que não transacionam há mais de 1 mês (por dia). [Em construção]
+### Total transacionado por dia, mês, ano e total.
+
+É possível realizar consulta em tempo real dos totais transacionados por moeda pela aplicação utilizando a mutation `balanceReport`. Os valores podem ser agrupados por dia: `DAY`, mês: `MONTH`, ano: `YEAR` ou total: `TOTAL`. Com exceção do agrupamento total: `TOTAL`, as consultas podem ser filtradas atravéz da variável `date`.
+
+```javascript
+query Backoffice {
+  balanceReport(by: DAY, date: "2018-07-09") {
+    credit,
+    debit,
+    currency,
+    date
+  }
+}
+```
+
+### Número de usuários que não transacionam há mais de 1 mês (por dia).
+
+Também é possível realizar consulta em tempo real do total de usuários que não transacionam há mais de 1 mês utilizando a mutation `idleReport`.
+
+```javascript
+query Backoffice {
+  idleReport {
+    count
+    , date
+  }
+}
+```
 
 ## Material de Referência Utilizado
 * [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
@@ -198,3 +252,6 @@ mutation Withdraw {
 * [SETTING UP ELIXIR CLUSTER USING DOCKER AND RANCHER](http://teamon.eu/2017/setting-up-elixir-cluster-using-docker-and-rancher/)
 * [Running distributed Erlang & Elixir applications on Docker](https://www.erlang-solutions.com/blog/running-distributed-erlang-elixir-applications-on-docker.html)
 * [Rancher - Deploying A Load Balancer](https://blog.programster.org/rancher-deploying-a-load-balancer)
+* [Scalable incremental data aggregation on Postgres and Citus](https://www.citusdata.com/blog/2018/06/14/scalable-incremental-data-aggregation/)
+* [Deconstructing Elixir's GenServers](https://blog.appsignal.com/2018/06/12/elixir-alchemy-deconstructing-genservers.html)
+* [Monitoring Erlang Runtime Statistics](https://medium.com/brightergy-engineering/monitoring-erlang-runtime-statistics-59645e362dc8)
