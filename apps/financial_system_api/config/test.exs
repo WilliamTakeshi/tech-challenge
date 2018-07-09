@@ -11,7 +11,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :financial_system_api, FinancialSystemApi.Repo,
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  port: 5433
 
 # Configures Bamboo.
 config :financial_system_api, FinancialSystemApi.Mailer,

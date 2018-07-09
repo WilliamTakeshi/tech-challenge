@@ -8,7 +8,7 @@ addons:
       - postgresql-client-10
 env:
   global:
-    - PGPORT=5432
+    - PGPORT=5433
     - PGUSER=postgres
     - PGPASSWORD=''
     - PGHOST=localhost
