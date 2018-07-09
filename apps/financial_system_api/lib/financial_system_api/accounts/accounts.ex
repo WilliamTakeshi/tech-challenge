@@ -336,7 +336,7 @@ defmodule FinancialSystemApi.Accounts do
         select: %AccountTransactionOneDay{
           date:
             type(
-              fragment("current_date"),
+              fragment("current_timestamp"),
               :naive_datetime
             ),
           currency: r.currency,

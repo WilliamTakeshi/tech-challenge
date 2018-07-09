@@ -49,6 +49,7 @@ config :financial_system_api, FinancialSystemApi.Repo,
   database:
     (System.get_env("DB_DATABASE") || "financial_system_api") <> "_#{Mix.env()}",
   hostname: System.get_env("DB_HOSTNAME") || "${DB_HOSTNAME}",
+  port: System.get_env("DB_PORT") || "${DB_PORT}",
   loggers: [
     {Ecto.LogEntry, :log, []},
     {FinancialSystemApi.Repo.Metrics, :log, []}
