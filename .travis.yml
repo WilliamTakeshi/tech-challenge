@@ -1,7 +1,17 @@
 dist: trusty
 sudo: required
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+env:
+  global:
+    - PGPORT=5433
+    - PGUSER=postgres
+    - PGPASSWORD=''
+    - PGHOST=localhost
 services:
   - docker
   - postgresql
@@ -11,6 +21,9 @@ elixir:
 otp_release:
   - '20.2.2'
 before_install:
+  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  - sudo service postgresql restart
+  - sleep 1
   - chmod +x travis_merge_script.sh
   - chmod +x deploy.sh
   - mix local.rebar --force

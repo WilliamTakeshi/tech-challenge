@@ -4,8 +4,9 @@ defmodule FinancialSystemApi.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias FinancialSystemApi.Repo
+  alias Ecto.Adapters.SQL
   alias Ecto.Changeset
+  alias FinancialSystemApi.Repo
   alias FinancialSystemApi.Accounts.Account
   alias FinancialSystemApi.Accounts.AccountTransaction
   alias FinancialSystemApi.Accounts.AccountTransactionOneDay
@@ -228,11 +229,10 @@ defmodule FinancialSystemApi.Accounts do
 
     query =
       if date != nil do
-        query =
-          from(
-            r in query,
-            where: r.transaction_day == type(^date, :date)
-          )
+        from(
+          r in query,
+          where: r.transaction_day == type(^date, :date)
+        )
       else
         query
       end
@@ -245,19 +245,18 @@ defmodule FinancialSystemApi.Accounts do
 
     query =
       if date != nil do
-        query =
-          from(
-            r in query,
-            where:
+        from(
+          r in query,
+          where:
+            fragment(
+              "date_trunc('month', ?)",
+              r.transaction_day
+            ) ==
               fragment(
                 "date_trunc('month', ?)",
-                r.transaction_day
-              ) ==
-                fragment(
-                  "date_trunc('month', ?)",
-                  type(^date, :date)
-                )
-          )
+                type(^date, :date)
+              )
+        )
       else
         query
       end
@@ -289,19 +288,18 @@ defmodule FinancialSystemApi.Accounts do
 
     query =
       if date != nil do
-        query =
-          from(
-            r in query,
-            where:
+        from(
+          r in query,
+          where:
+            fragment(
+              "date_trunc('year', ?)",
+              r.transaction_day
+            ) ==
               fragment(
                 "date_trunc('year', ?)",
-                r.transaction_day
-              ) ==
-                fragment(
-                  "date_trunc('year', ?)",
-                  type(^date, :date)
-                )
-          )
+                type(^date, :date)
+              )
+        )
       else
         query
       end
@@ -326,5 +324,58 @@ defmodule FinancialSystemApi.Accounts do
       )
 
     Repo.all(query)
+  end
+
+  def balance_report(:total, _date) do
+    query = from(r in AccountTransactionOneDay)
+
+    query =
+      from(
+        r in query,
+        group_by: r.currency,
+        select: %AccountTransactionOneDay{
+          date:
+            type(
+              fragment("current_date"),
+              :naive_datetime
+            ),
+          currency: r.currency,
+          credit: sum(r.credit),
+          debit: sum(r.debit)
+        }
+      )
+
+    Repo.all(query)
+  end
+
+  def idle_report do
+    query =
+      from(
+        l in "last_user_transaction",
+        where:
+          l.last_transaction <= fragment("current_date - interval '1' month"),
+        select: %{
+          date:
+            type(
+              fragment("current_timestamp"),
+              :naive_datetime
+            ),
+          count: count(l.user_id)
+        }
+      )
+
+    Repo.one(query)
+  end
+
+  def update_transactions_aggregations do
+    {:ok, _} =
+      Repo
+      |> SQL.query("select do_transactions_aggregations()")
+
+    {:ok, _} =
+      Repo
+      |> SQL.query("select do_last_user_transactions()")
+
+    :ok
   end
 end

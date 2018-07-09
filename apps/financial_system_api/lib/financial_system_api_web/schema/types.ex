@@ -43,6 +43,7 @@ defmodule FinancialSystemApiWeb.Schema.Types do
     value(:day, description: "Day")
     value(:month, description: "Month")
     value(:year, description: "Year")
+    value(:total, description: "Total")
   end
 
   @desc "Balance result"
@@ -51,5 +52,11 @@ defmodule FinancialSystemApiWeb.Schema.Types do
     field(:currency, :string)
     field(:credit, :float)
     field(:debit, :float)
+  end
+
+  @desc "Idle users"
+  object :idle_users do
+    field(:date, :naive_datetime)
+    field(:count, :integer)
   end
 end
