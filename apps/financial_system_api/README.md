@@ -33,14 +33,62 @@ Alguns relatórios devem ser gerados para o backoffice:
 ## Requisitos Técnicos
 
 * O desafio deve ser feito na linguagem [Elixir](http://elixir-lang.github.io/).
-* A API pode ser JSON ou GraphQL
+* A API pode ser JSON ou GraphQL.
 * Docker é um diferencial.
+
+## Comandos básicos do projeto
+
+`mix deps.get` Para obter as dependências.
+
+`mix deps.compile` Para compilar as dependências.
+
+`MIX_ENV=test mix build` Para testar a aplicação.
+
+`mix ecto.setup` Para configuar a base de dados.
+
+`mix phx.server` Para rodar a aplicação.
+
+Certifique-se de que as variáveis de ambiente abaixo estão corretamente configuradas:
+
+* `DB_USERNAME=postgres`
+* `DB_PASSWORD=postgres`
+* `DB_DATABASE=financial_system_api`
+* `DB_HOSTNAME=db`
+* `DB_PORT=5432`
+* `SECRET_KEY=your-key`
+* `BAMBOO_API_KEY=your-key`
+* `BAMBOO_DOMAIN=your-domain`
+* `APP_HOSTNAME=localhost:4000`
+* `PORT=4000`
+
+Para facilitar o setup de teste está disponível meu [ambiente de desenvolvimento elixir](https://github.com/ramondelemos/docker-elixir-phoenix).
 
 ## A Solução
 
-Para atender ao que foi proposto foi criado o projeto `FinancialSystemApi`, que é uma aplicação Phoenix responsável por servir uma API GraphQL para transações bancárias. A API principal da aplicação está disponível em [http://ramondelemos.com/api](http://ramondelemos.com/api). Para facilitar o uso da solução, no endpoint [http://ramondelemos.com/graphiql](http://ramondelemos.com/graphiql) foi diponibilizada a interface gráfica _GraphiQL_ fornecida pelo módulo `absinthe`.
+Para atender ao que foi proposto foi criado um projeto `umbrella` contendo as aplicações `FinancialSystem` (Desafio Nº 1) e `FinancialSystemApi`, que é uma aplicação Phoenix responsável por servir uma API GraphQL para transações bancárias.
 
-O sistema permite o registro de novos usuários com confirmação por e-mail, autenticação, consulta de usuários e contas, transferência entre contas e saque. Com exceção do registro e autenticação, para todas as operações os usuários precisarão assinar suas requisições com o token jwt fornecido após a autenticação. 
+Para a cobertura dos testes foi utilizado o [Coveralls.io](https://coveralls.io/github/ramondelemos).
+
+A análise do código é feita com o [Credo](http://credo-ci.org/) utilizando o parâmetro de execução `--strict` para reforçar o **guia de estilo do credo**.
+
+Para o release da aplicação foram utilizados em conjunto os pacotes [mix docker](https://github.com/Recruitee/mix_docker) e [Distillery](https://github.com/bitwalker/distillery). A aplicação é disponibilizada automaticamente em containers Docker no repositório público [ramondelemos/tech-challenge](https://hub.docker.com/r/ramondelemos/tech-challenge/tags/).
+
+Foram utilizados em conjunto o [Travis CI](https://travis-ci.org/ramondelemos), [Webhooks do Docker Hub](https://docs.docker.com/docker-hub/webhooks/) e o [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) para a orquestração das técnicas de _Continuous Integration_, _Continuous Delivery_ e _Continuous Deployment_.
+
+A aplicação está distribuída em dois servidores geograficamente separados e trabalhando de forma clusterizada.
+
+* Servidor [Linode](https://www.linode.com/) localizado em Fremont, USA
+* Servidor [DigitalOcean](https://www.digitalocean.com/) localizado em London, UK 
+
+A adição de novos servidores ao cluster é feita de forma simples e rápida através da API do [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/). As aplicações se conectam automaticamente umas as outras utilizando API de Metadata fornecida pelo [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) e um módulo worker `FinancialSystemApi.Rancher` que atualiza as conexões dos nós a cada 5 segundos. O crescimento/encolhimento horizontal pode ser feito de forma programática, mas não implementei para não estender em muito o escopo da solução.
+
+O banco de dados da aplicação é o [PostgreSQL 10](https://www.postgresql.org/) hospedado por [Heroku Postgres](https://www.heroku.com/home).
+
+## API de Banking
+
+A solução está disponível em [http://ramondelemos.com/api](http://ramondelemos.com/api). Para facilitar o uso, no endpoint [http://ramondelemos.com/graphiql](http://ramondelemos.com/graphiql) foi diponibilizada a interface gráfica _GraphiQL_ fornecida pelo módulo `absinthe`.
+
+O sistema permite o registro de novos usuários com confirmação por e-mail, autenticação, consulta de usuários e contas, transferência entre contas e saque. Com exceção do registro e autenticação, para todas as operações os usuários precisarão assinar suas requisições com o token jwt fornecido após a autenticação.
 
 ### Registro de Usuários
 
@@ -129,10 +177,35 @@ mutation Withdraw {
 }
 ```
 
-### Relatórios
+## Relatórios de Backoffice.
 
-* Total transacionado (R$) por dia, mês, ano e total. [Em construção]
-* Número de usuários que não transacionam há mais de 1 mês (por dia). [Em construção]
+### Total transacionado por dia, mês, ano e total.
+
+É possível realizar consulta em tempo real dos totais transacionados por moeda pela aplicação utilizando a mutation `balanceReport`. Os valores podem ser agrupados por dia: `DAY`, mês: `MONTH`, ano: `YEAR` ou total: `TOTAL`. Com exceção do agrupamento total: `TOTAL`, as consultas podem ser filtradas atravéz da variável `date`.
+
+```javascript
+query Backoffice {
+  balanceReport(by: DAY, date: "2018-07-09") {
+    credit,
+    debit,
+    currency,
+    date
+  }
+}
+```
+
+### Número de usuários que não transacionam há mais de 1 mês (por dia).
+
+Também é possível realizar consulta em tempo real do total de usuários que não transacionam há mais de 1 mês utilizando a mutation `idleReport`.
+
+```javascript
+query Backoffice {
+  idleReport {
+    count
+    , date
+  }
+}
+```
 
 ## Material de Referência Utilizado
 * [Elixir School - Lições sobre a linguagem de programação Elixir](https://elixirschool.com/pt/)
@@ -158,3 +231,7 @@ mutation Withdraw {
 * [A Complete Guide to Deploying Elixir & Phoenix Applications on Kubernetes](https://medium.com/polyscribe/a-complete-guide-to-deploying-elixir-phoenix-applications-on-kubernetes-part-1-setting-up-d88b35b64dcd)
 * [SETTING UP ELIXIR CLUSTER USING DOCKER AND RANCHER](http://teamon.eu/2017/setting-up-elixir-cluster-using-docker-and-rancher/)
 * [Running distributed Erlang & Elixir applications on Docker](https://www.erlang-solutions.com/blog/running-distributed-erlang-elixir-applications-on-docker.html)
+* [Rancher - Deploying A Load Balancer](https://blog.programster.org/rancher-deploying-a-load-balancer)
+* [Scalable incremental data aggregation on Postgres and Citus](https://www.citusdata.com/blog/2018/06/14/scalable-incremental-data-aggregation/)
+* [Deconstructing Elixir's GenServers](https://blog.appsignal.com/2018/06/12/elixir-alchemy-deconstructing-genservers.html)
+* [Monitoring Erlang Runtime Statistics](https://medium.com/brightergy-engineering/monitoring-erlang-runtime-statistics-59645e362dc8)
