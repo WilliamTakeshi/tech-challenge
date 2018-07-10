@@ -1,5 +1,5 @@
 defmodule FinancialSystemApiWeb.PageControllerTest do
-  use FinancialSystemApiWeb.ConnCase
+  use FinancialSystemApiWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

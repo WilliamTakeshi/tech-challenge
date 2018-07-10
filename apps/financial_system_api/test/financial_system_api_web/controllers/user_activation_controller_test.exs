@@ -1,5 +1,5 @@
 defmodule FinancialSystemApiWeb.UserActivationControllerTest do
-  use FinancialSystemApiWeb.ConnCase
+  use FinancialSystemApiWeb.ConnCase, async: true
 
   alias FinancialSystemApi.Users.UserResolver
 

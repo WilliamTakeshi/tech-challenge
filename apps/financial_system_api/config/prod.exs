@@ -84,3 +84,6 @@ config :logger, level: :info
 
 # Configuring the prod enviroment
 config :financial_system_api, :environment, :prod
+
+# Configuring the prod statsd agent
+config :financial_system_api, :statsd, FinancialSystemApi.StatsdWrapper

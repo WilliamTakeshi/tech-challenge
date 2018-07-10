@@ -7,7 +7,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
   alias FinancialSystemApi.Accounts
   alias FinancialSystemApi.MailSender
   alias FinancialSystemApi.FinancialSystemWrapper
-  alias FinancialSystemApi.StatsdWrapper
+  alias FinancialSystemApi.Statsd
   alias FinancialSystemApiWeb.Session
 
   import FinancialSystemApi.Resolvers
@@ -122,10 +122,10 @@ defmodule FinancialSystemApi.Users.UserResolver do
   end
 
   defp send_metrics(method) do
-    {:ok, statsd} = StatsdWrapper.build_statsd_agent()
+    {:ok, statsd} = Statsd.build_statsd_agent()
 
     if statsd do
-      StatsdWrapper.increment(
+      Statsd.increment(
         statsd,
         "financial_system_api.user.#{method}"
       )

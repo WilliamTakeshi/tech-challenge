@@ -1,5 +1,5 @@
 defmodule FinancialSystemApi.UsersTest do
-  use FinancialSystemApi.DataCase
+  use FinancialSystemApi.DataCase, async: true
 
   alias FinancialSystemApi.Users
 
