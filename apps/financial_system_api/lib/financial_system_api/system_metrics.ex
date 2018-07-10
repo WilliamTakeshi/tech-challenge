@@ -7,7 +7,7 @@ defmodule FinancialSystemApi.SystemMetrics do
 
   require Logger
 
-  alias FinancialSystemApi.StatsdWrapper
+  alias FinancialSystemApi.Statsd
 
   # Interval to send metrics.
   @interval Application.get_env(:financial_system_api, :metrics_interval)
@@ -36,7 +36,7 @@ defmodule FinancialSystemApi.SystemMetrics do
           Map.put(state, :name, Kernel.to_charlist(:financial_system_api))
       end
 
-    {:ok, statsd} = StatsdWrapper.build_statsd_agent()
+    {:ok, statsd} = Statsd.build_statsd_agent()
 
     state = Map.put(state, :statsd, statsd)
 
@@ -62,7 +62,7 @@ defmodule FinancialSystemApi.SystemMetrics do
 
         state
       else
-        {:ok, statsd} = StatsdWrapper.build_statsd_agent()
+        {:ok, statsd} = Statsd.build_statsd_agent()
         Map.put(state, :statsd, statsd)
       end
 
@@ -83,7 +83,7 @@ defmodule FinancialSystemApi.SystemMetrics do
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
         tag = "#{system_name}.memory" |> get_tag(k)
-        StatsdWrapper.gauge(statsd, tag, v)
+        Statsd.gauge(statsd, tag, v)
       end)
 
     statsd
@@ -95,7 +95,7 @@ defmodule FinancialSystemApi.SystemMetrics do
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
         tag = "#{system_name}.erlang" |> get_tag(k)
-        StatsdWrapper.gauge(statsd, tag, v)
+        Statsd.gauge(statsd, tag, v)
       end)
 
     statsd
@@ -107,7 +107,7 @@ defmodule FinancialSystemApi.SystemMetrics do
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
         tag = "#{system_name}.erlang" |> get_tag(k)
-        StatsdWrapper.gauge(statsd, tag, v)
+        Statsd.gauge(statsd, tag, v)
       end)
 
     statsd

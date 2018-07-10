@@ -1,5 +1,5 @@
 defmodule FinancialSystemApiWeb.GraphqlUserTest do
-  use FinancialSystemApiWeb.ConnCase
+  use FinancialSystemApiWeb.ConnCase, async: true
 
   @user %{
     email: "some@email",

@@ -1,5 +1,5 @@
 defmodule FinancialSystemApi.Users.UserResolverTest do
-  use FinancialSystemApi.DataCase
+  use FinancialSystemApi.DataCase, async: true
   use Bamboo.Test
 
   alias FinancialSystemApi.Users.UserResolver

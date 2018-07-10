@@ -5,25 +5,25 @@ defmodule FinancialSystemApi.Repo.Metrics do
 
   require Logger
 
-  alias FinancialSystemApi.StatsdWrapper
+  alias FinancialSystemApi.Statsd
 
   def log(log_entry) do
-    {:ok, statsd} = StatsdWrapper.build_statsd_agent()
+    {:ok, statsd} = Statsd.build_statsd_agent()
 
     if statsd do
-      StatsdWrapper.histogram(
+      Statsd.histogram(
         statsd,
         "financial_system_api.ecto.query_exec_time",
         (log_entry.query_time + (log_entry.queue_time || 0)) / 1_000
       )
 
-      StatsdWrapper.histogram(
+      Statsd.histogram(
         statsd,
         "financial_system_api.ecto.query_queue_time",
         (log_entry.queue_time || 0) / 1_000
       )
 
-      StatsdWrapper.increment(
+      Statsd.increment(
         statsd,
         "financial_system_api.ecto.query_count"
       )

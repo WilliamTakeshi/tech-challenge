@@ -244,6 +244,7 @@ query Backoffice {
 * [Mix Docker](https://github.com/Recruitee/mix_docker)
 * [Dockerizing Elixir and Phoenix Applications](https://semaphoreci.com/community/tutorials/dockerizing-elixir-and-phoenix-applications)
 * [Builder design pattern in Elixir](https://medium.com/kkempin/builder-design-pattern-in-elixir-c841e7cea307)
+* [Dependency Injection in Elixir is a Beautiful Thing](https://www.openmymind.net/Dependency-Injection-In-Elixir/)
 * [A tour of Elixir performance & monitoring tools](https://hackernoon.com/a-tour-of-elixir-performance-monitoring-tools-aac2df726e8c)
 * [Monitoring Phoenix](https://medium.com/@mschae/measuring-your-phoenix-app-d63a77b13bda)
 * [dogstatsd-elixir](https://github.com/adamkittelson/dogstatsd-elixir)
