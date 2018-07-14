@@ -3,9 +3,9 @@ defmodule FinancialSystemApiWeb.Plugs.Context do
 
   @behaviour Plug
 
-  alias Guardian.Plug, as: GuardianPlug
-
   import Plug.Conn
+
+  alias Guardian.Plug, as: GuardianPlug
 
   def init(opts), do: opts
 

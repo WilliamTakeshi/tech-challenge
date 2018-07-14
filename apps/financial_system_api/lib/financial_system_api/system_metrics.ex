@@ -5,9 +5,9 @@ defmodule FinancialSystemApi.SystemMetrics do
 
   use GenServer
 
-  require Logger
-
   alias FinancialSystemApi.Statsd
+
+  require Logger
 
   # Interval to send metrics.
   @interval Application.get_env(:financial_system_api, :metrics_interval)

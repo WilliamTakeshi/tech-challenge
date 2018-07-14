@@ -4,6 +4,7 @@ defmodule FinancialSystemApi.Accounts do
   """
 
   import Ecto.Query, warn: false
+  
   alias Ecto.Adapters.SQL
   alias Ecto.Changeset
   alias FinancialSystemApi.Repo

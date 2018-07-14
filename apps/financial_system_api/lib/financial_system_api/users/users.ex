@@ -4,8 +4,8 @@ defmodule FinancialSystemApi.Users do
   """
 
   import Ecto.Query, warn: false
+  
   alias FinancialSystemApi.Repo
-
   alias FinancialSystemApi.Users.User
 
   @doc """

@@ -1,9 +1,13 @@
 defmodule FinancialSystemApi.Accounts.Account do
   @moduledoc false
+  
   use Ecto.Schema
+
+  import Ecto.Changeset
+
   alias FinancialSystemApi.Users.User
   alias FinancialSystemApi.Accounts.AccountTransaction
-  import Ecto.Changeset
+  
 
   schema "accounts" do
     field(:amount, :float)
