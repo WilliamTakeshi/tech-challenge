@@ -25,8 +25,6 @@ defmodule FinancialSystemApi.SystemMetrics do
   end
 
   defp get_initial_state(state) do
-    Map.put(state, :name, Kernel.to_charlist(:financial_system_api))
-
     {:ok, statsd} = Statsd.build_statsd_agent()
 
     state = Map.put(state, :statsd, statsd)
@@ -47,9 +45,9 @@ defmodule FinancialSystemApi.SystemMetrics do
     state =
       if statsd_agent != nil do
         statsd_agent
-        |> send_memory_status(state[:name])
-        |> send_erlang_system_info(state[:name])
-        |> send_erlang_runtime_info(state[:name])
+        |> send_memory_status()
+        |> send_erlang_system_info()
+        |> send_erlang_runtime_info()
 
         state
       else
@@ -68,36 +66,36 @@ defmodule FinancialSystemApi.SystemMetrics do
       {:noreply, get_initial_state(%{})}
   end
 
-  def send_memory_status(statsd, system_name) do
+  def send_memory_status(statsd) do
     _result =
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
-        tag = "#{system_name}.memory" |> get_tag(k)
+        tag = "financial_system_api.memory" |> get_tag(k)
         Statsd.gauge(statsd, tag, v)
       end)
 
     statsd
   end
 
-  def send_erlang_system_info(statsd, system_name) do
+  def send_erlang_system_info(statsd) do
     _result =
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
-        tag = "#{system_name}.erlang" |> get_tag(k)
+        tag = "financial_system_api.erlang" |> get_tag(k)
         Statsd.gauge(statsd, tag, v)
       end)
 
     statsd
   end
 
-  def send_erlang_runtime_info(statsd, system_name) do
+  def send_erlang_runtime_info(statsd) do
     _result =
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
-        tag = "#{system_name}.erlang" |> get_tag(k)
+        tag = "vm.erlang" |> get_tag(k)
         Statsd.gauge(statsd, tag, v)
       end)
 
