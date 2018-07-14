@@ -1,36 +1,33 @@
 defmodule FinancialSystemApi.Statsd do
   @moduledoc """
-  Interface module to Statsd Agent.
+  Wrapper module to Statsd Agent.
   """
 
-  @statsd Application.get_env(:financial_system_api, :statsd)
+  require DogStatsd
+  require Logger
 
-  @callback build_statsd_agent :: {:ok, atom() | pid()} | :error
-  @callback gauge(
-              agent :: atom() | pid(),
-              tag :: String.t(),
-              value :: Integer.t() | Float.t()
-            ) :: :ok | nil
-  @callback histogram(
-              agent :: atom() | pid(),
-              tag :: String.t(),
-              value :: Integer.t() | Float.t()
-            ) :: :ok | nil
-  @callback increment(agent :: atom() | pid(), tag :: String.t()) :: :ok | nil
+  @config Application.get_env(:financial_system_api, FinancialSystemApi.Statsd)
 
   def build_statsd_agent do
-    @statsd.build_statsd_agent()
+    case @config[:statsd].new(@config[:host], @config[:port]) do
+      {:ok, dogstatsd} ->
+        {:ok, dogstatsd}
+
+      {:error, reason} ->
+        Logger.info("#{inspect(reason)}")
+        {:ok, nil}
+    end
   end
 
   def gauge(agent, tag, value) do
-    @statsd.gauge(agent, tag, value)
+    @config[:statsd].gauge(agent, tag, value)
   end
 
   def histogram(agent, tag, value) do
-    @statsd.histogram(agent, tag, value)
+    @config[:statsd].histogram(agent, tag, value)
   end
 
   def increment(agent, tag) do
-    @statsd.increment(agent, tag)
+    @config[:statsd].increment(agent, tag)
   end
 end

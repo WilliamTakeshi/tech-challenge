@@ -3,9 +3,7 @@ defmodule FinancialSystemApi.StatsdMock do
   Mock module to Statsd Agent.
   """
 
-  @behaviour FinancialSystemApi.Statsd
-
-  def build_statsd_agent do
+  def new(_, _) do
     {:ok, :mock}
   end
 
