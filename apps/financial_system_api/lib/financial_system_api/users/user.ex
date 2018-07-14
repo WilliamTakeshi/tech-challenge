@@ -2,9 +2,11 @@ defmodule FinancialSystemApi.Users.User do
   @moduledoc false
 
   use Ecto.Schema
+
+  import Ecto.Changeset
+
   alias Comeonin.Bcrypt
   alias FinancialSystemApi.Accounts.Account
-  import Ecto.Changeset
 
   schema "users" do
     field(:email, :string)

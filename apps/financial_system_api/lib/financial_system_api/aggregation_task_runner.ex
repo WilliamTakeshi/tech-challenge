@@ -5,9 +5,9 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
 
   use GenServer
 
-  require Logger
-
   alias FinancialSystemApi.Accounts
+
+  require Logger
 
   # Interval to update aggregations.
   @interval Application.get_env(:financial_system_api, :aggregation_interval)

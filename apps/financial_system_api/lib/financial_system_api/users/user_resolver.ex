@@ -1,7 +1,7 @@
 defmodule FinancialSystemApi.Users.UserResolver do
   @moduledoc false
 
-  require Logger
+  import FinancialSystemApi.Resolvers
 
   alias FinancialSystemApi.Users
   alias FinancialSystemApi.Accounts
@@ -10,7 +10,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
   alias FinancialSystemApi.Statsd
   alias FinancialSystemApiWeb.Session
 
-  import FinancialSystemApi.Resolvers
+  require Logger
 
   def all(_args, %{context: %{current_user: %{id: id}}}) do
     send_metrics("list")

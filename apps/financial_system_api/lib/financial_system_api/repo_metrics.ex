@@ -3,9 +3,9 @@ defmodule FinancialSystemApi.Repo.Metrics do
   Module responseble to send ecto metrics to DataDog Agent.
   """
 
-  require Logger
-
   alias FinancialSystemApi.Statsd
+
+  require Logger
 
   def log(log_entry) do
     {:ok, statsd} = Statsd.build_statsd_agent()
