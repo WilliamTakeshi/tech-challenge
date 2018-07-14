@@ -95,7 +95,7 @@ defmodule FinancialSystemApi.SystemMetrics do
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
       |> Enum.map(fn {k, v} ->
-        tag = "vm.erlang" |> get_tag(k)
+        tag = "financial_system_api.erlang" |> get_tag(k)
         Statsd.gauge(statsd, tag, v)
       end)
 
