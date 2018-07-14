@@ -4,8 +4,8 @@ defmodule FinancialSystemApi.Accounts.AccountTransaction do
   use Ecto.Schema
 
   import Ecto.Changeset
-  
-  alias FinancialSystemApi.Accounts.Account  
+
+  alias FinancialSystemApi.Accounts.Account
 
   schema "transactions" do
     field(:date_time, :naive_datetime)
