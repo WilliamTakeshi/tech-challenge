@@ -25,16 +25,7 @@ defmodule FinancialSystemApi.SystemMetrics do
   end
 
   defp get_initial_state(state) do
-    name = Application.fetch_env(:financial_system_api, :rancher_service_name)
-
-    state =
-      case name do
-        {:ok, value} ->
-          Map.put(state, :name, Kernel.to_charlist(value))
-
-        :error ->
-          Map.put(state, :name, Kernel.to_charlist(:financial_system_api))
-      end
+    Map.put(state, :name, Kernel.to_charlist(:financial_system_api))
 
     {:ok, statsd} = Statsd.build_statsd_agent()
 
