@@ -88,5 +88,5 @@ config :financial_system_api, :environment, :prod
 # Configuring the prod statsd agent
 config :financial_system_api, FinancialSystemApi.Statsd,
   statsd: DogStatsd,
-  host: "ramondelemos.com"
+  host: "ramondelemos.com",
   port: 8125
