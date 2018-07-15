@@ -88,5 +88,5 @@ config :financial_system_api, :environment, :prod
 # Configuring the prod statsd agent
 config :financial_system_api, FinancialSystemApi.Statsd,
   statsd: DogStatsd,
-  host: System.get_env("RANCHER_HOST_IP") || "${RANCHER_HOST_IP}",
+  host: "ramondelemos.com"
   port: 8125
