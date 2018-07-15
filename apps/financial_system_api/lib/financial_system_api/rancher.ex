@@ -3,6 +3,8 @@ defmodule FinancialSystemApi.Rancher do
 
   use GenServer
 
+  require Logger
+
   # try to connect every 5 seconds
   @connect_interval 5000
 
@@ -35,10 +37,12 @@ defmodule FinancialSystemApi.Rancher do
         end
 
       {:error, reason} ->
-        IO.puts("Error resolving #{inspect(name)}: #{inspect(reason)}")
+        "error resolving #{inspect(name)}: #{inspect(reason)}"
+        |> Logger.error()
     end
 
-    IO.puts("Nodes: #{inspect(Node.list())}")
+    "nodes: #{inspect(Node.list())}"
+    |> Logger.debug()
 
     Process.send_after(self(), :connect, @connect_interval)
 

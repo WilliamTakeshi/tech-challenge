@@ -29,16 +29,25 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
   end
 
   defp get_interval do
-    case Integer.parse(@interval) do
-      :error -> 5_000
-      {value, _} -> value
-    end
+    "#{@interval}"
+    |> String.to_integer()
+  rescue
+    _e ->
+      "invalid value to $AGGREGATION_INTERVAL=#{inspect(@interval)}"
+      |> Logger.error()
+
+      5_000
   end
 
   def handle_info(:update, state) do
     case do_update() do
-      :ok -> Logger.info("aggregation tables updated")
-      {:error, reason} -> Logger.info("error: #{inspect(reason)}")
+      :ok ->
+        "aggregation tables updated"
+        |> Logger.debug()
+
+      {:error, reason} ->
+        "#{inspect(reason)}"
+        |> Logger.error()
     end
 
     Process.send_after(self(), :update, state[:interval])
@@ -46,9 +55,14 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
     {:noreply, state}
   rescue
     e ->
-      Logger.info("#{inspect(e)}")
-      Logger.info("reseting state")
+      "#{inspect(e)}"
+      |> Logger.debug()
+
+      "reseting state"
+      |> Logger.debug()
+
       Process.send_after(self(), :update, state[:interval])
+
       {:noreply, get_initial_state(%{})}
   end
 

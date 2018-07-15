@@ -33,10 +33,14 @@ defmodule FinancialSystemApi.SystemMetrics do
   end
 
   defp get_interval do
-    case Integer.parse(@interval) do
-      :error -> 1_000
-      {value, _} -> value
-    end
+    "#{@interval}"
+    |> String.to_integer()
+  rescue
+    _e ->
+      "invalid value to $METRICS_INTERVAL=#{inspect(@interval)}"
+      |> Logger.error()
+
+      1_000
   end
 
   def handle_info(:status, state) do
@@ -60,8 +64,12 @@ defmodule FinancialSystemApi.SystemMetrics do
     {:noreply, state}
   rescue
     e ->
-      Logger.info("#{inspect(e)}")
-      Logger.info("reseting state")
+      "#{inspect(e)}"
+      |> Logger.debug()
+
+      "reseting state"
+      |> Logger.debug()
+
       Process.send_after(self(), :status, state[:interval])
       {:noreply, get_initial_state(%{})}
   end
