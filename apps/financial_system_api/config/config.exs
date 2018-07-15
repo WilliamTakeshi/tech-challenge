@@ -66,10 +66,9 @@ config :financial_system_api,
        System.get_env("AGGREGATION_INTERVAL") || "${AGGREGATION_INTERVAL}"
 
 # Configuring the mock of statsd agent
-config :financial_system_api, FinancialSystemApi.Statsd,
-  statsd: FinancialSystemApi.StatsdMock,
-  host: "localhost",
-  port: "8125"
+config :financial_system_api, statsd_agent: FinancialSystemApi.StatsdMock
+config :financial_system_api, statsd_host: "localhost"
+config :financial_system_api, statsd_port: 8125
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

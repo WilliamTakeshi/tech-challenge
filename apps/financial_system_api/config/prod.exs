@@ -86,7 +86,12 @@ config :logger, level: :debug
 config :financial_system_api, :environment, :prod
 
 # Configuring the prod statsd agent
-config :financial_system_api, FinancialSystemApi.Statsd,
-  statsd: DogStatsd,
-  host: System.get_env("STATSD_HOSTNAME") || "${STATSD_HOSTNAME}",
-  port: System.get_env("STATSD_PORT") || "${STATSD_PORT}"
+config :financial_system_api, statsd_agent: DogStatsd
+
+# Configuring the prod statsd agent host
+config :financial_system_api,
+  statsd_host: System.get_env("STATSD_HOSTNAME") || "${STATSD_HOSTNAME}"
+
+# Configuring the prod statsd agent port
+config :financial_system_api,
+  statsd_port: System.get_env("STATSD_PORT") || "${STATSD_PORT}"
