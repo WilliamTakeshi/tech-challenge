@@ -42,7 +42,7 @@ config :financial_system_api, FinancialSystemApi.Repo,
   pool_size: 3
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :debug
 
 # ## SSL Support
 #
@@ -88,5 +88,5 @@ config :financial_system_api, :environment, :prod
 # Configuring the prod statsd agent
 config :financial_system_api, FinancialSystemApi.Statsd,
   statsd: DogStatsd,
-  host: "ramondelemos.com",
-  port: 8125
+  host: System.get_env("STATSD_HOSTNAME") || "${STATSD_HOSTNAME}",
+  port: System.get_env("STATSD_PORT") || "${STATSD_PORT}"

@@ -14,7 +14,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
 
   def all(_args, %{context: %{current_user: %{id: id}}}) do
     send_metrics("list")
-    Logger.info("listing users", user_id: id)
+    Logger.debug("listing users", user_id: id)
     {:ok, Users.list_users()}
   end
 
@@ -32,13 +32,13 @@ defmodule FinancialSystemApi.Users.UserResolver do
   def register(args, _info) do
     send_metrics("register")
 
-    Logger.info("registering user")
+    Logger.debug("registering user")
 
     case args
          |> Users.register_user()
          |> response() do
       {:ok, user} ->
-        Logger.info("sending activation e-mail")
+        Logger.debug("sending activation e-mail")
 
         user
         |> MailSender.send_activation_email()
@@ -47,19 +47,23 @@ defmodule FinancialSystemApi.Users.UserResolver do
         {:ok, user}
 
       {:error, reason} ->
-        Logger.info("#{inspect(reason)}")
+        "#{inspect(reason)}"
+        |> Logger.debug()
+
         {:error, reason}
     end
   rescue
     e ->
-      Logger.info("#{inspect(e)}")
+      "#{inspect(e)}"
+      |> Logger.error()
+
       {:error, "#{inspect(e)}"}
   end
 
   def activate(%{id: id}, _info) do
     send_metrics("activate")
 
-    Logger.info("getting user", user_id: id)
+    Logger.debug("getting user", user_id: id)
 
     user =
       id
@@ -68,17 +72,17 @@ defmodule FinancialSystemApi.Users.UserResolver do
     if user.email_verified do
       {:ok, user}
     else
-      Logger.info("activating user", user_id: id)
+      Logger.debug("activating user", user_id: id)
 
       {:ok, _} =
         user
         |> Users.activate_user()
 
-      Logger.info("creating user account", user_id: id)
+      Logger.debug("creating user account", user_id: id)
 
       case FinancialSystemWrapper.create(id, 1_000.00, "BRL") do
         {:ok, new_account} ->
-          Logger.info("inserting account", user_id: id)
+          Logger.debug("inserting account", user_id: id)
 
           {:ok, account} =
             new_account
@@ -88,7 +92,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
             account.amount
             |> FinancialSystemWrapper.format_value(account.currency)
 
-          Logger.info("sending activated e-mail", user_id: id)
+          Logger.debug("sending activated e-mail", user_id: id)
 
           user
           |> MailSender.send_activated_email(formated_balance)
@@ -97,13 +101,17 @@ defmodule FinancialSystemApi.Users.UserResolver do
           {:ok, %{user | accounts: [account]}}
 
         {:error, reason} ->
-          Logger.info("#{inspect(reason)}", user_id: id)
+          "#{inspect(reason)}"
+          |> Logger.debug(user_id: id)
+
           {:error, reason}
       end
     end
   rescue
     e ->
-      Logger.info("#{inspect(e)}")
+      "#{inspect(e)}"
+      |> Logger.error()
+
       {:error, "#{inspect(e)}"}
   end
 
@@ -117,18 +125,18 @@ defmodule FinancialSystemApi.Users.UserResolver do
     end
   rescue
     e ->
-      Logger.info("#{inspect(e)}")
+      "#{inspect(e)}"
+      |> Logger.error()
+
       {:error, "#{inspect(e)}"}
   end
 
   defp send_metrics(method) do
     {:ok, statsd} = Statsd.build_statsd_agent()
 
-    if statsd do
-      Statsd.increment(
-        statsd,
-        "financial_system_api.user.#{method}"
-      )
-    end
+    Statsd.increment(
+      statsd,
+      "financial_system_api.user.#{method}"
+    )
   end
 end

@@ -3,7 +3,7 @@
 -name financial_system_api@${RANCHER_IP}
 
 ## Cookie for distributed erlang
--setcookie ${COOKIE}
+-setcookie ${SECRET_KEY}
 
 # Enable SMP automatically based on availability
 -smp auto

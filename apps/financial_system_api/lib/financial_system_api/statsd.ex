@@ -9,29 +9,54 @@ defmodule FinancialSystemApi.Statsd do
   @config Application.get_env(:financial_system_api, FinancialSystemApi.Statsd)
 
   def build_statsd_agent do
-    case @config[:statsd].new(@config[:host], @config[:port]) do
+    port =
+      @config[:port]
+      |> get_port()
+
+    case @config[:statsd].new(@config[:host], port) do
       {:ok, dogstatsd} ->
-        Logger.info("Dogstatsd host: #{inspect(@config[:host])} port: #{inspect(@config[:host])}")
+        "host: #{inspect(@config[:host])} port: #{inspect(port)}"
+        |> Logger.debug()
+
         {:ok, dogstatsd}
 
       {:error, reason} ->
-        Logger.info("#{inspect(reason)}")
+        "#{inspect(reason)}"
+        |> Logger.error()
+
         {:ok, nil}
     end
   end
 
   def gauge(agent, tag, value) do
     @config[:statsd].gauge(agent, tag, value)
-    Logger.info("Dogstatsd gauge tag: #{inspect(tag)} value: #{inspect(value)}")
+
+    "gauge tag: #{inspect(tag)} value: #{inspect(value)}"
+    |> Logger.debug()
   end
 
   def histogram(agent, tag, value) do
     @config[:statsd].histogram(agent, tag, value)
-    Logger.info("Dogstatsd histogram tag: #{inspect(tag)} value: #{inspect(value)}")
+
+    "histogram tag: #{inspect(tag)} value: #{inspect(value)}"
+    |> Logger.debug()
   end
 
   def increment(agent, tag) do
     @config[:statsd].increment(agent, tag)
-    Logger.info("Dogstatsd increment tag: #{inspect(tag)}")
+
+    "increment tag: #{inspect(tag)}"
+    |> Logger.debug()
+  end
+
+  defp get_port(value) do
+    "#{value}"
+    |> String.to_integer()
+  rescue
+    _e ->
+      "invalid value to $STATSD_PORT=#{inspect(value)}"
+      |> Logger.error()
+
+      8125
   end
 end
