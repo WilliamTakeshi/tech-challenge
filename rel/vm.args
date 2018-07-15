@@ -9,5 +9,5 @@
 -smp auto
 
 ## App Settings
--financial_system_api statsd_host '${STATSD_HOSTNAME}'
--financial_system_api statsd_port ${STATSD_PORT}
+##-financial_system_api statsd_host "'${STATSD_HOSTNAME}'"
+##-financial_system_api statsd_port ${STATSD_PORT}
