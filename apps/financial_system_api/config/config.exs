@@ -67,7 +67,9 @@ config :financial_system_api,
 
 # Configuring the mock of statsd agent
 config :financial_system_api, FinancialSystemApi.Statsd,
-  statsd: FinancialSystemApi.StatsdMock
+  statsd: FinancialSystemApi.StatsdMock,
+  host: "localhost",
+  port: "8125"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
