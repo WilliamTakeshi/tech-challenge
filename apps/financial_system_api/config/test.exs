@@ -19,3 +19,9 @@ config :financial_system_api, FinancialSystemApi.Mailer,
 
 # Configuring the test enviroment
 config :financial_system_api, :environment, :test
+
+# Configuring interval to send metrics.
+config :financial_system_api, :metrics_interval, 1_000
+
+# Configuring interval to update aggregation tables.
+config :financial_system_api, :aggregation_interval, 5_000
