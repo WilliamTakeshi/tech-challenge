@@ -89,9 +89,9 @@ config :financial_system_api, :environment, :prod
 config :financial_system_api, statsd_agent: DogStatsd
 
 # Configuring the prod statsd agent host
-config :financial_system_api,
-  statsd_host: "ramondelemos.com"
+# config :financial_system_api,
+#   statsd_host: System.get_env("STATSD_HOSTNAME") || "${STATSD_HOSTNAME}"
 
 # Configuring the prod statsd agent port
-config :financial_system_api,
-  statsd_port: 8125
+# config :financial_system_api,
+#   statsd_port: System.get_env("STATSD_PORT") || "${STATSD_PORT}"
