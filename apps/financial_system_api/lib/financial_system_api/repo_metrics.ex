@@ -10,24 +10,22 @@ defmodule FinancialSystemApi.Repo.Metrics do
   def log(log_entry) do
     {:ok, statsd} = Statsd.build_statsd_agent()
 
-    if statsd do
-      Statsd.histogram(
-        statsd,
-        "financial_system_api.ecto.query_exec_time",
-        (log_entry.query_time + (log_entry.queue_time || 0)) / 1_000
-      )
+    Statsd.histogram(
+      statsd,
+      "financial_system_api.ecto.query_exec_time",
+      (log_entry.query_time + (log_entry.queue_time || 0)) / 1_000
+    )
 
-      Statsd.histogram(
-        statsd,
-        "financial_system_api.ecto.query_queue_time",
-        (log_entry.queue_time || 0) / 1_000
-      )
+    Statsd.histogram(
+      statsd,
+      "financial_system_api.ecto.query_queue_time",
+      (log_entry.queue_time || 0) / 1_000
+    )
 
-      Statsd.increment(
-        statsd,
-        "financial_system_api.ecto.query_count"
-      )
-    end
+    Statsd.increment(
+      statsd,
+      "financial_system_api.ecto.query_count"
+    )
   rescue
     e ->
       Logger.error("#{inspect(e)}")

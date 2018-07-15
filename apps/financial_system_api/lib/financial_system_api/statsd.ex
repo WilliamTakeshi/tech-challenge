@@ -11,6 +11,7 @@ defmodule FinancialSystemApi.Statsd do
   def build_statsd_agent do
     case @config[:statsd].new(@config[:host], @config[:port]) do
       {:ok, dogstatsd} ->
+        Logger.info("Dogstatsd host: #{inspect(@config[:host])} port: #{inspect(@config[:host])}")
         {:ok, dogstatsd}
 
       {:error, reason} ->
@@ -21,13 +22,16 @@ defmodule FinancialSystemApi.Statsd do
 
   def gauge(agent, tag, value) do
     @config[:statsd].gauge(agent, tag, value)
+    Logger.info("Dogstatsd gauge tag: #{inspect(tag)} value: #{inspect(value)}")
   end
 
   def histogram(agent, tag, value) do
     @config[:statsd].histogram(agent, tag, value)
+    Logger.info("Dogstatsd histogram tag: #{inspect(tag)} value: #{inspect(value)}")
   end
 
   def increment(agent, tag) do
     @config[:statsd].increment(agent, tag)
+    Logger.info("Dogstatsd increment tag: #{inspect(tag)}")
   end
 end
