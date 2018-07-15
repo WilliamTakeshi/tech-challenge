@@ -7,17 +7,17 @@ defmodule FinancialSystemApi.Statsd do
   require Logger
 
   @statsd_agent Application.get_env(:financial_system_api, :statsd_agent)
-  @statsd_host Application.get_env(:financial_system_api, :statsd_host)
-  @statsd_port Application.get_env(:financial_system_api, :statsd_port)
 
   def build_statsd_agent do
     port =
-      @statsd_port
+      Application.get_env(:financial_system_api, :statsd_port)
       |> get_port()
 
-    case @statsd_agent.new(@statsd_host, port) do
+    host = Application.get_env(:financial_system_api, :statsd_host)
+
+    case @statsd_agent.new(host, port) do
       {:ok, dogstatsd} ->
-        "host: #{inspect(@statsd_host)} port: #{inspect(port)}"
+        "host: #{inspect(host)} port: #{inspect(port)}"
         |> Logger.debug()
 
         {:ok, dogstatsd}

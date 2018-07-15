@@ -11,13 +11,6 @@ defmodule FinancialSystemApi.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    # Doing remomended configuration from distillery docs
-    Application.put_env(
-      :financial_system_api,
-      :statsd_host,
-      System.get_env("STATSD_HOSTNAME") || "${STATSD_HOSTNAME}"
-    )
-
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
