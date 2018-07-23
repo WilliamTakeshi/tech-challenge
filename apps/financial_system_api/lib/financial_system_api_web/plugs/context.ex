@@ -1,5 +1,7 @@
 defmodule FinancialSystemApiWeb.Plugs.Context do
-  @moduledoc false
+  @moduledoc """
+  Module responsible to assign the current user into a valid request.
+  """
 
   @behaviour Plug
 

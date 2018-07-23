@@ -1,4 +1,6 @@
 defmodule FinancialSystemApiWeb.Endpoint do
+  @moduledoc false
+
   use Phoenix.Endpoint, otp_app: :financial_system_api
 
   socket("/socket", FinancialSystemApiWeb.UserSocket)

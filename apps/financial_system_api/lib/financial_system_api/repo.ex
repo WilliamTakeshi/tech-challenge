@@ -1,4 +1,8 @@
 defmodule FinancialSystemApi.Repo do
+  @moduledoc """
+  Repo module responsible to handle access to PostgreSQL database.
+  """
+
   use Ecto.Repo, otp_app: :financial_system_api
 
   @doc """

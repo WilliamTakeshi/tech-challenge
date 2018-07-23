@@ -1,4 +1,6 @@
 defmodule FinancialSystemApiWeb.PageController do
+  @moduledoc false
+
   use FinancialSystemApiWeb, :controller
 
   def index(conn, _params) do

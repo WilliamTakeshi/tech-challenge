@@ -1,8 +1,15 @@
 defmodule FinancialSystemApiWeb.UserActivationController do
+  @moduledoc """
+  Module responsible to activate registered users.
+  """
+
   use FinancialSystemApiWeb, :controller
 
   alias FinancialSystemApi.Users.UserResolver
 
+  @doc """
+  Activate an user with the registration token.
+  """
   def activate(conn, %{"token" => token}) do
     case UserResolver.find(%{token: token}, nil) do
       {:ok, user} ->

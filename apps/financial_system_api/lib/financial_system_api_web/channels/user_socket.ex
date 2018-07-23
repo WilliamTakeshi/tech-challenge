@@ -1,4 +1,6 @@
 defmodule FinancialSystemApiWeb.UserSocket do
+  @moduledoc false
+
   use Phoenix.Socket
 
   ## Channels
