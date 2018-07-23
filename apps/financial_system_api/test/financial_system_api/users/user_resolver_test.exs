@@ -51,13 +51,13 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
 
   test "register/2" do
     user = register()
-    assert_delivered_email(MailSender.send_activation_email(user))
+    assert_delivered_email(MailSender.build_activation_email(user))
   end
 
   test "register/2 an duplicated user" do
     user = register()
 
-    assert_delivered_email(MailSender.send_activation_email(user))
+    assert_delivered_email(MailSender.build_activation_email(user))
 
     {:error, reason} =
       @user
@@ -73,7 +73,7 @@ defmodule FinancialSystemApi.Users.UserResolverTest do
 
     balance = "1.000,00 BRL"
 
-    assert_delivered_email(MailSender.send_activated_email(user, balance))
+    assert_delivered_email(MailSender.build_activated_email(user, balance))
   end
 
   test "login/2" do

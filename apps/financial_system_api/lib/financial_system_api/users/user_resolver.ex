@@ -41,7 +41,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
         Logger.debug("sending activation e-mail")
 
         user
-        |> MailSender.send_activation_email()
+        |> MailSender.build_activation_email()
         |> MailSender.deliver()
 
         {:ok, user}
@@ -95,7 +95,7 @@ defmodule FinancialSystemApi.Users.UserResolver do
           Logger.debug("sending activated e-mail", user_id: id)
 
           user
-          |> MailSender.send_activated_email(formated_balance)
+          |> MailSender.build_activated_email(formated_balance)
           |> MailSender.deliver()
 
           {:ok, %{user | accounts: [account]}}
