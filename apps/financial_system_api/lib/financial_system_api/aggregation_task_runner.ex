@@ -1,6 +1,6 @@
 defmodule FinancialSystemApi.AggregationTaskRunner do
   @moduledoc """
-  Module responseble to update aggregations tables.
+  GenServer Module responsible to update aggregation tables.
   """
 
   use GenServer
@@ -12,6 +12,7 @@ defmodule FinancialSystemApi.AggregationTaskRunner do
   # Interval to update aggregations.
   @interval Application.get_env(:financial_system_api, :aggregation_interval)
 
+  @doc false
   def start_link do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end

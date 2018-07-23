@@ -1,5 +1,7 @@
 defmodule FinancialSystemApi.MailSender do
-  @moduledoc false
+  @moduledoc """
+  Module responsible to build and send e-mails.
+  """
 
   import Bamboo.Email
 
