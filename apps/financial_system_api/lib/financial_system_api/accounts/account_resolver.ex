@@ -181,7 +181,7 @@ defmodule FinancialSystemApi.Accounts.AccountResolver do
       |> FinancialSystemWrapper.format_value(account.currency)
 
     user
-    |> MailSender.send_withdraw_email(formated_value, formated_balance)
+    |> MailSender.build_withdraw_email(formated_value, formated_balance)
     |> MailSender.deliver()
   end
 

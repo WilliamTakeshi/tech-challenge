@@ -1,5 +1,7 @@
 defmodule FinancialSystemApi.Rancher do
-  @moduledoc false
+  @moduledoc """
+  GenServer Module responsible to connect existenting nodes through Rancher Metadata API.
+  """
 
   use GenServer
 
@@ -8,6 +10,7 @@ defmodule FinancialSystemApi.Rancher do
   # try to connect every 5 seconds
   @connect_interval 5000
 
+  @doc false
   def start_link do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end

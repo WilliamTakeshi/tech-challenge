@@ -1,4 +1,6 @@
 defmodule FinancialSystemApiWeb.ErrorView do
+  @moduledoc false
+
   use FinancialSystemApiWeb, :view
 
   alias Phoenix.Controller

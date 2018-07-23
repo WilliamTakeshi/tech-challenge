@@ -1,6 +1,6 @@
 defmodule FinancialSystemApi.Repo.Metrics do
   @moduledoc """
-  Module responseble to send ecto metrics to DataDog Agent.
+  Module responseble to send ecto metrics to StatsD Agent.
   """
 
   alias FinancialSystemApi.Statsd

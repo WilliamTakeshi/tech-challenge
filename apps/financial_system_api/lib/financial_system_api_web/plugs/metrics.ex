@@ -1,6 +1,6 @@
 defmodule FinancialSystemApiWeb.Plugs.Metrics do
   @moduledoc """
-  Module responseble to send ecto metrics to DataDog Agent.
+  Module responsible to send ecto metrics to StatsD Agent.
   """
 
   @behaviour Plug

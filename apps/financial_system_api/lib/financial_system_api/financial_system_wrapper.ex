@@ -1,12 +1,55 @@
 defmodule FinancialSystemApi.FinancialSystemWrapper do
-  @moduledoc false
+  @moduledoc """
+  Wrapper module of `FinancialSystem` module.
+  """
 
+  alias FinancialSystemApi.Accounts.Account, as: PersistentAccount
+
+  @typedoc """
+      Type that represents a transference with:
+      :from as FinancialSystemApi.Accounts.Account that represents the debit account.
+      :to as FinancialSystemApi.Accounts.Account that represents the credit account.
+  """
+  @type transference :: %{
+          name: PersistentAccount.t(),
+          username: PersistentAccount.t()
+        }
+
+  @spec format_value(Float.t(), String.t() | atom()) :: String.t()
+  @doc """
+  Return a formated string from a float value and an ISO 4217 code.
+  ## Examples
+      iex> FinancialSystemWrapper.format_value(100.0, "BRL")
+      "100,00 BRL"
+  """
   def format_value(amount, currency) do
     amount
     |> Dinheiro.new!(currency)
     |> Dinheiro.to_string!()
   end
 
+  @spec create(Integer.t(), Float.t(), String.t() | atom()) ::
+          {:ok, map()} | {:error, String.t()}
+  @doc """
+  Return a map to create a persistent Account.
+  ## Examples
+      iex> {:ok, account} == FinancialSystemWrapper.create(1, 100.0, "BRL")
+      iex> account == {:ok,
+      ...> %{
+      ...>   amount: 100.0,
+      ...>   currency: "BRL",
+      ...>   id: nil,
+      ...>   transactions: [
+      ...>     %{
+      ...>       account_id: nil,
+      ...>       date_time: ~N[2018-07-23 19:50:12.726271],
+      ...>       id: nil,
+      ...>       value: 100.0
+      ...>     }
+      ...>   ],
+      ...>   user_id: 1
+      ...> }}
+  """
   def create(user_id, amount, currency) do
     money = Dinheiro.new!(amount, currency)
 
@@ -33,6 +76,11 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
     e -> {:error, e.message}
   end
 
+  @spec transfer(PersistentAccount.t(), PersistentAccount.t(), Float.t()) ::
+          {:ok, transference()} | {:error, String.t()}
+  @doc """
+  Transfers a value from one account to another and returns two persistent accounts to update the database.
+  """
   def transfer(from, to, value) do
     money = Dinheiro.new!(value, from.currency)
     new_from = build_account(from)
@@ -55,6 +103,11 @@ defmodule FinancialSystemApi.FinancialSystemWrapper do
     e -> {:error, e.message}
   end
 
+  @spec withdraw(PersistentAccount.t(), Float.t()) ::
+          {:ok, PersistentAccount.t()} | {:error, String.t()}
+  @doc """
+  Withdraw a value from one account and returns a new persistent account to update the database.
+  """
   def withdraw(from, value) do
     money = Dinheiro.new!(value, from.currency)
     new_from = build_account(from)

@@ -1,5 +1,7 @@
 defmodule FinancialSystemApi.Users.User do
-  @moduledoc false
+  @moduledoc """
+  Module that represents a persistent User.
+  """
 
   use Ecto.Schema
 
@@ -8,14 +10,36 @@ defmodule FinancialSystemApi.Users.User do
   alias Comeonin.Bcrypt
   alias FinancialSystemApi.Accounts.Account
 
+  @typedoc """
+      Type that represents a persistent User struct with:
+      :id as Integer that represents the unique identifier.
+      :name as String that represents the name of the user.
+      :username as String that represents the nickname of the user.
+      :email as String that represents the e-mail of the user.
+      :email_verified as Boolean that represents if user e-mail is valid.
+      :token as String that is the public identifier of a user to activation.
+      :password_hash as String that represents the encrypted user password.
+      :accounts as array of FinancialSystemApi.Accounts.Account that contains all user accounts.
+  """
+  @type t :: %{
+          id: Integer.t(),
+          name: String.t(),
+          username: String.t(),
+          email: String.t(),
+          email_verified: boolean(),
+          token: String.t(),
+          password_hash: String.t(),
+          accounts: [Account.t()]
+        }
+
   schema "users" do
+    field(:name, :string)
+    field(:username, :string)
     field(:email, :string)
     field(:email_verified, :boolean, default: false)
-    field(:name, :string)
+    field(:token, :string)
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
-    field(:token, :string)
-    field(:username, :string)
     has_many(:accounts, Account)
 
     timestamps()

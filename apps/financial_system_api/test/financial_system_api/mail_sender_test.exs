@@ -9,10 +9,10 @@ defmodule FinancialSystemApi.MailSenderTest do
     token: "some token"
   }
 
-  test "send_activation_email/1" do
+  test "build_activation_email/1" do
     host = System.get_env("APP_HOSTNAME") || "${APP_HOSTNAME}"
 
-    email = MailSender.send_activation_email(@user)
+    email = MailSender.build_activation_email(@user)
 
     assert email.to == @user.email
     assert email.subject == "FinancialSystemApi - Activate your account"
@@ -21,12 +21,12 @@ defmodule FinancialSystemApi.MailSenderTest do
              "<a href=http://#{host}/activate/#{@user.token}>Active account"
   end
 
-  test "send_activated_email/1" do
+  test "build_activated_email/1" do
     balance = "R$ 99,99"
 
     email =
       @user
-      |> MailSender.send_activated_email(balance)
+      |> MailSender.build_activated_email(balance)
 
     assert email.to == @user.email
     assert email.subject == "FinancialSystemApi - Account activated"
@@ -37,27 +37,27 @@ defmodule FinancialSystemApi.MailSenderTest do
 
   test "deliver/1 sending activation e-mail" do
     @user
-    |> MailSender.send_activation_email()
+    |> MailSender.build_activation_email()
     |> MailSender.deliver()
 
-    assert_delivered_email(MailSender.send_activation_email(@user))
+    assert_delivered_email(MailSender.build_activation_email(@user))
   end
 
   test "deliver/1 sending activated e-mail" do
     balance = "R$ 99,99"
 
     @user
-    |> MailSender.send_activated_email(balance)
+    |> MailSender.build_activated_email(balance)
     |> MailSender.deliver()
 
-    assert_delivered_email(MailSender.send_activated_email(@user, balance))
+    assert_delivered_email(MailSender.build_activated_email(@user, balance))
   end
 
-  test "send_withdraw_email/3" do
+  test "build_withdraw_email/3" do
     value = "R$ 00,01"
     balance = "R$ 99,99"
 
-    email = MailSender.send_withdraw_email(@user, value, balance)
+    email = MailSender.build_withdraw_email(@user, value, balance)
 
     assert email.to == @user.email
     assert email.subject == "FinancialSystemApi - Account statement"
@@ -73,11 +73,11 @@ defmodule FinancialSystemApi.MailSenderTest do
     balance = "R$ 99,99"
 
     @user
-    |> MailSender.send_withdraw_email(value, balance)
+    |> MailSender.build_withdraw_email(value, balance)
     |> MailSender.deliver()
 
     assert_delivered_email(
-      MailSender.send_withdraw_email(@user, value, balance)
+      MailSender.build_withdraw_email(@user, value, balance)
     )
   end
 end

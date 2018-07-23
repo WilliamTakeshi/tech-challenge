@@ -1,4 +1,6 @@
 defmodule FinancialSystemApiWeb.Router do
+  @moduledoc false
+
   use FinancialSystemApiWeb, :router
 
   alias Guardian.Plug.VerifyHeader

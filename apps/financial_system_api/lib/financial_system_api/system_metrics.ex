@@ -1,6 +1,6 @@
 defmodule FinancialSystemApi.SystemMetrics do
   @moduledoc """
-  Module responseble to send system metrics to DataDog Agent.
+  GenServer Module responseble to send system metrics to StatsD Agent.
   """
 
   use GenServer
@@ -12,6 +12,7 @@ defmodule FinancialSystemApi.SystemMetrics do
   # Interval to send metrics.
   @interval Application.get_env(:financial_system_api, :metrics_interval)
 
+  @doc false
   def start_link do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -74,7 +75,7 @@ defmodule FinancialSystemApi.SystemMetrics do
       {:noreply, get_initial_state(%{})}
   end
 
-  def send_memory_status(statsd) do
+  defp send_memory_status(statsd) do
     _result =
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
@@ -86,7 +87,7 @@ defmodule FinancialSystemApi.SystemMetrics do
     statsd
   end
 
-  def send_erlang_system_info(statsd) do
+  defp send_erlang_system_info(statsd) do
     _result =
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)
@@ -98,7 +99,7 @@ defmodule FinancialSystemApi.SystemMetrics do
     statsd
   end
 
-  def send_erlang_runtime_info(statsd) do
+  defp send_erlang_runtime_info(statsd) do
     _result =
       ExErlstats.memory()
       |> Stream.filter(fn {_k, v} -> valid_stat?(v) end)

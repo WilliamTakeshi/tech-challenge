@@ -1,11 +1,16 @@
 defmodule FinancialSystemApi.MailSender do
-  @moduledoc false
+  @moduledoc """
+  Module responsible to build and send e-mails.
+  """
 
   import Bamboo.Email
 
   alias FinancialSystemApi.Mailer
 
-  def send_activation_email(user) do
+  @doc """
+  Build an activation e-mail to an user.
+  """
+  def build_activation_email(user) do
     host = System.get_env("APP_HOSTNAME") || "${APP_HOSTNAME}"
 
     user
@@ -16,7 +21,10 @@ defmodule FinancialSystemApi.MailSender do
     )
   end
 
-  def send_activated_email(user, balance) do
+  @doc """
+  Build an activated e-mail to an user.
+  """
+  def build_activated_email(user, balance) do
     user
     |> create_email()
     |> subject("FinancialSystemApi - Account activated")
@@ -25,7 +33,10 @@ defmodule FinancialSystemApi.MailSender do
     )
   end
 
-  def send_withdraw_email(user, value, balance) do
+  @doc """
+  Build a withdraw notification to an user.
+  """
+  def build_withdraw_email(user, value, balance) do
     user
     |> create_email()
     |> subject("FinancialSystemApi - Account statement")
@@ -36,6 +47,9 @@ defmodule FinancialSystemApi.MailSender do
     )
   end
 
+  @doc """
+  Send an e-mail.
+  """
   def deliver(email) do
     email
     |> Mailer.deliver_now()

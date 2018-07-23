@@ -1,22 +1,18 @@
 defmodule FinancialSystemApiWeb.ErrorHelpers do
-  @moduledoc """
-  Conveniences for translating and building error messages.
-  """
+  @moduledoc false
+
+  # Conveniences for translating and building error messages.
 
   use Phoenix.HTML
 
-  @doc """
-  Generates tag for inlined form input errors.
-  """
+  # Generates tag for inlined form input errors.
   def error_tag(form, field) do
     Enum.map(Keyword.get_values(form.errors, field), fn error ->
       content_tag(:span, translate_error(error), class: "help-block")
     end)
   end
 
-  @doc """
-  Translates an error message using gettext.
-  """
+  # Translates an error message using gettext.
   def translate_error({msg, opts}) do
     # When using gettext, we typically pass the strings we want
     # to translate as a static argument:

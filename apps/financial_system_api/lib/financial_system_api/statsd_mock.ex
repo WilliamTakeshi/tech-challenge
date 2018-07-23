@@ -1,6 +1,6 @@
 defmodule FinancialSystemApi.StatsdMock do
   @moduledoc """
-  Mock module to Statsd Agent.
+  Mock module to StatsD Agent.
   """
 
   def new(_, _) do

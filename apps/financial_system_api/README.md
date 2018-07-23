@@ -42,6 +42,8 @@ Alguns relatórios devem ser gerados para o backoffice:
 
 `mix deps.compile` Para compilar as dependências.
 
+`mix docs` Para gerar a documentação do projeto.
+
 `MIX_ENV=test mix build` Para testar a aplicação.
 
 `mix ecto.setup` Para configuar a base de dados.
@@ -83,6 +85,11 @@ A aplicação está distribuída em dois servidores geograficamente separados e 
 A adição de novos servidores ao cluster é feita de forma simples e rápida através da API do [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/). As aplicações se conectam automaticamente umas as outras utilizando API de Metadata fornecida pelo [Rancher 1.6](https://rancher.com/docs/rancher/v1.6/en/) e um módulo worker `FinancialSystemApi.Rancher` que atualiza as conexões dos nós a cada 5 segundos. O crescimento/encolhimento horizontal pode ser feito de forma programática, mas não implementei para não estender em muito o escopo da solução.
 
 O banco de dados da aplicação é o [PostgreSQL 10](https://www.postgresql.org/) hospedado por [Heroku Postgres](https://www.heroku.com/home).
+
+O monitoramento da aplicação é feito com o [DataDog](https://www.datadoghq.com/), onde foram disponibilizados dois paineis públicos para acompanhamento da aplicação em tempo real.
+
+* [Financial System API Infrastructure](https://p.datadoghq.com/sb/cd5150b08-3633609cfc577b41086bcde7adde05bb)
+* [Financial System API Application](https://p.datadoghq.com/sb/cd5150b08-f4593ba3603d5eed5cc191c8a11d7d17)
 
 ## API de Banking
 
