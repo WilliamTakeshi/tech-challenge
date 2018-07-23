@@ -39,6 +39,7 @@ defmodule FinancialSystemApi.Statsd do
   ## Example:
       iex> {:ok, agent} = Statsd.build_statsd_agent()
       iex> Statsd.gauge(agent, "erlang.memory.system", 15867984)
+      :ok
   """
   def gauge(agent, tag, value) do
     @statsd_agent.gauge(agent, tag, value)
@@ -53,6 +54,7 @@ defmodule FinancialSystemApi.Statsd do
   ## Example:
       iex> {:ok, agent} = Statsd.build_statsd_agent()
       iex> Statsd.histogram(agent, "phoenix.request.resp_time", 0.5)
+      :ok
   """
   def histogram(agent, tag, value) do
     @statsd_agent.histogram(agent, tag, value)
@@ -67,6 +69,7 @@ defmodule FinancialSystemApi.Statsd do
   ## Example:
       iex> {:ok, agent} = Statsd.build_statsd_agent()
       iex> Statsd.increment(agent, "ecto.query.count")
+      :ok
   """
   def increment(agent, tag) do
     @statsd_agent.increment(agent, tag)

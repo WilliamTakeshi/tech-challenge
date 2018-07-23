@@ -1,5 +1,6 @@
 defmodule AccountBuilderTest do
   use ExUnit.Case
+  doctest AccountBuilder
 
   setup do
     date_time = NaiveDateTime.utc_now()

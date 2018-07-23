@@ -42,6 +42,8 @@ Alguns relatórios devem ser gerados para o backoffice:
 
 `mix deps.compile` Para compilar as dependências.
 
+`mix docs` Para gerar a documentação do projeto.
+
 `MIX_ENV=test mix build` Para testar a aplicação.
 
 `mix ecto.setup` Para configuar a base de dados.
