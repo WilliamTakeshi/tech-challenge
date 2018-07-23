@@ -84,6 +84,11 @@ A adição de novos servidores ao cluster é feita de forma simples e rápida at
 
 O banco de dados da aplicação é o [PostgreSQL 10](https://www.postgresql.org/) hospedado por [Heroku Postgres](https://www.heroku.com/home).
 
+O monitoramento da aplicação é feito com o [DataDog](https://www.datadoghq.com/), onde foram disponibilizados dois paineis públicos para acompanhamento da aplicação em tempo real.
+
+* [Financial System API Infrastructure](https://p.datadoghq.com/sb/cd5150b08-3633609cfc577b41086bcde7adde05bb)
+* [Financial System API Application](https://p.datadoghq.com/sb/cd5150b08-f4593ba3603d5eed5cc191c8a11d7d17)
+
 ## API de Banking
 
 A solução está disponível em [http://ramondelemos.com/api](http://ramondelemos.com/api). Para facilitar o uso, no endpoint [http://ramondelemos.com/graphiql](http://ramondelemos.com/graphiql) foi diponibilizada a interface gráfica _GraphiQL_ fornecida pelo módulo `absinthe`.
