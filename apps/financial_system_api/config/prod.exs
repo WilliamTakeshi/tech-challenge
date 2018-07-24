@@ -42,7 +42,7 @@ config :financial_system_api, FinancialSystemApi.Repo,
   pool_size: 3
 
 # Do not print debug messages in production
-config :logger, level: :debug
+config :logger, level: :info
 
 # ## SSL Support
 #
