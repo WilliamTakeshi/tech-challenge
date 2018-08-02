@@ -40,11 +40,21 @@ defmodule FinancialSystemApi.Users.UserResolver do
       {:ok, user} ->
         Logger.debug("sending activation e-mail")
 
-        user
-        |> MailSender.build_activation_email()
-        |> MailSender.deliver()
+        deliver =
+          user
+          |> MailSender.build_activation_email()
+          |> MailSender.deliver()
 
-        {:ok, user}
+        case deliver do
+          :ok ->
+            {:ok, user}
+
+          {:error, reason} ->
+            user
+            |> Users.delete_user()
+
+            {:error, reason}
+        end
 
       {:error, reason} ->
         "#{inspect(reason)}"
