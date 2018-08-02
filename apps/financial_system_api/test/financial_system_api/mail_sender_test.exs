@@ -36,9 +36,12 @@ defmodule FinancialSystemApi.MailSenderTest do
   end
 
   test "deliver/1 sending activation e-mail" do
-    @user
-    |> MailSender.build_activation_email()
-    |> MailSender.deliver()
+    deliver =
+      @user
+      |> MailSender.build_activation_email()
+      |> MailSender.deliver()
+
+    assert deliver == :ok
 
     assert_delivered_email(MailSender.build_activation_email(@user))
   end
@@ -46,9 +49,12 @@ defmodule FinancialSystemApi.MailSenderTest do
   test "deliver/1 sending activated e-mail" do
     balance = "R$ 99,99"
 
-    @user
-    |> MailSender.build_activated_email(balance)
-    |> MailSender.deliver()
+    deliver =
+      @user
+      |> MailSender.build_activated_email(balance)
+      |> MailSender.deliver()
+
+    assert deliver == :ok
 
     assert_delivered_email(MailSender.build_activated_email(@user, balance))
   end
@@ -72,9 +78,12 @@ defmodule FinancialSystemApi.MailSenderTest do
     value = "R$ 00,01"
     balance = "R$ 99,99"
 
-    @user
-    |> MailSender.build_withdraw_email(value, balance)
-    |> MailSender.deliver()
+    deliver =
+      @user
+      |> MailSender.build_withdraw_email(value, balance)
+      |> MailSender.deliver()
+
+    assert deliver == :ok
 
     assert_delivered_email(
       MailSender.build_withdraw_email(@user, value, balance)

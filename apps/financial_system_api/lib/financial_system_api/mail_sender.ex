@@ -7,6 +7,8 @@ defmodule FinancialSystemApi.MailSender do
 
   alias FinancialSystemApi.Mailer
 
+  require Logger
+
   @doc """
   Build an activation e-mail to an user.
   """
@@ -53,11 +55,21 @@ defmodule FinancialSystemApi.MailSender do
   def deliver(email) do
     email
     |> Mailer.deliver_now()
+
+    :ok
+  rescue
+    e ->
+      "#{inspect(e)}"
+      |> Logger.error()
+
+      {:error, "#{inspect(e)}"}
   end
 
   defp create_email(user) do
+    host = System.get_env("BAMBOO_DOMAIN") || "${BAMBOO_DOMAIN}"
+
     new_email()
     |> to(user.email)
-    |> from("no-replay@financial-system-api.com")
+    |> from("no-replay@#{host}")
   end
 end
